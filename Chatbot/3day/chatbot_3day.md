@@ -56,7 +56,7 @@ https://i.kakao.com/ 카카오톡으로 챗봇을 만들어보자
 
 
 
-<img src='/images/image 001.png'>
+<img src='images/image 001.png'>
 
 
 
@@ -229,11 +229,11 @@ def set_webhook():
 
 '마스터키 전체'를 입력하면 모든 지점에 대한 정보가 출력된다.
 
-<img src = "/images/image 003.png">
+<img src = "images/image 003.png">
 
 '마스터키 ~점'을 입력하면 해당 지점의 예약 상태가 출력된다.
 
-<img src = "/images/image 004.png">
+<img src = "images/image 004.png">
 
 
 
