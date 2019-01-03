@@ -65,9 +65,9 @@ def lotto():
 
 그래서 각 버튼을 누르면 `?type=뭐시기`의 `뭐시기` 값이 터미널에 출력되는 것을 다음과 같이 확인할 수 있다.
 
-<img src='/images/image 006.png'>
+<img src='images/image 006.png'>
 
-<img src='/images/image 007.png'>
+<img src='images/image 007.png'>
 
 어제 작성한 네이버 웹툰, 다음 웹툰 크롤링 코드를 갖고 와서 적용해보면
 
@@ -173,19 +173,19 @@ def lotto():
 
 결과 화면은 다음과 같다.
 
-<img src='/images/image 009.png'>
+<img src='images/image 009.png'>
 
-<img src='/images/image 008.png'>
+<img src='images/image 008.png'>
 
 
 
 #### 아파트 매매 내역 시스템을 이용해서 내가 원하는 아파트 실거래가 검색하기
 
-<img src='/images/image 010.png'>
+<img src='images/image 010.png'>
 
 개발자 도구를 켜고 아파트 정보를 눌러보면 Network 탭에 getDangiInfoDetail...로 시작하는 파일을 볼 수 있다. 여기서 python 으로 요청을 하면 `{"jsonList":null}`이 뜬다.
 
-<img src='/images/image 011.png'>
+<img src='images/image 011.png'>
 
 여기에서 Host와 Referer가 있는데 `rt.molit.go.kr`로 접속해야 정보를 볼 수 있는데 그 외의 방법으로 접근하면 정보가 뜨지 않음을 알 수 있다. 그렇기 때문에 정상적으로 인증해서 api를 받는게 아니라면 쿠키를 찾던가 주소 위조를 통해 정보를 받아올 수 있다.
 
@@ -216,7 +216,7 @@ def apart():
 
 다음과 같이 정보가 정상적으로 출력이 된다.
 
-<img src='/images/image 012.png>
+<img src='images/image 012.png>
 
 위치("JIBUN_NAME"),
 
@@ -371,9 +371,9 @@ def set_webhook():
     return response
 ```
 
-<img src='/images/image 013.png'>
+<img src='images/image 013.png'>
 
-<img src='/images/image 014.png'>
+<img src='images/image 014.png'>
 
 
 
@@ -418,7 +418,7 @@ def set_webhook():
     return response
 ```
 
-<img src='/images/image 015.png'>
+<img src='images/image 015.png'>
 
 
 
@@ -547,4 +547,4 @@ html에서도 python의 split함수가 사용이 되는 것이 신기했다. 이
 
 결과화면은 다음과 같다.
 
-<img src ='/images/image 016.JPEG'>
+<img src ='images/image 016.JPEG'>
