@@ -11,7 +11,7 @@
 - 대소문자를 구별한다.
 - 아래의 예약어는 사용할 수 없다. (`keyword`를 통해 확인 가능)
 
-<img src="/images/image 004.png">
+<img src="images/image 004.png">
 
 - 내장함수나 모듈 등의 이름으로도 만들면 안된다.
 
@@ -43,7 +43,7 @@
   - 그러나 되도록이면 한 줄 안으로 끝내는 것이 가독성에 좋다.
   - `[]` `{}` `()`는 `\` 없이도 가능하다.
 
-<img src="/images/image 007.png">
+<img src="images/image 007.png">
 
 ## 5. 변수(variable) 및 자료형
 
@@ -63,7 +63,7 @@
 
   - `input`함수의 리턴 값은 문자형이기 때문에 `int()`로 형변환을 해서 사용해야한다.
 
-    <img src="/images/image 008.png">
+    <img src="images/image 008.png">
 
 ## 6. 입출력
 
