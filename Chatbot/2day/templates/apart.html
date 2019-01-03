@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>아파트 실거래가</title>
+    </head>
+    <body>
+        {% for apart in d %}
+        <tr>
+            <td>{{}}</td>
+            <td>{{ apart["BLDG_NM"] }}</td>
+            <td>{{ apart["JIBUN_NAME"] }}</td>
+            <td>{{ apart["BLDG_AREA"] }}</td>
+            <td>{{ apart["SUM_AMT"] }}</td>
+            <td>{{ apart["DEAL_MM"] }}</td>
+            <td>{{ apart["DEAL_DD"] }}</td>
+        </tr>
+        {% endfor %}
+    </body>
+</html>
