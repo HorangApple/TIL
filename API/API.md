@@ -14,8 +14,14 @@ c9에서 requests 모듈을 설치하고 파이썬 코드를 작성한다.
 # 2. 응답을 받아 번역된 단어를 출력한다.
 
 import requests
+from pprint import pprint as pp
 
-text = input()
+# 다음과 같이 함수명을 줄여나갈 수 있다.
+# import pprint => pprint.pprint()
+# from pprint import pprint => pprint()
+# from pprint import pprint as pp => pp()
+
+keyword = input("Please type any english word or phrase : ")
 naver_id = "값"
 naver_secret = "값"
 
@@ -28,15 +34,18 @@ headers = {
 data ={
     'source' : 'en',
     'target' : 'ko',
-    'text' : text
+    'text' : keyword
 }
 
 res = requests.post(url, headers=headers, data=data)
 
-jres = res.json()
+result = res.json()
 
-print(jres["message"]["result"]["translatedText"])
+pp(result["message"]["result"]["translatedText"]) # 값이 없으면 에러 발생
+# pp(result.get('message').get('result').get('translatedText')) # 값이 없으면 NULL 출력
 ```
+<img src = "images/image 002.png">
+pprint는 print와 다르게 json을 이쁘게 출력해준다. (위 pprint, 아래 print)
 
 파파고 개발 문서 : https://developers.naver.com/docs/nmt/reference/
 
