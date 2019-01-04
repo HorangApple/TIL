@@ -1,6 +1,160 @@
-## 20181220
+# Chatbot 만들기
+
+#### Cloud9
+
+온라인 클라우드 IDE로 서버 컴퓨터 역할도 가능한 서비스이다. 리눅스 우분투 환경과 같아서 여기서 python과 BeautifulSoup를 설치하여 실습한다. (https://github.com/sspy2/install_python)
+
+참고로 각각 생성한 터미널은 독립적으로 움직인다.
+
+python 터미널에서 벗어나고 싶으면 `exit()`를 입력하면 된다. 그리고 실행은 `python fileName.py`로 실행하면 된다.
+
+Flask를 설치하고 아래의 python 코드를 작성하자.
+
+*app01.py*
+
+```python
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/index')
+def index():
+    print("hi")
+    return ""
+```
+
+이후에 `flask run --host 0.0.0.0 --port 8080` 를 입력하면 다음과 같이 출력된다.
+
+<img src='images/image 002s.png'>
+
+여기서 `http://0.0.0.0:8080/`을 접속하면 `http://ssafy-training-horangapple.c9users.io:8080`로 접속이 되는데 이 뒤에 `/index`를 붙이면 빈 화면이 출력된다.
+
+<img src='images/image 003s.png'>
+
+app01.py에 `return ""`에서 ""안에 메세지를 입력하면 텍스트가 출력이 된다.
+
+`$ echo 'export FLASK_ENV=development' >> ~/.bashrc` 를 터미널에 입력하면 위의 경고 메세지가 사라지면서 작동이 된다.  게다가 python 코드를 변경하면 따로 서버를 끊고 다시 연결할 필요 없이 자동으로 변경된다.
+
+어제 만든 네이버 웹툰 챗봇까지 입력하면 다음과 같다.
+
+*app01.py*
+
+```python
+from flask import Flask
+from bs4 import BeautifulSoup as bs
+import requests
+import time
+
+app = Flask(__name__)
+
+@app.route('/index')
+def index():
+    print("hi")
+    print("nice to meet you")
+    return """
+    <h1>보노보노는 귀엽다!</h1>
+    <img src="http://i1.daumcdn.net/cfile297/image/212EAC375901C0F3161A55"/ >
+    <h3>Hello World</h3>
+    """
+@app.route('/naverToon')#카멜케이스
+def naver_toon():#스네이크케이스
+    today = time.strftime("%a").lower()
+    url="https://comic.naver.com/webtoon/weekdayList.nhn?week="+today
+    response = requests.get(url).text
+    soup = bs(response, 'html.parser')
+    toons = []
+    li = soup.select('.img_list li') #하위를 검색할 때 띄어쓰기를 한 번 해준다.
+    for item in li:
+        toon={
+            "title": item.select_one('dt a').text,#select는 복수개를 찾기 때문에 배열로 보여준다. 정확하게 찾기 위해 select 뒤에 [0]를 입력하거나 select_one을 사용한다.
+            "url" : item.select('dt a')[0]["href"],
+            "img_url":item.select('.thumb img')[0]["src"]
+        }
+        toons.append(toon)
+          
+    return "{}".format(toons)
+```
+
+
+
+#### /index 페이지 결과
+
+<img src='images/image 004s.png'>
+
+
+
+#### /naverToon 페이지 결과
+
+<img src='images/image 005s.png'>
+
+
+
+`return` 에 직접 html 파일을 불러오는 형식을 구현하기 위해 먼저 ` import Flask` 옆에 `, render_template`을 추가시킨다. 함수 `render_template`는 특정 어떤 파일을 불러와서 틀로 사용하게 끔 해준다.
+
+그리고 ` return render_template('naverToon.html')`으로 변경한다. `naverToon.html`의 파일 위치는 app01.py가 있는 폴더에서 `templates`이름으로 하위 폴더를 추가시키고 그 안에 있어야 한다.
+
+*naverToon.html*
+
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+        <h1>Naver Webtoon 모아보기</h1>    
+    </body>
+</html>
+```
+
+html에서 python을 돌릴려면 어떻게 해야할까? 2가지 방법이 있는데 눈에 보이는 방법으로 {{  }}를 이용하는 방법과 눈에 보이지않는 방법으로 {% %}를 이용하는 방법이 있다. 전자는 텍스트 같은 컨텐츠를 입력하고 후자는 문법적인 것을 작성한다.
+
+*app01.py*
+
+```python
+    return render_template('naverToon.html', t=toons)
+```
+
+*naverToon.html*
+
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+        <h1>Naver Webtoon 모아보기</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>썸네일</th>
+                    <th>웹툰 제목</th>
+                    <th>웹툰 링크</th>
+                </tr>
+            </thead>
+            <tbody>
+        <!-- app.py에서 작성한 웹툰 데이터를 바탕으로
+            table의 각 줄에 웹툰 데이터가 1개씩 들어가서
+            전체 웹툰들이 출력될 수 있도록 하는 코드 작성 -->
+                {% for toon in t %}
+                <tr>
+                    <td><img src="{{ toon["img_url"] }}"></td>
+                    <td>{{ toon['title'] }}</td>
+                    <td><a href="{{ toon["url"] }}">웹툰 보러가기</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </body>
+</html>
+```
+
+오류메세지만 잘 봐도 오류는 사라진다.
 
 무중단 배포, 항상 서버가 켜져있어야 서비스가 제공이 된다. 이를 위해 heroku를 사용하기도 한다.
+
+
 
 #### parameter란?
 
@@ -216,7 +370,7 @@ def apart():
 
 다음과 같이 정보가 정상적으로 출력이 된다.
 
-<img src='images/image 012.png>
+<img src='images/image 012.png'>
 
 위치("JIBUN_NAME"),
 
