@@ -62,7 +62,7 @@ pprint는 print와 다르게 json을 이쁘게 출력해준다. (위 pprint, 아
 <img src = "images/image 013.png">
 GET 방식은 정보를 가져올 때 사용하는 방식이고 POST는 정보를 입력, 게시할 때 사용하는 방식이다. 파파고를 이용하는 방식은 그림과 같이 작동이 되는데 여기서 POST 방식으로 요청이 간다.  키 값이나 번역할 단어 등의 데이터를 전하고 응답을 받아야하기 때문에 POST를 사용하게 되었다.
 
-# 네이버 얼굴 인식
+## 네이버 얼굴 인식
 
 'papago.py'와 구조가 유사하다.
 https://developers.naver.com/docs/clova/api/CFR/API_Guide.md#UsingAPI
