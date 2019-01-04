@@ -47,6 +47,7 @@ pp(result["message"]["result"]["translatedText"]) # 값이 없으면 에러 발�
 <img src = "images/image 002.png">
 pprint는 print와 다르게 json을 이쁘게 출력해준다. (위 pprint, 아래 print)
 
+
 파파고 개발 문서 : https://developers.naver.com/docs/nmt/reference/
 
 <img src = "images/image 011.png">
