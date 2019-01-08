@@ -1,6 +1,4 @@
-python 기초
-
-파이썬 기초 문법
+# python 기초 문법
 
 
 ## 1. 식별자
@@ -64,7 +62,7 @@ python 기초
 
 - 해당 변수의 메모리 주소를 확인하기 위해서는 `id()`를 활용한다.
 
-- http://pythontutor.com를 통해 시각화로 변수가 어떻게 할당하고 돌아가는지 볼 수 있다.
+- http://pythontutor.com 를 통해 시각화로 변수가 어떻게 할당하고 돌아가는지 볼 수 있다.
 
 - 같은 값을 동시에 할당할 수 있다.
 <img src="images/image 013.png">
@@ -109,6 +107,7 @@ python 기초
 #### `complex` (복소수)
 
 복소수는 허수부를 `j`로 표현한다.
+
 <img src="images/image 018.png">
 
 #### `Bool`
@@ -123,7 +122,7 @@ python 기초
 0, 0.0, (), [], {}, '', None
 ```
 
-#### None
+#### `None`
 
 파이썬에서는 값이 없음을 표현하기 위해 `None`타입이 존재합니다.
 
@@ -463,3 +462,111 @@ true_value if <조건식> else false_value
 
 <img src = "images/image 024.png"><img src = "images/image 025.png">
 
+## 함수(function) 기초
+
+### 개요
+
+**활용법**
+
+```python
+def func(parameter1, parameter2):
+    code line1
+    code line2
+    return value
+```
+
+- 함수 선언은 `def`로 시작하여 `:`으로 끝나고, 다음은 `4spaces 들여쓰기`로 코드 블록을 만듭니다.
+- 함수는 `매개변수(parameter)`를 넘겨줄 수도 있습니다.
+- 함수는 동작후에 `return`을 통해 결과값을 전달 할 수도 있습니다. (`return` 값이 없으면, None을 반환합니다.)
+- 함수는 호출을 `func(val1, val2)`와 같이 합니다.
+
+### 함수의 return
+
+앞서 설명한 것과 마찬가지로 함수는 반환되는 값이 있으며, 이는 어떠한 종류의 객체여도 상관없습니다.
+
+단, 오직 한 개의 객체만 반환됩니다.
+
+함수가 return 되거나 종료되면, 함수를 호출한 곳으로 돌아갑니다.
+
+### 함수의 인자/인수
+
+함수는 `인자(parameter)`를 받을 수 있습니다.
+
+### 위치 인수
+
+함수는 기본적으로 인수를 위치로 판단합니다.
+
+### 기본 값(Default Argument Values)[¶](http://localhost:8890/notebooks/lesson2/03_Control_of_flow_function.ipynb#%EA%B8%B0%EB%B3%B8-%EA%B0%92(Default-Argument-Values))
+
+함수가 호출될 때, 인자를 지정하지 않아도 기본 값을 설정할 수 있습니다.
+
+**활용법**
+
+```python
+def func(p1=v1):
+    return p1
+```
+
+- 호출시 인자가 없으면 기본 인자 값이 활용됩니다.
+
+- 단, 기본 값이 있는 매개변수 이후에 기본 값이 없는 매개변수를 사용할 수는 없습니다.
+
+### 키워드 인자(Keyword Arguments)
+
+키워드 인자는 직접적으로 변수의 이름으로 특정 인자를 전달할 수 있습니다.
+
+- 단, 키워드 인자를 활용한 뒤에 위치 인자를 활용할 수는 없습니다.
+
+<img src = "images/image 026.png">
+
+<img src = "images/image 027.png">
+
+### 가변 인자 리스트
+
+앞서 설명한 `print()`처럼 정해지지 않은 임의의 숫자의 인자를 받기 위해서는 가변인자를 활용합니다.
+
+가변인자는 `tuple` 형태로 처리가 되며, `*`로 표현합니다.
+
+**활용법**
+
+```python
+def func(*args):
+```
+
+
+
+### 정의되지 않은 인자들 처리하기
+
+정의되지 않은 인자들은 `dict` 형태로 처리가 되며, `**`로 표현합니다.
+
+주로 `kwagrs`라는 이름을 사용하며, `**kwargs`를 통해 인자를 받아 처리할 수 있습니다.
+
+**활용법**
+
+```python
+def func(**kwargs):
+```
+
+
+
+우리가 dictionary를 만들 때 사용할 수 있는 `dict()` 함수는 [파이썬 표준 라이브러리의 내장함수](https://docs.python.org/ko/3.6/library/functions.html)중 하나이며, 다음과 같이 구성되어 있다. 
+
+<img src = "images/image 028.png">
+
+<img src = "images/image 029.png">
+
+### 이름공간 및 스코프(Scope)
+
+파이썬에서 사용되는 이름들은 이름공간(namespce)에 저장되어 있습니다. 그리고, LEGB Rule을 가지고 있습니다.
+
+변수에서 값을 찾을 때 아래와 같은 순서대로 이름을 찾아나갑니다.
+
+- `L`ocal scope: 정의된 함수
+- `E`nclosed scope: 상위 함수
+- `G`lobal scope: 함수 밖의 변수 혹은 import된 모듈
+- `B`uilt-in scope: 파이썬안에 내장되어 있는 함수 또는 속성
+
+- `str()` 코드가 실행되면
+- str을 Global scope에서 먼저 찾아서 `str = 4`를 가져오고,
+- 이는 함수가 아니라 변수이기 때문에 `not callable`하다라는 오류를 내뱉게 됩니다.
+- 우리가 원하는 `str()`은 Built-in scope에 있기 때문입니다.
