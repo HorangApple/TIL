@@ -1,24 +1,10 @@
-num = int(input())
-lists = [0]*num
-result = []
-for i in range(num) :
-    lists[i] = input()
+def bandname(n):
+    first = n[0].upper()
+    if n[0]==n[-1]:
+        newname = first + n[1:len(n)]+n
+    else :
+        newname = 'The '+ first + n[1:len(n)]
+    return newname
 
-for i in lists :
-    before = " "
-    total = 0
-    for j in range(len(i)) :
-        if before == i[j] and "X" != i[j] :
-            count +=1
-            total += count
-        elif "O" == i[j]:
-            count = 1
-            total += count
-            before = "O"
-        else :
-            count = 0
-            before = "X"
-    result.append(total)
-
-for i in result :
-    print(i)
+print(bandname("dolphin"))
+print(bandname("alaska"))

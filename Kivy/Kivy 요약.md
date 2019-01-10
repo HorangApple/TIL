@@ -277,7 +277,8 @@ class Class1(BoxLayout):
 ```
 위의 함수 `__init__`은 위젯을 추가시키기 위해 'override'를 했다. `super`는 원래의 클래스를 실행시키기 위해 사용된다. 또한 패스워드 확인란을 만들 때 사용되기도 한다.
 `__init__`을 'override'하는 부분은 고정적으로 항상 사용되기 때문에 잊지말자. 이후에는 `padding`과 같이 BoxLayout을 설정하는 내용을 작성하면 된다.
-*super, padding, __init__, add_widget.py*
+
+*super, padding, __ init __, add_widget.py*
 
 ```python
 from kivy.uix.boxlayout import BoxLayout
@@ -305,3 +306,104 @@ if __name__ == '__main__':
 
 *결과*
 <img src = 'images/image 014.png'>
+
+
+
+## 07. BoxLayout
+
+`BoxLayout`은 버튼과 같은 위젯의 수직 또는 수평을 설정해주는 것이다.
+
+*BoxLayout.py*
+
+```python
+from kivy.app import App
+from kivy.base import runTouchApp
+from kivy.lang import Builder
+runTouchApp(Builder.load_string('''
+
+BoxLayout:
+	orientation:'vertical'
+	spacing: 10
+	padding: 100
+	Button:
+		text:'F1'
+	Button:
+		text:'F2'
+
+
+'''))
+```
+
+*결과*
+
+<img src = 'images/image 015.png'>
+
+
+
+## 08. FloatLayout
+
+`FloatLayout`은 child widgets의 위치, 크기 등을 설정해주는 것이다.
+
+*FloatLayout.py*
+
+```python
+from kivy.base import runTouchApp
+from kivy.lang import Builder
+runTouchApp(Builder.load_string('''
+
+<Button>:
+    color:.8,.2,0,1
+    font_size: 50
+    size_hint:.3,.2
+FloatLayout:
+    Button:
+        text: 'Hello'
+        pos_hint:{'x':0,'top':1}
+    Button:
+        text: 'world'
+        pos_hint:{'right':1,'y':0}
+
+
+'''))
+```
+
+*결과*
+
+<img src = "images/image 017.png">
+
+
+
+## 09. GridLayout
+
+`GridLayout`은 위젯을 매트릭스 형식으로 배치시켜준다. 변수 `cols`와 `rows`로 조절한다. 두 변수 중 하나에 값을 초기화 시켜야 작동한다. 그렇지 않으면 한곳에만 몰리는 것을 볼 수 있다.
+
+*GridLayout.py*
+
+```python
+from kivy.base import runTouchApp
+from kivy.lang import Builder
+runTouchApp(Builder.load_string('''
+
+GridLayout:
+    cols:2
+    size_hint_x:None #size_hint_x를 적용하지 않음 (deault값이 1이였음)
+    size_hint_y:None
+
+    Button:
+        text:'hello'
+        width:100
+    Button:
+        text:'world'
+        width:100
+'''))
+```
+
+*결과*
+
+<img src = "images/image 016.png">
+
+`GridLayout` 밑과 버튼 안에 `size_hint_x:None` 이 있으면 `width` 대로 크기가 조절이 된다. 여기서는 두 버튼 모두 `size_hint_x:None`을 갖고 있어야 제대로 조절이 가능하다.
+
+## 10. RelativeLayout
+
+`RelativeLayout`는 child widgets에 상대좌표를 사용할 수 있게끔 해준다. 절대좌표를 사용하는 `FloatLayout`과는 반대이다.
