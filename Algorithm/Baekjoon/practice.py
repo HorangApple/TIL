@@ -1,20 +1,24 @@
-def my_sqrt(x) :
-    
-    a = x -1
-    b = x
-    while True :
-        if a**2>x:
-            a = a-1
-        else :
-            break
+num = int(input())
+lists = [0]*num
+result = []
+for i in range(num) :
+    lists[i] = input()
 
-    while True :
-        new = (a+b)/2
-        if a**2 < new**2 and new**2 < x :
-            a = new
+for i in lists :
+    before = " "
+    total = 0
+    for j in range(len(i)) :
+        if before == i[j] and "X" != i[j] :
+            count +=1
+            total += count
+        elif "O" == i[j]:
+            count = 1
+            total += count
+            before = "O"
         else :
-            b = new
-        if round(a,3) == round(b,3):
-            return round(a,3)
+            count = 0
+            before = "X"
+    result.append(total)
 
-print(my_sqrt(3))
+for i in result :
+    print(i)
