@@ -1,5 +1,4 @@
-# Kivy 정리
-
+# Kivy Basics
 ## 01. import kivy
 
 ```python
@@ -308,7 +307,7 @@ if __name__ == '__main__':
 <img src = 'images/image 014.png'>
 
 
-
+# Layout
 ## 07. BoxLayout
 
 `BoxLayout`은 버튼과 같은 위젯의 수직 또는 수평을 설정해주는 것이다.
@@ -407,3 +406,125 @@ GridLayout:
 ## 10. RelativeLayout
 
 `RelativeLayout`는 child widgets에 상대좌표를 사용할 수 있게끔 해준다. 절대좌표를 사용하는 `FloatLayout`과는 반대이다.
+
+*RelativeLayout.py*
+
+```python
+from kivy.base import runTouchApp
+from kivy.lang import Builder
+runTouchApp(Builder.load_string('''
+
+RelativeLayout:
+    Button:
+        text:'R1'
+        size_hint:.3,.3
+        pos: 250,100
+    Button:
+        text:'R2'
+        size_hint:.2,.2
+        pos_hint:{'x':0.3,'y':0}
+        
+'''))
+```
+
+## 11. StackLayout
+
+`StackLayout`에서 `orientation`값을 조정하여 위젯의 배치를 '왼쪽에서 오른쪽, 위에서 밑으로'와 같이 설정할 수 있다.
+
+*StackLayout.py*
+
+```python
+from kivy.base import runTouchApp
+from kivy.lang import Builder
+runTouchApp(Builder.load_string('''
+
+StackLayout:
+    orientation: 'lr-tb' # left to right, top to bottom
+    padding : 20
+    spacing : 10
+    Button:
+        text:'B1'
+        size_hint:.2,.1
+    Button:
+        text:'B2'
+        size_hint:.2,.1
+    Button:
+        text:'B3'
+        size_hint:.2,.1
+    Button:
+        text:'B4'
+        size_hint:.2,.1
+    Button:
+        text:'B5'
+        size_hint:.2,.1
+    Button:
+        text:'B6'
+        size_hint:.2,.1
+'''))
+```
+
+*결과*
+
+<img src = "images/image 018.png">
+
+
+
+## 12.PageLayout
+
+`PageLayout`은 `size_hint`, `size_hint_min`, `size_hint_max`, `pos_hint`를 지원하지 않는다. 윈도우 상에서 종이 넘기는 것처럼 한 페이지에서 다른 페이지로 넘어갈 수 있게끔 해준다.
+
+*PageLayout.py*
+
+```python
+from kivy.base import runTouchApp
+from kivy.lang import Builder
+runTouchApp(Builder.load_string('''
+
+PageLayout:
+    Button:
+        text:'B1'
+    Button:
+        text:'B2'
+    Button:
+        text:'B3'
+'''))
+```
+
+*결과*
+
+<img src = "images/image 019.png"> <img src = "images/image 020.png">
+'B1'의 오른쪽 경계를 드래그하면 책넘기는 효과와 함께 'B2'로 화면이 전환된다.
+
+# UX widgets
+## 13. Button
+`Button`에서 텍스트, 글자 크기, 색상, 위치를 조정할 수 있다.
+
+*Button1.py*
+
+```python
+from kivy.base import runTouchApp
+from kivy.lang import Builder
+runTouchApp(Builder.load_string('''
+
+Label:
+    Button:
+        text:'B1'
+        font_size:32
+        color:.8,.9,0,1
+        size:100,200 # layout을 사용하게 된다면 size_hint 사용
+        pos:50,100
+    Button:
+        text:'B2'
+        font_size:32
+        color:.8,.1,0,1
+        size:100,200
+        pos:150,150
+'''))
+```
+
+*결과*
+
+<img src = "images/image 021.png">
+
+## 14.Button with root
+

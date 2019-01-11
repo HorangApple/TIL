@@ -21,3 +21,41 @@ https://wikidocs.net/32#filter
 # 03. 재귀함수
 
 재귀함수의 궁극적인 목적은 문제를 작게 만들어 해결한다는 점이다.
+
+python에서 재귀함수의 최대 깊이는 1000번이라고 한다.
+
+
+
+# 04. Comprehensions
+
+```python
+def reverse_letter(n):
+    result = []
+    for i in n :
+        if i.isalpha() :
+            result.append(i)
+    return "".join(result[::-1])
+```
+
+위의 코드와 같이 `for문-if문-수식 한 줄`로 되어 있는데 이렇게 있으면 다음과 같이 한 줄로 줄일 수 있다.
+
+```python
+def reverse_letter(n):
+    a = [c for c in n if c.isalpha()]
+    return "".join(a[::-1])
+```
+
+한 줄로 줄일 수 있는 전제조건은 for문과 if문 사이에 어떠한 식이 오면 안되고 수식은 한 줄로 구성되어 있어야 가능하다. 
+
+```python
+dusts = {'서울': 72, '경기': 82, '대전': 29, '중국': 200}
+dics = {key : '매우나쁨' if value>150 else '나쁨' if value>80 else '보통' for key, value in dusts.items()}
+print(dics)
+```
+
+if문만 구성하거나 for문만 구성할 수 있다.
+
+
+
+# 05. 정규표현식
+

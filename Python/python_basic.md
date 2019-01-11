@@ -570,3 +570,328 @@ def func(**kwargs):
 - str을 Global scope에서 먼저 찾아서 `str = 4`를 가져오고,
 - 이는 함수가 아니라 변수이기 때문에 `not callable`하다라는 오류를 내뱉게 됩니다.
 - 우리가 원하는 `str()`은 Built-in scope에 있기 때문입니다.
+
+## 7. 각종 함수
+
+## 문자열 메소드 활용하기
+
+## 변형
+
+### `.capitalize()`, `title()`, `.upper()`
+
+`.capitalize()` : 앞글자를 대문자로 만들어 반환합니다.
+
+`.title()` : 어포스트로피나 공백을 이후를 대문자로 만들어 반환합니다.
+
+`.upper()` : 모두 대문자로 만들어 반환합니다.
+
+### `lower()`, `swapcase()`
+
+`lower()` : 모두 소문자로 만들어 반환합니다.
+
+`swapcase()` : 대<->소문자로 변경하여 반환합니다
+
+### `.join(iterable)`
+
+특정한 문자열로 만들어 반환합니다.
+
+### `.replace(old, new[, count])`
+
+바꿀 대상 글자를 새로운 글자로 바꿔서 반환합니다.
+
+count를 지정하면 해당 갯수만큼만 시행합니다.
+
+### 글씨 제거 (`.strip([chars])`)
+
+특정한 문자들을 지정하면, 양쪽을 제거하거나 왼쪽을 제거하거나(lstrip) 오른쪽을 제거합니다(rstrip)
+
+지정하지 않으면 공백을 제거합니다.
+
+### `.split()`
+
+문자열을 특정한 단위로 나누어 리스트로 반환합니다.
+
+## 탐색 및 검증
+
+### `.find(x)` : x의 첫 번째 위치를 반환합니다. 없으면, -1을 반환합니다.
+
+### `.index(x)` : x의 첫번째 위치를 반환합니다. 없으면, 오류가 뜹니다.
+
+### 다양한 확인 메소드 : 참/거짓 반환
+
+```
+.isaplha(), .isdecimal(), .isdigit(), .isnumeric(), .isspace(), .issuper(), .istitle(), .islower()
+```
+
+# 리스트 메소드 활용하기
+
+## 값 추가 및 삭제
+
+### `.append(x)`
+
+리스트에 값을 추가할 수 있습니다.
+
+### `.extend(iterable)`
+
+리스트에 iterable(list, range, tuple, string*유의*) 값을 붙일 수가 있습니다.
+
+### `.insert(i, x)`
+
+정해진 위치 `i`에 값을 추가합니다.
+
+### `.remove(x)`
+
+리스트에서 값이 x인 것을 삭제합니다.
+
+### `.pop(i)`
+
+정해진 위치 `i`에 있는 값을 삭제하며, 그 항목을 반환합니다.
+
+`i`가 지정되지 않으면 마지막 항목을 삭제하고 되돌려줍니다.
+
+## 탐색 및 정렬
+
+### `.index(x)`
+
+원하는 값을 찾아 index 값을 반환합니다.
+
+### `.count(x)`
+
+원하는 값의 갯수를 확인할 수 있습니다.
+
+### `.sort()`
+
+정렬을 합니다.
+
+sorted()와는 다르게 원본 list를 변형시키고, None을 리턴합니다.
+
+### `reverse()`
+
+반대로 뒤집습니다. (정렬 아님)
+
+## 복사
+
+- 파이썬에서 모든 변수는 객체의 주소를 가지고 있을 뿐입니다.
+
+```
+num = [1, 2, 3]
+```
+
+- 위와 같이 변수를 생성하면 hong이라는 객체를 생성하고, 변수에는 객체의 주소가 저장됩니다.
+
+- 변경가능한(mutable) 자료형과 변경불가능한(immutable) 자료형은 서로 다르게 동작합니다.
+
+```python
+# 복사 예시
+import copy
+c = {'a':1,'b':2}
+copy_c = copy.deepcopy(c)
+print(id(c))
+print(id(copy_c))
+c['c'] = 3
+print(c)
+print(copy_c)
+```
+- 따라서, 복사를 하고 싶을 때에는 위와  같이 `copy`모듈을 이용해야한다.
+
+```python
+# 복사 예시2
+a = [1,2,[1,2]]
+b = a[:]
+b[1] = 3
+print(a)
+print(b)
+b[2][0] = 3
+print(a)
+print(b)
+```
+
+- 하지만, 이렇게 하는 것도 일부 상황에만 서로 다른 얕은 복사(shallow copy)입니다.
+- 만일 중첩된 상황에서 복사를 하고 싶다면, 깊은 복사(deep copy)를 해야합니다.
+- 즉, 내부에 있는 모든 객체까지 새롭게 값이 변경됩니다.
+
+## 삭제 `clear()`
+
+리스트의 모든 항목을 삭제합니다.
+
+
+
+# List Comprehension
+
+List를 만들 수 있는 간단한 방법이 있습니다.
+
+## 활용법
+
+여러개의 `for` 혹은 `if`문을 중첩적으로 사용 가능합니다.
+
+### 짝짓기 - 곱집합
+
+> 주어진 두 list의 가능한 모든 조합을 담은 `pair` 리스트를 만들어주세요.
+
+```python
+girls = ['jane', 'iu', 'mary']
+boys = ['justin', 'david', 'kim']
+
+pair = []
+for i in girls:
+    for j in boys:
+        pair.append((i,j))
+print(pair)
+
+pair = [(x,y)for x in girls for y in boys]
+print(pair)
+```
+
+### 피타고라스 정리
+
+> 주어진 조건(x < y < z < 50) 내에서 피타고라스 방정식의 해를 찾아보세요.
+
+```python
+result = []
+for x in range(1,50) :
+    for y in range(1,50) :
+        for z in range(1,50) :
+            if x**2+y**2 == z**2 :
+                result.append((x,y,z))
+print(result)
+
+result = [(x, y, z) for x in range(1,50) for y in range(1,50) for z in range(1,50) if x**2+y**2 == z**2 ]
+
+print(result)
+```
+
+### 모음 제거하기
+
+> 다음의 문장에서 모음(a, e, i, o, u)를 모두 제거하시오.
+
+```python
+words = 'Life is too short, you need python!'
+vowel = 'aeiou'
+result = [x for x in words if x not in vowel]
+print("".join(result))
+```
+
+
+
+# 딕셔너리 메소드 활용
+
+## 추가 및 삭제
+
+### `.pop(key[, default])`
+
+key가 딕셔너리에 있으면 제거하고 그 값을 돌려줍니다. 그렇지 않으면 default를 반환합니다.
+
+default가 없는 상태에서 딕셔너리에 없으면 KeyError가 발생합니다.
+
+### `.update()`
+
+값을 제공하는 key, value로 덮어씁니다.
+
+### `.get(key[, default])`
+
+key를 통해 value를 가져옵니다.
+
+절대로 KeyError가 발생하지 않습니다. default는 기본적으로 None입니다.
+
+
+
+## dictionary comprehension
+
+dictionary도 comprehension을 활용하여 만들 수 있습니다.
+
+- 추후에 zip, map 등을 배우고 다시 다루도록 하겠습니다 :)
+
+
+
+# 세트 메소드 활용
+
+## 추가 및 삭제
+
+### `.add(elem)`
+
+elem을 세트에 추가합니다.
+
+### `update(*others)`
+
+여러가지의 값을 순차적으로 추가합니다.
+
+여기서 반드시 iterable한 값을 넣어야합니다.
+
+### `.remove(elem)`
+
+elem을 세트에서 삭제하고, 없으면 KeyError가 발생합니다.
+
+### `discard(elem)`
+
+x를 세트에서 삭제하고 없어도 에러가 발생하지 않습니다.
+
+### `pop()`
+
+임의의 원소를 제거해 반환합니다. set은 내부적으로 정렬이 되어있지 않기 때문에 pop이 되는 대상은 정확히 무엇인지 예측하기 힘들다.
+
+# 딕셔너리 메소드 활용
+
+## 추가 및 삭제
+
+### `.pop(key[, default])`
+
+key가 딕셔너리에 있으면 제거하고 그 값을 돌려줍니다. 그렇지 않으면 default를 반환합니다.
+
+default가 없는 상태에서 딕셔너리에 없으면 KeyError가 발생합니다.
+
+
+
+### `.update()`
+
+값을 제공하는 key, value로 덮어씁니다.
+
+
+
+### `.get(key[, default])`
+
+key를 통해 value를 가져옵니다.
+
+절대로 KeyError가 발생하지 않습니다. default는 기본적으로 None입니다.
+
+
+
+## dictionary comprehension
+
+dictionary도 comprehension을 활용하여 만들 수 있습니다.
+
+```python
+# 숫자와 세제곱의 결과로 이뤄진 딕셔너리를 만들어봅시다.
+cubic_list = [x**3 for x in range(1,11)]
+print(cubic_list)
+
+cubic_d = {x:x**3 for x in range(1,11)}
+print(cubic_d)
+```
+
+```python
+# 다음의 딕셔너리에서 미세먼지 농도가 80초과는 나쁨 80이하는 보통으로 하는 value를 가지도록 바꿔봅시다.
+# 예) {'서울': '나쁨', '경기': '보통', '대전': '나쁨', '부산': '보통'}
+dusts = {'서울': 72, '경기': 82, '대전': 29, '중국': 200}
+dics = {key : '매우나쁨' if value>150 else '나쁨' if value>80 else '보통' for key, value in dusts.items()}
+print(dics)
+```
+
+## 정리! `map()`, `zip()`, `filter()`
+
+### `map(function, iterable)`
+
+- Iterable의 모든 원소에 function을 적용한 후 그 결과를 돌려줍니다.
+- 대표적으로 iterable한 타입 - list, dict, set, str, bytes, tuple, range
+- return은 map_object 형태로 됩니다.
+
+### `zip(*iterables)`
+
+- 복수 iterable한 것들을 모아준다.
+- 결과는 튜플의 모음으로 구성된 zip object를 반환한다.
+- zip은 반드시 길이가 같을 때 사용해야한다. 가장 짧은 것을 기준으로 구성한다.
+
+- 물론 `zip_longest`를 이용해 길이가 긴 것을 맞춰서 할 수도 있지만, 기억 저 멀리 넣어놓자.
+
+### `filter(function, iterable)`
+
+- iterable에서 function의 반환된 결과가 참인 것들만 구성하여 반환한다.
