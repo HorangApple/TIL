@@ -9,4 +9,3 @@ print(triangle('RRR'))
 print(triangle('RG'))
 print(triangle('RRRGGGBBBBBB'))
 print(triangle('RRGBRGBB'))
-
