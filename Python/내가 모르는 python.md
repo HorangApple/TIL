@@ -305,7 +305,7 @@ greeter(ohiyou)
 
 
 
-# 10. class
+# 10. class2
 
 ```python
 class 클래스명 [(상속받을 클래스명)]:
