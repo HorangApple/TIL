@@ -1,0 +1,29 @@
+.salmon{
+    color:darksalmon;
+    font-size: 20px;
+    font-style: italic;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bold
+}
+p{
+    color: deeppink;
+}
+body{
+    background-color:gray;
+}
+h1{
+    color:blue
+}
+h2{
+    color: yellow
+}
+h3{
+    color: purple
+}
+hr{
+    height:1px; 
+    background-color: seagreen
+}
+li{
+    list-style-type:square
+}
