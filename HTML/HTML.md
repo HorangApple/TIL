@@ -110,6 +110,8 @@ SEO : 검색엔진최적화
 
 # CSS
 
+html을 꾸밀 수 있는 방법은 인라인, 스타일, 파일이다. 이 중 CSS 파일로 따로 빼서 하는 것을 할 것이다.
+
 html과 다른 css만의 언어를 사용한다.
 
 html에서 `style=값`으로 정의할 수 있지만 수많은 정보를 일일히 작성하기엔 비효율적이다. 그렇기 때문에 CSS를 통해 간편하게 꾸민다.
@@ -297,3 +299,143 @@ li{
 }
 ```
 
+모던 폰트에서는 세리프를 잘 안 쓴다. 왜냐하면 렌더링 하는데에도 자원 소모가 크기 때문에 얇은 부분과 곡선이 별로 없는 산세리프를 많이 쓴다.
+
+<img src = "images/image 001.png">
+
+크롬의 폰트 설정에 들어가면 Serif나 San-serif로 정의되어 있는 글꼴을 내 브라우저에서 임의의 글꼴로 바꿔주는 기능을 제공하고 있다.
+
+<img src = "images/image 002.png">
+
+구글 폰트에 들어가서 원하는 폰트를 받아 사용할 수 있다. 
+
+```html
+<head>
+	...
+    <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic" rel="stylesheet">
+    <link rel="stylesheet" href="style.css"> <!--css연결-->
+</head>
+```
+
+
+
+만약 내가 폰트를 추가하고 싶다고 하면 글꼴을 SELECT 하여 하단 팝업에 뜨는 `link` 주소를 복사하여 html의 CSS 파일을 불러오는 파일보다 먼저 선언하게 끔 작성한다.
+
+*style.css*
+
+```css
+...
+    font-family: Nanum Gothic,sans-serif;
+...
+```
+
+이후 CSS파일에서 `font-family` 어트리뷰트에 사용하려는 폰트 이름을 추가 시키면 된다.
+
+em 단위는 배수 단위로 상대 단위다. 그러나 상속의 영향으로 바뀔 수 있다.
+
+rem 단위는 최상위 요소 사이즈를 기준으로 삼는다.
+
+Viewport 단위 디바이스마다 다른 크기의 화면을 가지고 있기 때문에 디바이스 기준으로 상대적인 단위인 viewport를 기준으로 만든 단위이다. 이것은 반응형 웹 페이지를 제작할 때 필수적으로 사용해야한다.
+
+
+
+Box model
+
+항상 네모로 생각해야한다. 둥근 모양도 사실 네모를 깎아서 표현했다고 해도 무방하다.
+
+<img src="images/image 003.png">
+
+margin은 박스 밖의 여백을 지칭한다. 여러 박스와 margin이 겹치게 될텐데 이는 합산하지 않고 margin 값이 큰 것을 기준으로 겹쳐진다.
+
+margin 어트리뷰트는 4개 값을 입력하면 top을 시작으로 시계방향으로 설정되고 2개 값을 입력하면 세로, 가로를 기준으로 적용이되고 값이 하나만 입력되면 4방향으로 같은 값이 적용된다.
+
+```css
+margin : 16px 16px 16px 16px /*(top을 시작으로 시계방향으로 설정)*/
+margin : 16px 16px /*(세로축, 가로축)*/
+margin : 16px /*(한번에 네 군데)*/
+```
+
+border는 box의 경계선을 가리킨다. 어트리뷰트의 필수 값은 `dotted`와 같은 style이다. default로 1px로 잡혀있기에 style만큼은 꼭 정해줘야한다. border는 다음과 같이 한 줄로 정의할 수도 있다.
+
+```css
+border:2px dotted pink;
+```
+```css
+border-width: 1px 2px 2px 1px;
+border-color:pink;
+border-style: dashed;
+```
+
+padding은 box 내부의 여백을 가리킨다.
+
+```css
+padding:20px
+```
+
+block level, inline level 로 크게 두 분류로 나눌 수 있다. 
+
+전자는 p 태그 처럼 한 box 당 한 라인으로로 구분지어서 나뉘지만 후자는 a 태그 처럼 한 라인 안에 차지한다.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="box.css">
+</head>
+<body>
+    <a href="http://daum.net">daum</a>
+    <p>박스1<p>박스1 안의 박스</p><a href="http://naver.com">naver</a></p>
+    <p>박스2</p>
+    <p>박스3</p>
+</body>
+</html>
+```
+
+위와 같이 치면 박스 안에 박스가 포함될 것이라 기대하지만 실제로 그렇지 않다.
+
+<img src ="images/image 004.png">
+
+block level의 특성 때문에 새로운 라인에 박스 하나로 잡혔고 마지막 `</p>`가 잡히지 못해 브라우저가 자체적으로 빈박스를 만들어 위와 같이 출력되었다.
+
+inline은 한 줄에 많이 들어가야하는 상황, 예를 들면 한 줄에 여러 개 버튼을 넣을 때 사용하는 상황일 때 사용한다.
+
+inline 태그는 글자를 꾸며주는 태그들이 해당된다. 밑으로 내리는 것이 block level, 그렇지 않으면 inline level이라 생각하면되는데 억지로 block을 inline으로 또는 그 반대로 만들 수는 있다. 예를 들면 block level인 리스트를 한 줄로 나열시키게 만드는 것이다.
+
+```html
+<ul>
+    <li style="display:inline">리스트1</li> <!--block을 inline-->
+    <li style="display:inline">리스트2</li>
+    <li style="display:inline">리스트3</li>
+</ul>
+<a style="display: block" href="https://naver.com">naver</a> <!--inline을 block-->
+```
+
+inline-block은 block과 inline 요소를 모두 갖는다. 
+
+```html
+<span>스팬1</span>
+<span>스팬2</span>
+<span>스팬3</span>
+```
+
+
+
+```css
+span{
+    display: inline-block;
+    margin-top:10px;
+    margin-bottom:10px;
+    width: 20px;
+    height: 30px;
+}
+```
+
+<img src ='images/image 005.png'>
+
+span을 위와 같이 css를 정하면 세로로 글씨가 나열되어 출력되는 것을 볼 수 있다. 이는 width가 좁아서 밑으로 글씨가 배치되었기 때문이다.
+
+none은 화면상에 아예 나타나지 않게 한다. `visibility: hidden`같은 경우 태그는 존재해서 드래그하면 공간이 있지만 컨텐츠가 보이지 않으나 `display: none`은 아예 보이지 않는다.
