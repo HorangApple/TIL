@@ -1,13 +1,23 @@
 inp = int(input())
-first = [1,2,3,4,5,6]
-search=[]
-def com (inp):
+
+def search(inp):
     n=1
-    while True :
-        for a in first :
-            search.append(1+int((n-1)*(2*a+(n-2)*6)/2))
-        if inp <= max(search) and inp >= min(search):
-            return n
-        search.clear()
+    beforeCom=1
+    child =0
+    parant = 0
+    while True:
+        com = int(n*(n+1)/2)
+        if com > inp :
+            count = n-1
+            com = beforeCom
+            break
+        elif com == inp :
+            count = n
+            break
+        beforeCom = com
         n+=1
-print(com(inp))
+    if com%2 == 0:
+        
+        
+    print(com, count)
+search(inp)
