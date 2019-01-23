@@ -23,3 +23,23 @@ for test_case in range(1, T+1):
             maxNum = obj
 
     print(f'#{test_case} {maxNum} {maxCount}')
+
+
+# 선생님 풀이
+
+T= int(input())
+for tc in range(1,T+1):
+    N = int(input())
+    cards = input()
+    cnt = [0]*10
+    for i in range(N):
+        cnt[int(cards[i])]+=1
+    maxI=0
+    for i in range(10):
+        if cnt[maxI]<=cnt[i]:
+            maxI = i
+    print("#%d %d %d" % (tc,maxI,cnt[maxI]))
+
+'''
+다른 배열을 만들어 인덱스를 이용해 카운팅을 한다.
+'''

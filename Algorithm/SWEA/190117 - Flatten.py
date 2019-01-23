@@ -36,3 +36,17 @@ for j in range(1, 11):
         minIdx = searchMin (lists)    
     # 최고점 - 최저점 출력
     print(f'#{j} {result(lists, maxIdx, minIdx)}')
+    
+# 선생님 풀이
+# TC= int(input())
+# for tc in range(1,TC+1):
+#     dump_cnt = int(input())
+#     box_heights = list(map(int,input().split()))
+
+#     for i in range(dump_cnt):
+#         maxI, minI = find_minmax()
+#         box_heights[maxI] -= 1
+#         box_heights[minI] += 1
+#     maxI,minI = find_minmax()
+
+#     print("#%d %d"%(tc,box_heights[maxI]-box_heights[minI]))
