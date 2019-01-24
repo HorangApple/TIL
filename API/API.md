@@ -89,7 +89,7 @@ headers = {
 # 1. 해당하는 image_url에 요청을 보내서
 image_url = "이미지 주소"
 # 2. 파일데이터를 받아 저장한다.
-image_res = requests.get(image_url, stream = True) # 파일 스트림에서 가져오기위해 steam = True로 설정한다.
+image_res = requests.get(image_url, stream = True) # raw 데이터를 가져오기위해 steam = True로 설정한다.
 
 files = {
     'image': image_res.raw.read() # python에서 파일을 열 때 사용하는 함수, read binary

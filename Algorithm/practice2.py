@@ -2,6 +2,7 @@ def triangle (n, k):
     if n!=1 :
         triangle (n-1,k)
     array=[1,2,2,4]
+    
     if (n+2)%3 == 0 :
         print((" "*(k-n))+("*"+" "*())*((n-1)//12+1)*array[((n-1)//3)%4])
     elif (n+1)%3 == 0 :

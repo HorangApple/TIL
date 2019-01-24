@@ -79,7 +79,7 @@ url = "https://search.naver.com/search.naver?&query={}".format(keyword)
 webbrowser.open(url)
 
 # sys.argv 우리가 입력한 명령어들이 다 들어가 있음
-# => hello 미세먼지를 입력하면
+# => 'hello 미세먼지'를 입력하면
 # => sys.argv는 ["hello 파일 경로", "미세먼지"]와 같이 리스트 형식으로 초기화 된다.
 ```
 

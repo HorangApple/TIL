@@ -62,7 +62,7 @@ def newyear():
 
 ### 실습2
 
-html이 복잡할 수록 python 코드 안에 다 수록하기엔 힘들기 때문에 flask의 render_template을 사용한다. 이를 사용하기 위해서는 별도로 'templates' 폴더를 만들어 `@app`의 하위 메소드의 이름과 같은 이름으로 html 파일을 만든다.
+html이 복잡할 수록 python 코드 안에 다 수록하기엔 힘들기 때문에 flask의 render_template을 사용한다. 이를 사용하기 위해서는 별도로 'templates' 폴더를 만들어 `@app`의 하위 메소드의 이름과 같은 이름으로 html 파일을 만들어 보자. (사실 이름은 달라도 상관 없다.)
 
 html을 자동완성 시켜주는 플러그인을 'emmet'이라 한다. html 문서 처음에 !를 입력하고 Tab을 누르면 자동완성 된다.
 
