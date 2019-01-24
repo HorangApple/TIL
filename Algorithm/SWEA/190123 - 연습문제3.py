@@ -35,3 +35,16 @@ for i in range(5) :
 
 for i in result :
     print(i)
+
+# # 선생님 코드
+# ary = [[9,20,2,18,11],[19,1,25,3,21],[8,24,10,17,7],[15,4,16,5,6],[12,13,22,23,14]]
+
+# x, y = 0,0
+# dx = [0,1,0,-1]
+# dy=[1,0,-1,0]
+# dir_stat = 0
+# for i in range(25) :
+#     cur_min = sel_min()
+#     sorted_ary[x][y] = cur_min
+#     x+=dx[dir_stat]
+#     y+=dy[dir_stat]

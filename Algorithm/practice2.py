@@ -1,12 +1,21 @@
-def triangle (n):
-    i = 1
-    while i<=n :
-        if i%3 == 0:
-            print(" "*(n-i)+"*****"*)
-        elif (i-2)%3 == 0 :
-            print(" "*(n-i)+"* *")
-        else :    
-            print(" "*(n-i)+"*")
-        i+=1
+def triangle (n, k):
+    if n!=1 :
+        triangle (n-1,k)
+    array=[1,2,2,4]
+    if (n+2)%3 == 0 :
+        print((" "*(k-n))+("*"+" "*())*((n-1)//12+1)*array[((n-1)//3)%4])
+    elif (n+1)%3 == 0 :
+        print((" "*(k-n))+("* *"+" "*())*((n-1)//12+1)*array[((n-1)//3)%4])
+    elif n%3 ==0 :
+        print((" "*(k-n))+("*****"+" "*())*((n-1)//12+1)*array[((n-1)//3)%4])
+n = int(input())
 
-triangle(6)
+triangle(n,n)
+
+
+# #####* 5
+# ####* *
+# ###*   *
+# ##*#####* 2
+# #* *###* *  
+# ***** *****
