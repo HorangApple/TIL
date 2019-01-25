@@ -416,13 +416,15 @@ inline 태그는 글자를 꾸며주는 태그들이 해당된다. 밑으로 내
 
 inline-block은 block과 inline 요소를 모두 갖는다. 
 
+*html*
+
 ```html
 <span>스팬1</span>
 <span>스팬2</span>
 <span>스팬3</span>
 ```
 
-
+*css*
 
 ```css
 span{
@@ -439,3 +441,65 @@ span{
 span을 위와 같이 css를 정하면 세로로 글씨가 나열되어 출력되는 것을 볼 수 있다. 이는 width가 좁아서 밑으로 글씨가 배치되었기 때문이다.
 
 none은 화면상에 아예 나타나지 않게 한다. `visibility: hidden`같은 경우 태그는 존재해서 드래그하면 공간이 있지만 컨텐츠가 보이지 않으나 `display: none`은 아예 보이지 않는다.
+
+# responsive
+
+*responsive.html*
+
+```python
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--디바이스 폭이 1배 사이즈로 사용, 반응형을 사용할 때 사용-->
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--bootstrap file-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <title>Document</title>
+    <style>
+        .item{
+            background-color: deepskyblue;
+        }
+    </style>
+</head>
+<body>
+    <!-- container 생성 -->
+    <div class="container-fluid">
+        <!-- row 생성 -->
+        <div class="row"> <!--display: flex로 인해 inline으로 작동됨-->
+            <div class="bg-primary col-lg-2 col-md-4 col-sm-2 px-1"> <!-- sm, md, lg, xl이 있음 -->
+                글 1
+            </div>
+            <div class="bg-warning col-lg-2 col-md-4 col-sm-2 px-1">
+                글 2
+            </div>
+            <div class="bg-danger col-lg-2 col-md-4 col-sm-2 px-1">
+                글 3
+            </div>
+            <div class="bg-warning col-lg-2 col-md-4 col-sm-2 px-1">
+                글 4
+            </div>
+            <div class="bg-success col-lg-2 col-md-4 col-sm-2 px-1">
+                글 5
+            </div>
+            <div class="bg-dark col-lg-2 col-md-4 col-sm-2 px-1">
+                글 6
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
+```
+
+https://getbootstrap.com/docs/4.2/layout/grid/#grid-options
+
+미디어 쿼리는 디바이스에서 특정 크기에 도달하게 되면 css에 변화를 주어 디자인을 다르게 만들게 한다.
+
+sm, md, lg, xl는  breakpoint를 정하는 위치로 디바이스따라 달라지게 만들 수 있다. 위의 예시처럼 `col` 클래스를 여러 개 쓰면 다양한 디바이스에서 변경되도록 만들 수 있다.
+
+`class="row"`에서 사용하는 `justify-content-center` , `justify-content-end` 등은 중앙정렬, 오른쪽 끝 정렬을 의미한다.
