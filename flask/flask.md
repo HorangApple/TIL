@@ -258,3 +258,170 @@ def god():
 
 
 그런데 서버를 껐다 키면 `hogu`에 있는 데이터가 다 날아가므로 텍스트 파일로 남기도록 하거나 DB에 저장하도록 조치를 취해야한다.
+
+
+
+# Asked 어플리케이션 - 190128
+
+## 명세
+
+### (1) '/' -> index.html
+
+- form
+  1. 사용자의 입력을 받음
+  2. 입력 받은 값을 question이라는 상자에 넣어,
+     1. '/ask' 주소로 보낸다.
+
+### (2) '/ask' -> ask.html
+
+- '성공적으로 질문이 업로드 되었습니다.'
+- 질문 저장 : csv 파일에 저장
+- question.csv
+
+| 1    | 야야야 설에 뭐하니           |
+| ---- | ---------------------------- |
+| 2    | 야야야야야야 주말에는 뭐하냐 |
+
+```csv
+야야야 설에 뭐하니
+야야야야야야 설에 뭐하니
+```
+
+### (3) '/quest' -> quest.html
+
+- 지금까지 입력 받은 모든 질문을 보여준다.
+  1. question.csv에 있는 내용을 읽어와(csv.reader)
+  2. quest.html에서 보여준다.
+
+
+
+*index.html*
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>익명 질문 앱</h1>
+    <p>익명으로 질문하세요</p>
+    <form action="/ask">
+        <input type="text" name="question"/>
+        <input type="submit" value="Submit"/>
+    </form>
+</body>
+</html>
+```
+
+
+
+*ask.html*
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>성공적으로 질문이 업로드 되었습니다.</h1>
+    <h2>{{ quest }}</h2>
+</body>
+</html>
+```
+
+
+
+*quest.html*
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        table,td{
+            border:1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>질문 목록</h1>
+    <table>
+        <tr>
+            <th>번호</th>
+            <th>질문</th>
+            <th>입력시간</th>
+        </tr>
+        {% for row in quest_list[::-1] %}
+        <tr>
+            <td>{{row[0]}}</td>
+            <td>{{row[1]}}</td>
+            <td>{{row[2]}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+</body>
+</html>
+```
+
+Jinja는 주석을 다르게 써야한다.` <!----->`를 사용해도 Jinja에서는 단순 코드로 인식하기 때문에 Jinja가 사용되는 구문을 주석하거나 그 안에 사용하면 안된다.
+
+
+
+*app.py*
+
+```python
+from flask import Flask, render_template, send_file, request
+import csv
+import datetime
+app = Flask(__name__)
+
+def saveCSVFile(filename, quest):
+    dt=datetime.datetime.now()
+    cur = '{}년 {}월 {}일 {}시 {}분'.format(dt.year, dt.month, dt.day, dt.hour, dt.minute)
+    with open(filename,'a') as f:
+        writer = csv.writer(f)
+        num = 0
+        with open('question.csv','r') as fi:
+            num = len(list(csv.reader(fi)))
+        writer.writerow([num+1,quest,cur]) #리스트 입력
+    print('{} 저장 완료'.format(filename))
+
+
+@app.route("/") # 주문 받는 방법 (요청을 받는 방법)
+def index():
+    return render_template('index.html')
+
+@app.route("/ask")
+def ask():
+    quest=request.args.get('question')
+    saveCSVFile('question.csv',quest)
+    return render_template('ask.html',quest=quest)
+
+@app.route("/quest") # int:num은 num이 int형으로 받아질 것을 알려줌
+def quest():
+    quest_list = []
+    with open('question.csv','r') as f:
+        reader = csv.reader(f)
+        # reader는 [['야야야'],['야야야야']] 식으로 구성
+        for row in reader:
+            quest_list.append(row)
+        
+    return render_template('quest.html',quest_list=quest_list)
+```
+
+<img src = "images/image 001.png">
+
+데이터가 비여있는 곳이 존재하면 위처럼 깔끔하게 나오지 않는다. 그런 점에서 파일로 정보를 관리하는 것은 불편하며 관리에 용이한 DB 사용이 불가피하다.
