@@ -1,7 +1,7 @@
 
 
 # DB - 190128
-데이터페이스는 체계화된 데이터의 모임이다.
+데이터베이스는 체계화된 데이터의 모임이다.
 
 
 
@@ -18,6 +18,8 @@ SQLite는 모바일 어플리케이션에서 DB를 구축할 때 사용한다. �
 3. 자체적 권한 시스템을 가지고 있다.
 4. 많은 사용자의 동시 접근에 자체 해결방법을 가지고 있다.
 
+
+
 ### 스키마
 
 <img src = "images/image 002.png">
@@ -26,9 +28,13 @@ SQLite는 모바일 어플리케이션에서 DB를 구축할 때 사용한다. �
 
 스키마(scheme)는 데이터베이스에서 자료의 구조, 표현방법, 관계, 제약 조건에 관련한 전반적인 명세 등을 정의한 구조를 의미한다.
 
+
+
 ## SQL
 
 SQL(Structured Query Language)는 RDBMS의 데이터를 관리하기 위해 설계된 특수 목적 프로그램 언어이다. 참고로 python은 범용 프로그램 언어이다. 
+
+
 
 ```sqlite
 horangapple:~/workspace $ sqlite3
@@ -40,6 +46,8 @@ sqlite> .exit
 
 `sqlite3`를 입력하면 SQLite가 작동되며 모든 sqlite 명령어는 '.' 으로 시작된다.
 
+
+
 https://zzu.li/hellodb
 
 ```SQL
@@ -48,6 +56,8 @@ sqlite> .import hellodb.csv hellodb
 ```
 
 이는 csv 파일을 읽기위해 csv 모드로 변경하고 `hellodb.csv`를 불러들어와 테이블로 `hellodb`로 명명하겠다는 것이다.
+
+
 
 ```sqlite
 sqlite> .databases
@@ -59,6 +69,8 @@ sqlite> SELECT*FROM hellodb;
 ```
 
 `.databases`는 현재 내가 갖고 있는 DB를 나타낸다.
+
+
 
 ```sqlite
 sqlite> .mode csv
@@ -79,12 +91,16 @@ hogu
 `SELECT*FROM question;` 처럼 SQL언어는 세미콜론 (';')으로 끝내야하는 것이 규칙이다. 그리고 csv의 첫 줄은 무조건 header로 인식하기 때문에 첫 줄을 건너 뛰고 두 번째 줄부터 불러온다. 그렇기 때문에 csv에는 반드시 header가 존재해야한다.
 
 
+
+
 ```sqlite
 sqlite> .tables
 question  users 
 ```
 
 `.tables`는 현재 열려있는 테이블의 목록을 볼 수 있는 명령어이다.
+
+
 
 ```sqlite
 sqlite> .header on
@@ -99,6 +115,8 @@ id          first_name  last_name   age         country       phone          bal
 
 보다 이쁘게 데이터를 보기 위해 `.header on`과 `.mode column`을 사용한다.
 
+
+
 ```sqlite
 horangapple:~/workspace $ sqlite3 test.sqlite3
 SQLite version 3.8.2 2013-12-06 14:53:30
@@ -111,9 +129,9 @@ seq  name             file
 sqlite> 
 ```
 
-본격적으로 DB를 만들기 위해서는 확장자가 `.sqlite3`인 파일을 만드는 것으로 시작하면 된다.
+본격적으로 DB를 만들기 위해서는 확장자가 `.sqlite3`인 파일을 만드는 것으로 시작하면 된다. 이후 테이블을 생성한다.
 
-이후 테이블을 생성한다.
+
 
 ```sqlite
 sqlite> CREATE TABLE classmates (
@@ -128,6 +146,8 @@ classmates
 
 파일을 경제적으로 저장하기 위해 여러가지 자료형이 정의되어있고 동적으로 상황에 맞게 저장시켜준다.
 
+
+
 ```sqlite
 sqlite> .schema classmates
 CREATE TABLE classmates (
@@ -138,6 +158,8 @@ name TEXT
 
 테이블의 구조를 보고 싶다면 `.schema`를 이용해 구조를 보면 된다.
 
+
+
 ```sqlite
 sqlite> .tables
 classmates
@@ -147,6 +169,8 @@ sqlite>
 ```
 
 테이블 삭제는 `DROP TABLE`을 이용해 삭제시키면 된다.
+
+
 
 *create_students.sqlite3*
 
@@ -175,6 +199,8 @@ sqlite>
 
 따로 확장자가 `.sqlite3` 파일을 만들어서 SQL 명령문을 입력해 저장해놓으면 `.read`를 통해 쉽게 테이블을 사용할 수 있다.
 
+
+
 ### 데이터 추가, 읽기, 수정, 삭제 (C,R,U,D)
 
 데이터 추가, 읽기, 수정, 삭제 (C,R,U,D) 를 SQL을 사용하여 구현해보자.
@@ -194,12 +220,16 @@ CREATE TABLE classmates(
 `AUTOINCREMENT`는 자동으로 숫자를 증가 시키는 기능을 하며 이 기능을 사용할 때는 자료형을 정확히 정해줘야 한다.
 
 
+
+
 ```sqlite
 sqlite> INSERT INTO classmates (name, age) VALUES ('홍길동',34);
 Error: NOT NULL constraint failed: classmates.address
 ```
 
 `classmates` 를 선언할 때 `NOT NULL`을 선언했기 때문에 입력하지 않은 `address` 때문에 오류생겼다.
+
+
 
 ```sqlite
 sqlite> INSERT INTO classmates (id, name, age, address) VALUES (1, '홍길동', 34, '서울');  
@@ -214,6 +244,8 @@ sqlite> SELECT * FROM classmates;
 ```
 
 `AUTOINCREMENT` 이 선언되었을 때 순서에 맞게 `id` 값을 넣으면 오류가 발생하지 않지만 같은 값이나 그보다 낮은 값이면 `Error: UNIQUE constraint failed: classmates.id`와 같은 오류가 발생한다.
+
+
 
 2. 읽기
 
@@ -241,12 +273,16 @@ sqlite> SELECT name, address FROM classmates LIMIT 3 OFFSET 3;
 
 `OFFSET`은 몇 번째 테이블 레이블부터 검색할지 정해준다. 
 
+
+
 ```sqlite
 sqlite> SELECT * FROM classmates WHERE id=4;
 4|박진수|85|부산
 ```
 
 `WHERE`는 일종의 조건문으로 이를 이용해 특정 레이블을 선택할 수 있다.
+
+
 
 3. 수정
 
@@ -300,13 +336,13 @@ sqlite> SELECT AVG(age) FROM users;                                             
 sqlite> SELECT first_name, age, MAX(balance) FROM users;                               "선영",37,990000
 ```
 
-위와 같이 활용할 수 있다.
+위와 같이 `balance`가 가장 큰 사람의 이름과 나이를 알아볼 수 있듯이 활용할 수 있다.
 
 
-
-`LIKE`는 정확한 값에 대한 비교가 아닌, 패턴을 확인하여 해당하는 값을 반환한다.
 
 <img src = "images/image 005.png">
+
+`LIKE`는 정확한 값에 대한 비교가 아닌, 패턴을 확인하여 해당하는 값을 반환한다.
 
 성능을 따진다면 숫자를 부등호로 비교해서 사용하는 것이 좋지만 글자를 검색해야하는 상황이라면 `LIKE`를 사용하는 것이 좋다.
 
