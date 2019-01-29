@@ -304,6 +304,8 @@ sqlite> SELECT * FROM classmates;
 
 `UPDATE`와 `SET`, 그리고 `WHERE`를 이용해 column 값을 수정할 수 있다.
 
+
+
 4. 삭제
 
 ```sqlite
@@ -376,3 +378,196 @@ sqlite> SELECT * FROM users ORDER BY balance ASC LIMIT 10;
 ```
 
 `ORDER BY` 는  특정 column을 기준으로 정렬을 해주며 `ASC`와 `DESC`로 오름차순, 내림차순으로 정렬해준다. 만약 정렬 대상이 숫자가 아닌 TEXT라면 앞의 두자리만 비교해서 정렬하기 때문에 의도하지 않은 결과가 나온다.
+
+
+
+# Python과 함께 - 190129
+
+*db.py*
+
+```python
+import sqlite3
+# 1. > sqlite3 [데이터베이스 파일명]
+# => 데이터베이스에 접속
+# 2. SQL 쿼리 접속
+# => SELECT*FROM user;
+# => 결과를 가져다 줌
+# 3. >.exit
+# => 작업이 끝나면 콘솔 종료
+
+# DB로써 다룰 수 있는 객체가 리턴됨, DB 접속
+db = sqlite3.connect('test.sqlite3')
+
+word = input("검색할 성(씨)을 입력해 주세요: ")
+
+def search(keyword):
+    """
+    DB에서 검색어를 받아 검색을 해주는 친구
+    """
+    cur = db.cursor() # DB 조작을 할 수 있는 커서를 만든다.
+    cur.execute("SELECT*FROM users WHERE last_name IS '{}'".format(keyword)) # SQL문 실행
+    data = cur.fetchall() # 데이터의 구조 : [(),(),...]
+    cur.execute("SELECT COUNT(*) FROM users WHERE last_name == '{}'".format(keyword))
+    total = cur.fetchone() # 데이터의 구조 : [(),(),...]
+   
+    # 1. 해당 검색 결과의 '수'를 출력하고,
+    print("'{}'씨 성을 가진 사람은 {}명입니다.".format(keyword,total[0]),"명단은 다음과 같습니다.")
+    # 2. 데이터들을 출력한다.
+    for row in data :
+        print(row)
+    # => '박'씨 성을 가진 사람은 XX명입니다. 명단은 다음과 같습니다.
+    # => (박,010)
+    
+search(word)
+```
+
+`fetchone`과 `fetchall`의 차이는 `execute`의 결과 값을 하나씩 가져오느냐 아니면 한꺼번에 들고오느냐다.
+
+```bash
+horangapple:~/workspace $ python3 db.py
+검색할 성(씨)을 입력해 주세요: 김
+'김'씨 성을 가진 사람은 268명입니다. 명단은 다음과 같습니다.
+('8', '예진', '김', '33', '충청북도', '010-5123-9107', '3700')
+('9', '서현', '김', '23', '제주특별자치도', '016-6839-1106', '43000')
+('11', '서영', '김', '15', '제주특별자치도', '016-3046-9822', '640000')
+('14', '영일', '김', '35', '전라남도', '011-4448-6198', '720')
+('16', '옥자', '김', '19', '경상남도', '011-1038-5964', '720')
+```
+
+SQL문과 python 언어가 섞어쓰는 것에 문제가 있어 이를 python으로만 사용하기 위해 사람들은 많은 고민을 하였다.
+
+*orm.py*
+
+```python
+# 1. csv, nested-list version
+student1 = [
+    ['id','name','phone','address'],
+    [1, '강주','01011234552','서울'],
+    [2, '김수','01011111222','부산']
+]
+
+# 2. Json, dictionary version - NOSQL
+student2 = [
+    {'id':1,'name':'강주','phone':'01011234552','address':'서울'},
+    {'id':2,'name':'김수','phone':'01011111222','address':'부산'}
+]
+
+# 3. object version - ORM
+class Student :
+    def __init__(self, id, name, phone, address):
+        self.id = id
+        self.name = name
+        self.phone = phone
+        self.address = adresss
+
+student3 = [
+    Student(1,'강주','01011234552','서울'),
+    Student(2,'김수','01011111222','부산')
+]
+```
+
+ORM(Object-relational mapping)은 마치 OOP처럼 데이터베이스를 다루게 만들어준다. ORM과 flask를 같이 사용하면 다음과 같이 구현할 수 있다.
+
+flask와 사용하기 때문에 SQLAlchemy를 이용해 작성한다.
+
+*app.py*
+
+```python
+from flask import Flask, render_template, request
+import csv
+import datetime
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db' # db 경로, / 4개는 절대경로, 3개는 상대경로, ///test.db이면 py파일이 있는 곳에 저장이 됨.
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False #최신 버전에서 발생하는 오류 방지
+
+db = SQLAlchemy(app)
+
+db.init_app(app)
+# 테이블(스키마) 설계
+class Quest(db.Model):
+    __tablename = "questions"
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String, nullable=False)
+    
+db.create_all() # 위의 class Quest가 반영이 됨
+
+@app.route("/") # 주문 받는 방법 (요청을 받는 방법)
+def index():
+    # DB에 저장된 모든 질문들을 불러온다.
+    quests = Quest.query.all() # [<Quest 1>, <Quest 2>,...]로 존재
+    # print(quests[0].content) # <Quest 1>의 내용 중 content 출력
+    return render_template('index.html', quests=quests)
+
+@app.route("/ask")
+def ask():
+    # 데이터베이스에 저장
+    # PRIMARY KEY로 검색
+    q=request.args.get('question')
+    # INSERT INTO quetions (id, content) VALUES (1, 사용자의 값)
+    
+    # ORM을 통해 DB에 데이터를 저장하는 방법
+    quest = Quest(content=q)
+    db.session.add(quest)
+    db.session.commit() # add는 여러 개지만 commit은 한 번만
+    
+    return redirect('/') # 다시 index 페이지로 돌아감, index.html로 직접 render를 할 수 있겠지만 디자인 패턴 상으로 redirect로 사용하는게 좋다.
+
+@app.route("/delete/<int:id>")
+def delete(id):
+    # 특정 데이터 레코드를 지워준다.
+    # DELETE FROM questions WHERE id == 1
+    # id == 1인 객체가 q에 들어가 있음, Quest.query.filter_by(id=id).first()도 같은 말임.
+    q = Quest.query.get(id) 
+    db.session.delete(q)
+    db.session.commit() # 마무리
+    return redirect('/')
+
+```
+
+
+
+*index.html*
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>익명 질문 앱</h1>
+    <p>익명으로 질문하세요</p>
+    <form action="/ask">
+        <input type="text" name="question"/>
+        <input type="submit" value="Submit"/>
+    </form>
+    <!--quests(리스트) 안에 담긴 모든 질문 객체들을 보여준다.-->
+    {% for q in quests %}
+        <p>{{ q.id }} : {{ q.content }} <a href="/delete/{{ q.id }}">[삭제]</a></p> 
+    {% endfor %}
+</body>
+</html>
+```
+
+<img src = "images/image 006.png">
+
+test.db 가 실제로 저장되는 DB인데 이를 보고 싶다면 SQLite Viewer이나 다음의 콘솔 명령어를 통해 깨지지 않고 볼 수 있다.
+
+```bash
+horangapple:~/workspace $ sqlite3 test.db
+SQLite version 3.8.2 2013-12-06 14:53:30
+Enter ".help" for instructions
+Enter SQL statements terminated with a ";"
+sqlite> .tables
+quest
+sqlite> SELECT * FROM quest;
+1|배고파
+2|ㅇㅇ
+```
+
