@@ -51,4 +51,3 @@ for i in range(T):
     bluemap=adder(blue)
 
     print(f'#{i+1} {selector(redmap,bluemap)}')
-    
