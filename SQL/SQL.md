@@ -247,6 +247,23 @@ sqlite> SELECT * FROM classmates;
 
 
 
+```sqlite
+sqlite> ALTER TABLE bands
+   ...> ADD COLUMN members INTEGER;
+sqlite> .mode column                
+sqlite> .header on
+sqlite> SELECT * FROM bands;
+id          name        debut       members   
+----------  ----------  ----------  ----------
+1           Queen       1973                  
+2           Coldplay    1998                  
+3           MCR         2001                  
+```
+
+column을 추가시킬 때는 `ALTER TABLE`을 사용한다.
+
+
+
 2. 읽기
 
 ```sqlite
