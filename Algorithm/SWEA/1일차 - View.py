@@ -29,10 +29,10 @@ import sys
 sys.stdin = open("ViewInput.txt","r")
 
 def getMax (idx) :
-    tmax = height[idx-2]
-    if tmax < height[idx-1]: tmax = heights[idx-1]
-    if tmax < height[idx+1]: tmax = heights[idx+1]
-    if tmax < height[idx+2]: tmax = heights[idx+2]
+    tmax = heights[idx-2]
+    if tmax < heights[idx-1]: tmax = heights[idx-1]
+    if tmax < heights[idx+1]: tmax = heights[idx+1]
+    if tmax < heights[idx+2]: tmax = heights[idx+2]
     return tmax
 
 TC = 10

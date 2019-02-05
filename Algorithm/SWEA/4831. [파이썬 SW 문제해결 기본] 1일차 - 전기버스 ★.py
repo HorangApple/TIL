@@ -37,7 +37,9 @@ for tc in range(1,T+1) :
     K,N,M = map(int, input().split())
     charging_station = list(map(int, input().split()))
     stations = [0] * N
-
+    for i in range(M):
+        stations[charging_stations[i]] = 1
+        
     cnt = cur = 0
     while(True) :
         pre=cur
@@ -54,4 +56,4 @@ for tc in range(1,T+1) :
             if cur == pre :
                 cnt = 0
                 break
-print("#%d" %tc, cnt)
+    print("#%d" %tc, cnt)

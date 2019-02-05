@@ -1,38 +1,38 @@
 import sys
 sys.stdin = open("input.txt","r")
 
-T = 10
+c = int(input())
 
-def goAround(N,K,maxObj,str):
-    for j in range(N, 0, -1):
-        for i in range(N - j + 1):
-            for k in range(j // 2):
-                a = i + k
-                b = i + j - k- 1
-                if str[K][a] != str[K][b]:
-                    break
-            else:
-                if maxObj < j:
-                    maxObj = j
+dx = [1,0,-1,0]
+dy = [0,1,0,-1]
+direction = 0
 
-            for k in range(j // 2):
-                a = i + k
-                b = i + j - k - 1
-                if str[a][K] != str[b][K]:
-                    break
-            else:
-                if maxObj < j:
-                    maxObj = j
-    if K==N-1:
-        return maxObj
-    else:
-        return goAround(N,K+1,maxObj,str)
+def detect (i,j,mapInfo,direction):
+    x = j+dx[direction]
+    y = i+dy[direction]
+    dot1 = mapInfo[y][x]
+    dot2 = mapInfo[y+1][x+1]
+    if dot1 =='.' and dot2 == '.' :
+        mapInfo[i][j] = '#'
+        dot1 = '#'
+        dot2 = '#'
+    return mapInfo
 
-for i in range(T):
-    N = 100
-    NC = input()
-    strlist = [input() for _ in range(N)]
-    result =""
-
-    print(f'#{NC} {goAround(N, 0, 0, strlist)}')
+def solution(h,w,mapInfo, cnt):
+    n = mapInfo.count('.')
+    if n%3 != 0 :
+        return cnt
+    if n == 0 :
+        return cnt
+    for j in range(w):
+        if mapInfo[h-1][j] != '#' and mapInfo [h-1][j] == '.':
+            detect(i,j,mapInfo,0)
+            
+                       
+for i in range(c):
+    # h는 세로 w는 가로
+    h, w = map(int,input().split())
+    mapInfo = [list(input().split()) for _ in range(h)]
+    cnt = 0
+    print(f'{solution(h,w,mapInfo,cnt)}')
 

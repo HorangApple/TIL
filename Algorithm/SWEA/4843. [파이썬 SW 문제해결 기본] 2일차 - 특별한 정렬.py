@@ -38,3 +38,26 @@ for i in range(T):
     # 큰 수와 작은 수를 번갈아 정렬
     # ex. 10 1 9 2 8 3 7 4 6 5
     print(f'#{i+1} {" ".join(result[:10])}')
+
+    # 선생님 코드
+    
+TC = int(input())
+
+for tc in range(1, TC + 1):
+    N = int(input())
+    nums = list(map(int, input().split()))
+
+    for i in range(10):
+        minI = maxI = i
+        if i % 2 == 0:
+            for j in range(i + 1, N):
+                if nums[maxI] < nums[j] : maxI = j
+            nums[i], nums[maxI] = nums[maxI], nums[i]
+        else:
+            for j in range(i + 1, N):
+                if nums[minI] > nums[j] : minI = j
+            nums[i], nums[minI] = nums[minI], nums[i]
+
+    print("#%d"%tc, end=' ')
+    for i in range(10) : print(nums[i], end=' ')
+    print()
