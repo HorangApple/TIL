@@ -423,9 +423,9 @@ def search(keyword):
     """
     cur = db.cursor() # DB 조작을 할 수 있는 커서를 만든다.
     cur.execute("SELECT*FROM users WHERE last_name IS '{}'".format(keyword)) # SQL문 실행
-    data = cur.fetchall() # 데이터의 구조 : [(),(),...]
+    data = cur.fetchall() # 데이터의 구조 : [(),(),...], execute한 것을 한꺼번에 가지고 온다.
     cur.execute("SELECT COUNT(*) FROM users WHERE last_name == '{}'".format(keyword))
-    total = cur.fetchone() # 데이터의 구조 : [(),(),...]
+    total = cur.fetchone() # 데이터의 구조 : [()], execute한 것을 하나만 가지고 온다.
    
     # 1. 해당 검색 결과의 '수'를 출력하고,
     print("'{}'씨 성을 가진 사람은 {}명입니다.".format(keyword,total[0]),"명단은 다음과 같습니다.")
@@ -532,7 +532,7 @@ def ask():
     
     return redirect('/') # 다시 index 페이지로 돌아감, index.html로 직접 render를 할 수 있겠지만 디자인 패턴 상으로 redirect로 사용하는게 좋다.
 
-@app.route("/delete/<int:id>")
+@app.route("/delete/<int:id>") # id 값을 받으면 int로 형변환
 def delete(id):
     # 특정 데이터 레코드를 지워준다.
     # DELETE FROM questions WHERE id == 1
@@ -588,3 +588,143 @@ sqlite> SELECT * FROM quest;
 2|ㅇㅇ
 ```
 
+
+
+# python과 함께 2 - 190207
+
+*app.py*
+
+```python
+from flask import Flask,render_template, request, redirect
+import sqlite3
+
+app = Flask(__name__)
+# db = sqlite3.connect('board.db') 여기서 선언하게 되면 thread 오류가 출력된다. main의 db와 def 안의 db는 서로 thread가 다르다. multitread를 지원하지 않는 sqlite이기 때문에 오류가 발생한다.
+
+@app.route('/')
+def index():
+    """DB에 저장된 모든 글들을 보여준다"""
+    # 1. DB에 접속하여
+    db = sqlite3.connect('board.db') 
+    c = db.cursor()
+    sql = "SELECT*FROM articles"
+    c.execute(sql)
+    # 2. 저장된 모든 글들을 가져온다.(fetchall())
+    data = c.fetchall()
+    # 3. index.html에 넣어서 보여준다.
+    return render_template('index.html',data=data)
+    
+@app.route('/create')
+def create():
+    """ index 페이지에서 보낸 정보를 받아, DB에 저장 """
+    title=request.args.get('title') #유저가 요청을 보낸 정보를 담고 있음, {'title':'제목','content':'내용'}
+    content=request.args.get('content')
+    # sqlite3를 활용하여, 제목과 내용을 DB에 저장한다.
+    # DB 접속, open()함수와 같은 역할, bash에서는 sqlite3
+    # /// 3개는 상대경로를 의미
+    db = sqlite3.connect('board.db') 
+    # 1. 커서를 생성
+    c = db.cursor()
+    # 2. sql 실행
+    sql = "INSERT INTO articles (title,content) VALUES ('{}', '{}')".format(title,content)
+    c.execute(sql)
+    # 3. commit
+    # race condition를 막기위해 접속을 제한할 수 있다. 
+    # 그것이 commit의 역할이고 commit을 통해 정확한 정보를 반영한다.
+    db.commit()
+    
+    return redirect('/')
+
+@app.route("/delete/<int:article_id>")
+def delete(article_id):
+    """ article_id에 저장된 id 값을 가진 레코드를 지운다. """
+    db = sqlite3.connect('board.db') 
+    c = db.cursor()
+    sql = "DELETE FROM articles WHERE id = {}".format(article_id)
+    c.execute(sql)
+    db.commit() # db 수정이 가해지면 commit, 그렇지 않으면 fetchall/fetchone
+    return redirect('/')
+    
+@app.route("/edit/<int:article_id>")
+def edit(article_id):
+    """ 글을 편집할 수 있는 페이지를 보여준다. """
+    # 1. 편집하고자하는 글을 불러온다.
+    # 2. form에 불러온 글을 넣는다.
+    db = sqlite3.connect('board.db') 
+    c = db.cursor()
+    sql = "SELECT * FROM articles WHERE id = {}".format(article_id)
+    c.execute(sql)
+    article = c.fetchone() # fetchall과 다르게 하나만 들고옴
+    
+    return render_template('edit.html',article=article)
+    
+@app.route("/update/<int:article_id>")
+def update(article_id):
+    """ edit 페이지에서 보낸 내용을 실제 DB에 적용한다. (수정) """
+    title = request.args.get('title')
+    content=request.args.get('content')
+    
+    db = sqlite3.connect('board.db') 
+    c = db.cursor()
+    sql = "UPDATE articles SET title = '{}', content = '{}' WHERE id = '{}'".format(title,content,article_id)
+    c.execute(sql)
+    db.commit()
+    return redirect('/')
+```
+
+
+
+*templates/index.html*
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>게시판</title>
+</head>
+<body>
+    <h1>게시판</h1>
+    <form action="/create">
+        제목 : <input type="text" name="title"/>
+        내용 : <input type="text" name="content"/>
+        <input type="submit" value="Submit"/>
+    </form>
+    {% for d in data %}
+        <p>
+            제목 : {{ d[1] }}, 내용 : {{ d[2] }}
+            <a href="/delete/{{ d[0] }}">[삭제]</a>
+            <a href="/edit/{{ d[0] }}">[수정]</a>
+        </p>
+    {% endfor %}
+</body>
+</html>
+```
+
+<img src = "images/image 007.png">
+
+*templates/edit.html*
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>게시판</title>
+</head>
+<body>
+    <h1>게시판</h1>
+    <form action="/update/{{ article[0] }}">
+        제목 : <input type="text" name="title" placeholder="{{ article[1] }}"/>
+        내용 : <input type="text" name="content" value="{{ article[2] }}"/>
+        <input type="submit" value="Submit"/>
+    </form>
+</body>
+</html>
+```
+
+<img src = "images/image 008.png">
