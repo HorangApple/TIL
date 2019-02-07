@@ -90,6 +90,3 @@ def delete(article_id):
     c.execute(sql)
     db.commit()
     return redirect('/articles')
-    
-    
-app.run(debug=True)
