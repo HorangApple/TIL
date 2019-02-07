@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+<!-- Start: injected by Adguard -->
+<script src="//local.adguard.com/adguard-ajax-api/injections/content-script.js?ts=63685161965937&amp;domain=vfs-gce-ae-394-1.c9.io&amp;mask=111" nonce="6eb46244d3094a20bc273625997adc88" type="text/javascript"></script>
+<script src="//local.adguard.com/adguard-ajax-api/injections/userscripts.js?ts=63685161963476&name=AdGuard%20Popup%20Blocker&name=Adguard%20Assistant" nonce="6eb46244d3094a20bc273625997adc88" type="text/javascript"></script>
+
+<!-- End: injected by Adguard -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css')}}">
+    <title>새 글 생성</title>
+</head>
+<body>
+    <div>
+        <header class="font-nanum-Myeongjo">
+            <h1>새 글 생성</h1>
+        </header>
+    </div>
+    <div class = "font-nanum-Gothic">
+        <form action="/articles/create" method="get">
+            <p class = 'mb-1'>제목</p>
+            <p><input class="form-control" type="text" name="title"/></p>
+            <p class = 'mb-1'>글쓴이</p>
+            <p><input class="form-control" type="text" name="author"/></p>
+            <p class = 'mb-1'>내용</p>
+            <p><textarea class="form-control" rows="15" type="text" name="content"></textarea></p>
+            <input type="hidden" name="created_at" value="{{time}}" />
+            <p><input class="btn btn-primary my-1 float-right" type="submit" value="Submit"/></p>
+        </form>
+    </div>
+</body>
+</html>
