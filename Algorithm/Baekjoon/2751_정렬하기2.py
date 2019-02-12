@@ -1,6 +1,6 @@
 import sys
 sys.stdin = open("input.txt","r")
-
+## 병합정렬
 # def merge_sort (arr):
 #    if len(arr)<=1:
 #       return arr
@@ -38,6 +38,7 @@ sys.stdin = open("input.txt","r")
 # for i in merge_sort(arr):
 #    print(i)
 
+# 무식하게 풀기
 TC = int(input())
 arr = [0 for _ in range(2000002)]
 
