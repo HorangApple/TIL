@@ -16,7 +16,7 @@ def search(arr,visited):
 def dfs (arr):
     v=1
     visited.append(v)
-    while(v):
+    while v :
         w=search(arr[v-1],visited)
         if w :
             stack.append(v)

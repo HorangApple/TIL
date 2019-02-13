@@ -17,7 +17,6 @@ def solution (N,M,strlist) :
         result = goAround(strlist[i], M)
         if result :
             return result
-
         column = ""
         for k in range(N):
             column += strlist[k][i]
