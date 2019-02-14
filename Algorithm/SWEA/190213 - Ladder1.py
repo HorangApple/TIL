@@ -18,10 +18,8 @@ for t in range(TC):
     case=int(input())
     road=[list(map(int,input().split())) for _ in range(100)]
     end=0
-    count=0
     for i in road[99]:
         if i==2:
-            end=count
             break
-        count+=1
+        end+=1
     print(f'#{t+1} {go(road,end)}')

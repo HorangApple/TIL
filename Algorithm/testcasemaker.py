@@ -1,0 +1,3 @@
+import random
+
+TC = input()
