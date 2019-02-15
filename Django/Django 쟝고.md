@@ -542,3 +542,28 @@ admin.site.register(Article,ArticleAdmin)
 <img src="images/image 007.png">
 
 `ArticleAdmin` 클래스를 새로 만들어 `Article`의 column 이름들을 튜플 형식으로 list_display에 입력하면 위와 같이 리스트 형식으로 바뀌게 된다.
+
+
+
+*base.html*
+
+```html
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    {% block body %}
+    {% endblock %}
+</body>
+</html>
+```
+
+직접 만든 css를 추가하고 싶다면 `href`에 `static/css/style.css`로 추가한 상태로 진행해야한다. flask같은 경우 `static/css/style.css`를 추가하면 된다.
