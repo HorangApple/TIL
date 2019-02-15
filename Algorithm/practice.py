@@ -1,46 +1,50 @@
 import sys
-sys.stdin = open("input.txt","r")
+sys.stdin = open("input2.txt","r")
 
-def search(arr,visited):
-    for i in arr:
-        if i not in visited and i>0:
-            return i
-    else :
-        return False
+def endsearch(arr):
+    count = 1
+    endlist=[]
+    for i in arr[1:]:
+        result = sum(i)
+        if result == 0:
+            endlist.append(count)
+        count+=1
+    return endlist
 
-def dfs (arr,s,g):
-    v=s
-    visited.append(v)
-    while v :
-        w=search(arr[v-1],visited)
-        if w==g:
-                return 1
-        if w :
-            stack.append(v)
-        while w:
-            visited.append(w)
-            stack.append(w)
-            v=w
-            w=search(arr[v-1],visited)
-            if w==g:
-                return 1
-        v=stack.pop()
-    return 0
+def backsearch(arr,s):
+    for i in range(v+1):
+        if i not in visited:
+            back=arr[i][s]
+            if back>0:
+                return i
+    return False
 
-TC = int(input())
-for i in range(TC) :
-    v,e=map(int,input().split())
-    lines=[]
-    for _ in range(e):
-        line=list(map(int,input().split()))
-        lines.append(line)
-    s,g=map(int,input().split())
+def terminator (arr,v):
+    start=v
+    while arr[start] != []:
+        v=start
+        back = backsearch(arr,v)
+        while back :
+            back = backsearch(arr,v)
+            if back !=False :
+                v=back
+        arr[v].clear()
+        visited.append(v)
 
+TC = 10
+for t in range(TC) :
+    v,e=map(int,input().split())  
+    line=list(map(int,input().split()))
     visited = []
-    stack = [0]
-    arr=[[0 for _ in range(v)] for _ in range(v)]
-    for x,y in lines :
-        arr[x-1][y-1]=y
-        arr[y-1][x-1]=x
-
-    print(f'#{i+1} {dfs(arr,s,g)}')
+    arr=[[0 for _ in range(v+1)] for _ in range(v+1)]
+    for i in range(e) :
+        x=line[i*2]
+        y=line[i*2+1]
+        arr[x][y]=y
+    endlist=endsearch(arr)
+    for i in endlist:
+        terminator(arr,i)
+    print(f'#{t+1}',end=" ")
+    for i in visited:
+        print(f'{i}',end=" ")
+    print("")
