@@ -313,6 +313,8 @@ cf. 랜덤 이쁜 이미지 : https://picsum.photos/
 
 
 
+### urls 분리
+
 `intro/urls.py`의 `path`가 많아지면 관리하기가 힘드니 새로운 문지기를 추가해보자.
 
 *intro/urls.py*
@@ -579,7 +581,7 @@ admin.site.register(Article,ArticleAdmin)
 
 
 
-### url 별명 짓기
+### urls 별명 짓기
 
 기존에 `'<int:id>/'`처럼 사용한 것을 별도의 별명을 지어 작성한다. 이를 위에서는 아래의 예시와 같이 작성해야한다.
 
@@ -628,7 +630,11 @@ urlpatterns = [
 
 
 
-### 여러
+### 여러 app이 있는 경우
+
+`templates`폴더에 있는 html파일들을 한 단계 이상의 하위 폴더 안에 넣어야 한다. 그래야 다른 app의 html과 이름이 겹쳐서 오류가 발생하는 것을 막을 수 있다.
+
+migration&migrate는 폴더 위치에 상관없이 `manage.py`로 선언하면 자동으로 DB가 생성된다.
 
 # crud 연습
 
@@ -681,6 +687,8 @@ def pastlife(request):
     return render(request,'pl.html',contents)
 ```
 
+
+
 *pastlife/models.py*
 
 ```python
@@ -697,6 +705,8 @@ class Job(models.Model):
         return f"<{self.name}: {self.job}>"
 ```
 
+
+
 *bonbon/urls.py*
 
 ```python
@@ -708,10 +718,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.index),
     path('pastlife/',views.pastlife),
+    path('articles/',include('articles.urls')) # url 전달
 ]
 ```
 
-*templates/index.html*
+
+
+*pastlife/templates/pastlife/index.html*
 
 ```html
 {% extends 'base.html' %}
@@ -726,7 +739,9 @@ urlpatterns = [
 {% endblock %}
 ```
 
-*templates/pl.html*
+
+
+*pastlife/templates/pastlife/pl.html*
 
 ```html
 {% extends 'base.html' %}
@@ -735,6 +750,8 @@ urlpatterns = [
 <h1>{{ name }}님의 전생은 {{ job }}입니다.</h1>
 {% endblock %}
 ```
+
+
 
 *articles/views.py*
 
@@ -789,6 +806,8 @@ def delete(request,id):
     return redirect('articles:index')
 ```
 
+
+
 *articles/urls.py*
 
 ```python
@@ -811,5 +830,125 @@ urlpatterns = [
 # 5. /articles/1/edit -> 글을 편집
 # 6. /articles/1/update -> 글을 수정
 # 7. /articles/1/delete -> 글을 삭제
+```
+
+
+
+*articles/model.py*
+
+```python
+from django.db import models
+
+# Create your models here.
+class Articles(models.Model):
+    title=models.TextField()
+    content=models.TextField()
+    def __repr__(self):
+        return f"{self.title}: {self.content}"
+    def __str__(self):
+        return f"<{self.title}: {self.content}>"
+```
+
+
+
+*articles/templates/articles/detail.html*
+
+```html
+{% extends 'articles/base.html' %}
+
+{% block body %}
+<div class="jumbotron text-center">
+  <h1 class="display-4">{{ title }}</h1>
+  <p></p>
+  <hr class="my-4">
+  <div class='float-right'>
+    <a class='btn btn-primary'role="button" href="{% url 'articles:index' %}">뒤로가기</a>
+    <a class='btn btn-primary'role="button" href="{% url 'articles:edit' id %}">수정</a>
+    <a class='btn btn-danger'role="button" href="{% url 'articles:delete' id %}">삭제</a> 
+</div>
+</div>
+<p>{{ content }}</p>
+{% endblock %}
+```
+
+
+
+*articles/templates/articles/edit.html*
+
+```html
+{% extends 'articles/base.html' %}
+
+{% block body %}
+<div class="jumbotron text-center">
+  <h1 class="display-4">글 수정</h1>
+  <p></p>
+  <hr class="my-4">
+</div>
+
+<form action="/articles/{{ id }}/update/">
+  <div class="form-group">
+    <label>제목</label>
+    <input type="text" class="form-control" name="title" value={{ title }} />
+  </div>
+  <div class="form-group">
+    <label>내용</label>
+    <textarea class="form-control" name="content" rows='5'>{{ content }}</textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}
+```
+
+
+
+*articles/templates/articles/index.html*
+
+```html
+{% extends 'articles/base.html' %}
+
+{% block body %}
+<div class="jumbotron text-center">
+  <h1 class="display-4">게시판</h1>
+  <hr class="my-4">
+  <a class="btn btn-primary btn-lg float-right" href="{% url 'articles:new' %}" role="button">글쓰기</a>
+</div>
+<div class="list-group">
+{% for i in data %}
+<div>
+    <a href="{% url 'articles:detail' i.id %}"class="list-group-item list-group-item-action">{{i.id}}  {{i.title}}</a>
+</div>
+
+{% endfor %}
+</div>
+{% endblock %}
+```
+
+
+
+*articles/templates/articles/new.html*
+
+```html
+{% extends 'articles/base.html' %}
+
+{% block body %}
+<div class="jumbotron text-center">
+  <h1 class="display-4">글쓰기</h1>
+  <p></p>
+  <hr class="my-4">
+</div>
+
+<form action="{% 'articles:create' %}">
+  <div class="form-group">
+    <label>제목</label>
+    <input type="text" class="form-control" name="title"/>
+  </div>
+  <div class="form-group">
+    <label>내용</label>
+    <textarea class="form-control" name="content" rows='5'></textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% endblock %}
 ```
 
