@@ -365,7 +365,10 @@ class Article(models.Model):
     # id는 따로 선언하지 않으면 알아서 primary key로 생성
     title = models.TextField()
     content = models.TextField()
-    
+    def __repr__(self):
+        return f"{self.title}: {self.content}"
+    def __str__(self):
+        return f"<{self.title}: {self.content}>"
 ```
 
 
@@ -377,7 +380,9 @@ Migrations for 'articles':
     - Create model Article
 ```
 
-`migrations`폴더에 `0001_initial.py`가 생성되었고 이것을 열어보면 없던 `id`가 생성되어있다. 
+`migrations`폴더에 `0001_initial.py`가 생성되었고 이것을 열어보면 없던 `id`가 생성되어있다.  Django에 DB설계도를 보내는 역할을 수행한다.
+
+`python manage.py sqlmigrate articles 0001`를 입력하면 SQL문으로 어떻게 선언했는지 출력해준다.
 
 
 
@@ -404,7 +409,7 @@ Running migrations:
   Applying sessions.0001_initial... OK
 ```
 
-`python manage.py migrate`를 통해 프로젝트 폴더 `ORM`에 `db.sqlite3`를 생성한다.
+`python manage.py migrate`를 통해 프로젝트 폴더 `ORM`에 `db.sqlite3`를 생성하여 DB를 만든다.
 
 
 
@@ -427,7 +432,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 'Hacking'
 ```
 
-`python manage.py shell`로 python shell을 열고 `model.py`의 `Article` 클래스를 사용할 수 있도록 import 한다. 이후 `article`라는 인스턴스 객체를 만들면서 `title="Happy",content="Hacking"`을 초기화 시킨다. 
+`python manage.py shell`로  Django shell을 열고 `model.py`의 `Article` 클래스를 사용할 수 있도록 import 한다. 이후 `article`라는 인스턴스 객체를 만들면서 `title="Happy",content="Hacking"`을 초기화 시킨다. 
 
 `article.save()`를 하면 이 내용으로 db에 저장이 된다. 내용을 보고 싶다면 `변수=Article.objects.all()`이후의 과정으로 들여다 보면 된다.
 
@@ -436,18 +441,21 @@ Type "help", "copyright", "credits" or "license" for more information.
 ```bash
 ----------등록----------
 >>> a = Article(title="하하핫 두번째 글이다.",content="냉무")
+# Article.object.create(title="하하핫 두번째 글이다.",content="냉무")와도 같음
 >>> a.save()
 ----------검색----------
->>> a = Article.objects.filter(title="Happy").first()
+>>> a = Article.objects.filter(title="Happy").first() # get과 다르게 filter는 없으면 None 반환
 >>> a.title
 'Happy'
 >>> a.content
 'Hacking'
->>> a2 = Article.objects.get(pk=1)
+>>> a2 = Article.objects.get(pk=1) # 없으면 오류 발생
 >>> a2.title
 'Happy'
 >>> a2.content
 'Hacking'
+# 모든 데이터를 검색할 때는 Article.objects.all(), 
+# 요소 하나씩 검색할 때는 Article.objects.all()[i].title
 ----------삭제----------
 >>> a2.delete()
 (1, {'articles.Article': 1})
@@ -470,7 +478,8 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> article.save()
 >>> articles=Article.objects.all()
 >>> articles[0]
-<Article: Article object (3)>
+이제 곧 수업 끝남: 좀만 더 화이팅
+# __repr__를 선언하지 않으면 <Article: Article object (3)>로 출력
 >>> articles[0].id
 3
 >>> articles[0].content
@@ -567,3 +576,240 @@ admin.site.register(Article,ArticleAdmin)
 ```
 
 직접 만든 css를 추가하고 싶다면 `href`에 `static/css/style.css`로 추가한 상태로 진행해야한다. flask같은 경우 `static/css/style.css`를 추가하면 된다.
+
+
+
+### url 별명 짓기
+
+기존에 `'<int:id>/'`처럼 사용한 것을 별도의 별명을 지어 작성한다. 이를 위에서는 아래의 예시와 같이 작성해야한다.
+
+*urls.py*
+
+```python
+from django.urls import path
+from . import views
+app_name='articles' # url별명에 대한 namespace 생성
+urlpatterns = [
+    path('',views.index,name='index'),
+    path('new/',views.new,name='new'),
+    path('create/',views.create,name='create'),
+    path('<int:id>/',views.detail,name='detail'),
+    path('<int:id>/edit/',views.edit,name='edit'),
+    path('<int:id>/delete/',views.delete,name='delete'),
+    path('<int:id>/update/',views.update,name='update'),
+]
+```
+
+`app_name`을 선언하여 url별명에 대한 namespace를 생성한다. 이후 `path`마다 요소로 `name` 값을 넣어 별명을 지정한다.
+
+*index.html*
+
+```html
+{% extends 'articles/base.html' %}
+
+{% block body %}
+<div class="jumbotron text-center">
+  <h1 class="display-4">게시판</h1>
+  <hr class="my-4">
+  <a class="btn btn-primary btn-lg float-right" href="{% url 'articles:new' %}" role="button">글쓰기</a>
+</div>
+<div class="list-group">
+{% for i in data %}
+<div>
+    <a href="{% url 'articles:detail' i.id %}"class="list-group-item list-group-item-action">{{i.id}}  {{i.title}}</a>
+</div>
+
+{% endfor %}
+</div>
+{% endblock %}
+```
+
+위와 같이 html에서 사용할 때는 `"{% url 'articles:new' %}"`처럼 불러올 수 있다. 만약 id값과 같이 전달받아야하는 값이 있다면 `"{% url 'articles:detail' i.id %}"`처럼 뒤에 한 칸 띄우고 값을 이어서 적으면 된다.
+
+
+
+### 여러
+
+# crud 연습
+
+https://github.com/joke2k/faker
+
+Faker 패키지는 임의의 데이터를 만들어서 입력해준다.
+
+*pastlife/views.py*
+
+```python
+from django.shortcuts import render
+from faker import Faker
+from .models import Job # 동일 패키지이니까 .만 찍으면 된다.
+import requests
+
+# Create your views here.
+def index(request):
+    return render(request, 'index.html')
+    
+def pastlife(request):
+    # 1. index에서 넘어온 이름을 받고
+    name=request.GET.get('name')
+    
+    # 만약 해당 이름이 DB에 저장되어 있다면, DB에 저장된 값을 가져온다.
+    # 없다면, DB에 추가하고 faker를 통해 fake job을 만들어 DB에 추가하고 해당 값을 job에 저장한다.
+
+    # person=Job.objects.get(name=name) # 없으면 오류 발생
+    person=Job.objects.filter(name=name).first() # 없으면 None 반환
+    if person:
+        job = person.job
+    else:
+        # 2. faker를 통해 가짜 전생을 생성하여
+        fake=Faker('ko_KR')
+        job=fake.job()
+        new_person=Job(name=name,job=job)
+        new_person.save()
+    # 3. pl.html에 돌려준다.
+    naver_headers = {
+            'X-Naver-Client-Id': '키값',
+            'X-Naver-Client-Secret': '키값'
+        }
+    urlNaver=f"https://openapi.naver.com/v1/search/image?query={job}"
+    result=requests.get(urlNaver,headers=naver_headers).json()
+    image=result.get('items')[0].get('link')
+    
+    url=f"http://api.giphy.com/v1/gifs/search?api_key=키값&q={job}&limit=1&lang=ko"
+    result=requests.get(url).json()
+    gif=result.get('data')[0].get('images').get('original').get('url')
+    contents={'name':name,'job':job,'gif':gif,'image':image}
+    return render(request,'pl.html',contents)
+```
+
+*pastlife/models.py*
+
+```python
+from django.db import models
+
+# Create your models here.
+class Job(models.Model):
+    name=models.TextField()
+    job=models.TextField()
+    
+    def __repr__(self): # Job.objects.all() 일 때의 출력
+        return f"{self.name}: {self.job}"
+    def __str__(self):	# print()에 사용 될 때의 출력
+        return f"<{self.name}: {self.job}>"
+```
+
+*bonbon/urls.py*
+
+```python
+from django.contrib import admin
+from django.urls import path
+from pastlife import views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('',views.index),
+    path('pastlife/',views.pastlife),
+]
+```
+
+*templates/index.html*
+
+```html
+{% extends 'base.html' %}
+
+{% block body %}
+<h1>전생앱</h1>
+<p>전생을 알려드립니다.</p>
+<form action='/pastlife/'>
+    <input type="text" name="name"/>
+    <input type="submit" value="Submit"/>
+</form>
+{% endblock %}
+```
+
+*templates/pl.html*
+
+```html
+{% extends 'base.html' %}
+
+{% block body %}
+<h1>{{ name }}님의 전생은 {{ job }}입니다.</h1>
+{% endblock %}
+```
+
+*articles/views.py*
+
+```python
+from django.shortcuts import render,redirect
+from .models import Articles
+# Create your views here.
+# 1. /articles -> 모든 글을 보여주는 곳
+# 2. /articles/1 -> 글 상세하게 보는 곳
+# 3. /articles/new -> 새 글을 작성
+# 4. /articles/create -> 새 글을 저장
+# 5. /articles/1/edit -> 글을 편집
+# 6. /articles/1/update -> 글을 수정
+# 7. /articles/1/delete -> 글을 삭제
+
+def index(request):
+    data=Articles.objects.all()
+    print(data)
+    return render(request,'articles/index.html',{'data':data})
+    
+def new(request):
+    return render(request,'articles/new.html')
+    
+def create(request):
+    title=request.GET.get('title')
+    content=request.GET.get('content')
+    data=Articles(title=title,content=content)
+    data.save()
+    return redirect('articles:detail',data.id)
+
+def detail(request,id):
+    data=Articles.objects.filter(id=id).first()
+    return render(request,'articles/detail.html',{'id':id,'title':data.title,'content':data.content})
+    
+def update(request,id):
+    title=request.GET.get('title')
+    content=request.GET.get('content')
+    data=Articles.objects.filter(id=id).first()
+    data.title=title
+    data.content=content
+    data.save()
+    return redirect('articles:index',data.id)
+
+def edit(request,id):
+    data=Articles.objects.filter(id=id).first()
+    return render(request,'articles/edit.html',{'id':data.id,'title':data.title,'content':data.content})
+    
+def delete(request,id):
+    data=Articles.objects.filter(id=id).first()
+    print(data)
+    data.delete()
+    return redirect('articles:index')
+```
+
+*articles/urls.py*
+
+```python
+from django.urls import path
+from . import views
+app_name='articles' # url별명에 대한 namespace 생성
+urlpatterns = [
+    path('',views.index,name='index'),
+    path('new/',views.new,name='new'),
+    path('create/',views.create,name='create'),
+    path('<int:id>/',views.detail,name='detail'),
+    path('<int:id>/edit/',views.edit,name='edit'),
+    path('<int:id>/delete/',views.delete,name='delete'),
+    path('<int:id>/update/',views.update,name='update'),
+]
+# 1. /articles -> 모든 글을 보여주는 곳
+# 2. /articles/1 -> 글 상세하게 보는 곳
+# 3. /articles/new -> 새 글을 작성
+# 4. /articles/create -> 새 글을 저장
+# 5. /articles/1/edit -> 글을 편집
+# 6. /articles/1/update -> 글을 수정
+# 7. /articles/1/delete -> 글을 삭제
+```
+
