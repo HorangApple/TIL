@@ -367,6 +367,7 @@ class Article(models.Model):
     # id는 따로 선언하지 않으면 알아서 primary key로 생성
     title = models.TextField()
     content = models.TextField()
+    # shell에서 표시되는 내용 정의, migrate를 한 이후에도 수정해도 됨
     def __repr__(self):
         return f"{self.title}: {self.content}"
     def __str__(self):
@@ -434,7 +435,9 @@ Type "help", "copyright", "credits" or "license" for more information.
 'Hacking'
 ```
 
-`python manage.py shell`로  Django shell을 열고 `model.py`의 `Article` 클래스를 사용할 수 있도록 import 한다. 이후 `article`라는 인스턴스 객체를 만들면서 `title="Happy",content="Hacking"`을 초기화 시킨다. 
+`python manage.py shell`로  Django shell을 열고 `model.py`의 `Article` 클래스를 사용할 수 있도록 import 한다. 이후 `article`라는 인스턴스 객체를 만들면서 `title="Happy",content="Hacking"`을 초기화 시킨다.
+
+반면  `python manage.py dbshell`로 SQLite shell을 열수 있어 직접 sql을 입력할 수 있다.
 
 `article.save()`를 하면 이 내용으로 db에 저장이 된다. 내용을 보고 싶다면 `변수=Article.objects.all()`이후의 과정으로 들여다 보면 된다.
 
@@ -628,6 +631,8 @@ urlpatterns = [
 
 위와 같이 html에서 사용할 때는 `"{% url 'articles:new' %}"`처럼 불러올 수 있다. 만약 id값과 같이 전달받아야하는 값이 있다면 `"{% url 'articles:detail' i.id %}"`처럼 뒤에 한 칸 띄우고 값을 이어서 적으면 된다.
 
+`views.py`의 `render`안에 사용할 때는 html 파일을 불러오기위해서 일반적인 파일 경로로 작성해야한다. 반면 `redirect`를 사용할 때는 웹 주소를 넣는 것이므로 이 때는 `'articles:detail'`형식으로 작성하면 된다.
+
 
 
 ### 여러 app이 있는 경우
@@ -635,6 +640,152 @@ urlpatterns = [
 `templates`폴더에 있는 html파일들을 한 단계 이상의 하위 폴더 안에 넣어야 한다. 그래야 다른 app의 html과 이름이 겹쳐서 오류가 발생하는 것을 막을 수 있다.
 
 migration&migrate는 폴더 위치에 상관없이 `manage.py`로 선언하면 자동으로 DB가 생성된다.
+
+
+
+### 데이터베이스의 관계(테이블 간의 관계)
+
+1:1를 예시로 개인-주민등록증, 남편-부인을 들 수 있고 1:N (has many, belongs to)는 게시글-댓글, 학급-학생 등을 예시로 들 수 있다. M:N은 수강신청(학생-수업)을 예시로 들 수 있다. 물론 아예 관계가 없는 경우도 있다.
+
+구현하려는 게시글과 댓글은 1:N 관계를 갖고 있기 때문에 테이블로 구현을 한다면  N의 테이블에 1에 대한 정보(primary key)를 담고 있어야한다. 즉, foreign key를 갖고 있어야 한다.
+
+*models.py*
+
+```python
+from django.db import models
+
+# Create your models here.
+class Articles(models.Model):
+    title=models.TextField()
+    content=models.TextField()
+    def __repr__(self):
+        return f"{self.title}: {self.content}"
+    def __str__(self):
+        return f"<{self.title}: {self.content}>"
+        
+class Comment(models.Model):
+    content=models.TextField()
+    # CASCADE는 글이 삭제되면 같이 삭제 되는 필수 옵션
+    article=models.ForeignKey(Article, on_delete-models.CASCADE)
+```
+
+
+
+```bash
+In [4]: Articles.objects.all()  
+Out[4]: <QuerySet [<18번글, 제목: 아아하항>, <19번글, 시불쟝/: 흐흫ㅎ극흑...>]>
+
+In [5]: article1=Articles.objects.get(pk=18)                                                  
+
+In [6]: comment=Comment(content="첫번째 댓글",article=article1)                               
+
+In [7]: comment      
+Out[7]: <첫번째 댓글>
+
+In [8]: comment.save()                                                                        
+
+In [9]: Comment.objects.first()      
+Out[9]: <첫번째 댓글>
+
+In [10]: Comment.objects.first().content       
+Out[10]: '첫번째 댓글'
+
+In [11]: Comment.objects.first().article       
+Out[11]: <18번글, 제목: 아아하항>
+
+In [12]: Comment.objects.first().article.content                   
+Out[12]: '아아하항'
+
+In [13]: Articles.objects.first().comment_set.all()                                    
+Out[13]: <QuerySet [<첫번째 댓글>]>
+
+In [16]: comment=Comment(content="두번째 글의 첫번째 댓글",article_id=19)                     
+
+In [17]: comment.save()                                                                       
+
+In [18]: Comment.objects.all()[1]                                                       
+Out[18]: <두번째 글의 첫번째 댓글>
+
+In [19]: Comment.objects.all()[1].article                                               
+Out[19]: <19번글, 시불쟝/: 흐흫ㅎ극흑...>
+
+In [20]: Comment.objects.all()[1].article_id                                           
+Out[20]: 19
+```
+
+id 값을 넣는 방법은 두 가지가 있다. 하나는 객체를 찾아와 넣어서 django가 알아서 id를 입력해주는 것과 `ForeignKey의 이름_id`를 입력해주는 방법이 있다. 전자는 django가 자동으로 만들어준 것이다.
+
+만약 `models.py`의 ForeignKey의 옵션으로 `related_name`를 추가시켰다면 `ForeignKey의 이름_id` 아닌 `related_name`로 정의된 이름으로 사용해도 된다.
+
+```python
+In [2]: Articles.objects.first().comments                                               
+Out[2]: <django.db.models.fields.related_descriptors.create_reverse_many_to_one_manager.<locals>.RelatedManager at 0x7f8e5414b6d8>
+
+In [3]: Articles.objects.first().comments.all()                                         
+Out[3]: <QuerySet [<첫번째 댓글>]>
+```
+
+
+
+`Articles`입장에서 검색을 할 때 django가 자동으로 `Articles`에도 `Comment`의 정보를 입력해주지 않았다면 다음과 같이 일일이 입력해야한다.
+
+```python
+Articles.objects.get(pk=Comment.objects.first().article_id)
+```
+
+반면 `Comment`입장에서는 이렇게 입력할 수 있다.
+
+```python
+Comment.objects.filter(article_id=Articles.objects.first().id)   
+```
+
+
+
+### django_extensions, ipython
+
+앞으로 django 설치할 때 같이 설치하는 것이 좋다.
+
+```bash
+$ pip install django_extensions ipython
+```
+
+이후 `settings.py`에 가서 `INSTALLED_APPS`에 `'django_extensions'`를 추가시킨다. 그러면 `python manage.py shell`를 사용할 때 jupyter notebook 같은 인터페이스로 변경된다.
+
+`python manage.py shell_plus`를 입력하면 내가 갖고 있는 모든 환경이 import 되어 shell이 구동된다.
+
+
+
+### form의 POST 전달
+
+html 태그의 `form`의 `action`에 `method="POST"` 를 설정하면 다음과 같은 오류가 뜬다.
+
+<img src="images/image 010.png"/>
+
+CSRF(Cross-site Request Forgery)는 사용자가 요청하는 정보를 가로챌 수 있는 취약점 중 하나이다. 사용자와 서버 간에 token을 주고 받는데 이는 서버에서 사용자를 구분짓기위해 존재한다. 그러나 사용자와 서버 중간에 프록시를 이용하여 끼여들어 사용자의 토큰을 가져올 수 있다.
+
+예를 들어 form이 GET 방식으로 되어있다면 url로 파라미터를 보내야하는데 이 주소패턴을 이용하여 제 3자가 마음대로 만들 수 있다. 이를 POST로 막을 수 있다.
+
+오류를 없애기위해선 `{% csrf_token %}`를 `form` 태그 안에 넣고 `view.py`에서 값을 받을 때는 `request.POST.get()`방식으로 받아와야한다.
+
+<img src="images/image 011.png">
+
+그러나 위처럼 주석처리 된 value가 토큰이기 때문에 응답 받은 코드에서 빼내서 토큰을 위변조할 수 있다.
+
+
+
+### django template 문법
+
+https://docs.djangoproject.com/en/2.1/ref/templates/builtins/
+
+flask에서 사용했던 jinja template과는 비슷하면서도 다르기 때문에 공식문서를 보며 해결한다.
+
+`models.py`에서 `DateField`로 저장된 값은 html에서 django template로 불러올 때 default로 `mmm. dd, yyyy`형식으로 되어 html의 input의 value에 값을 넣어도 반영이 되지 않는다. 이럴 때는 django template만의 formatting을 이용하여 바꿔야 한다.
+
+```html
+<input type="date" class="form-control" max="2019-12-31" name="birthday" value="{{ student.birthday|date:"Y-m-d"  }}"/>
+```
+
+
 
 # crud 연습
 
@@ -710,7 +861,7 @@ class Job(models.Model):
 *bonbon/urls.py*
 
 ```python
-from django.contrib import admin
+from django.contrib import admin,include
 from django.urls import path
 from pastlife import views
 
@@ -757,7 +908,7 @@ urlpatterns = [
 
 ```python
 from django.shortcuts import render,redirect
-from .models import Articles
+from .models import Articles,Comment
 # Create your views here.
 # 1. /articles -> 모든 글을 보여주는 곳
 # 2. /articles/1 -> 글 상세하게 보는 곳
@@ -783,8 +934,8 @@ def create(request):
     return redirect('articles:detail',data.id)
 
 def detail(request,id):
-    data=Articles.objects.filter(id=id).first()
-    return render(request,'articles/detail.html',{'id':id,'title':data.title,'content':data.content})
+    article=Articles.objects.filter(id=id).first()
+    return render(request,'articles/detail.html',{'article':article})
     
 def update(request,id):
     title=request.GET.get('title')
@@ -804,6 +955,12 @@ def delete(request,id):
     print(data)
     data.delete()
     return redirect('articles:index')
+    
+def comment(request,id):
+    content=request.POST.get('content')
+    comment=Comment(content=content,article_id=id)
+    comment.save()
+    return redirect('articles:detail',id)
 ```
 
 
@@ -844,9 +1001,15 @@ class Articles(models.Model):
     title=models.TextField()
     content=models.TextField()
     def __repr__(self):
-        return f"{self.title}: {self.content}"
+        return f"<{self.id}번글, {self.title}: {self.content}>"
     def __str__(self):
         return f"<{self.title}: {self.content}>"
+        
+class Comment(models.Model):
+    content=models.TextField()
+    article=models.ForeignKey(Articles, on_delete=models.CASCADE)
+    def __repr__(self):
+        return f"<{self.content}>"
 ```
 
 
@@ -858,16 +1021,27 @@ class Articles(models.Model):
 
 {% block body %}
 <div class="jumbotron text-center">
-  <h1 class="display-4">{{ title }}</h1>
+  <h1 class="display-4">{{ article.title }}</h1>
   <p></p>
   <hr class="my-4">
   <div class='float-right'>
     <a class='btn btn-primary'role="button" href="{% url 'articles:index' %}">뒤로가기</a>
-    <a class='btn btn-primary'role="button" href="{% url 'articles:edit' id %}">수정</a>
-    <a class='btn btn-danger'role="button" href="{% url 'articles:delete' id %}">삭제</a> 
-</div>
+    <a class='btn btn-primary'role="button" href="{% url 'articles:edit' article.id %}">수정</a>
+    <a class='btn btn-danger'role="button" href="{% url 'articles:delete' article.id %}">삭제</a> 
+  </div>
 </div>
 <p>{{ content }}</p>
+<hr>
+<h3>댓글</h3>
+<form action="/articles/{{ article.id }}/comment/" method="POST">
+  {% csrf_token %}
+  <input type="text" name="content"/>
+  <input type="submit" value="Submit"/>
+</form>
+{% for comment in article.comments.all %}
+  <p>{{ comment.content }}</p>
+{% endfor  %}
+
 {% endblock %}
 ```
 
