@@ -3,18 +3,14 @@ sys.stdin = open("input.txt","r")
 
 for num in range(10):
     length=int(input())
-    results=[]
     nsMap=[list(map(int,input().split())) for _ in range(100)]
     for i in range(100):
-        result=[]
-        for j in range(100):
-            if nsMap[j][i]>0:
-                result.append(nsMap[j][i])
-        results.append(result)
+        for j in range(i,100):
+            nsMap[i][j],nsMap[j][i]=nsMap[j][i],nsMap[i][j]
     count=0
-    for oneline in results:
+    for oneline in nsMap:
         before=0
-        for i in range(len(oneline)):
+        for i in range(100):
             if oneline[i] == 1:
                 before=1
             elif oneline[i] == 2 and before==1:
