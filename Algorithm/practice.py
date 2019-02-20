@@ -18,10 +18,13 @@ def detect(half):
     else:
         if half%6==1 or half%6==5 :
             return f"{half} {half}"
-        elif (half+1)%6==1 or (half+1)%6==5 :
-            return f"{half-1} {half+1}"
-        else:
+        elif (half+3)%6==1 or (half+3)%6==5 :
             return f"{half-3} {half+3}"
+        else:
+            if half%2!=0:
+                return f"{half-2} {half+2}"
+            else:
+                return f"{half-1} {half+1}"
 
 TC=int(input())
 for _ in range(TC):
