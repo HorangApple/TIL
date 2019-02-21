@@ -16,7 +16,7 @@ def merge(inp,idx):
     length=len(inp)
     if len(inp)<=1:
         return [inp,idx]
-    middle=length//2
+    middle=(length+1)//2
     left=inp[:middle]
     right=inp[middle:]
 
@@ -35,4 +35,5 @@ for num in range(1,TC+1):
     
     print(f'#{num} {result[1][0]}')
 
-# 10개 중 6개
+# 문제에서 i번부터 j번이라고 나와있는데 이 때문에 i+j가 length가 아닌 여기에 +1을 해야 같다
+# 실제 length에 1을 더하냐 마냐에 따라 답이 달라진다.
