@@ -952,7 +952,6 @@ def edit(request,id):
     
 def delete(request,id):
     data=Articles.objects.filter(id=id).first()
-    print(data)
     data.delete()
     return redirect('articles:index')
     
