@@ -6,14 +6,19 @@ w=input()
 
 def fail(w):
     output=[0]
+    check=0
     for i in range(1,len(w)):
         part=w[:i]
-        if i>0 :
-            count=0
-            for j in range(len(part)//2):
-                if part[0:j+1]==part[-1-j:]:
-                    count=len(part[0:j+1])
-            output.append(count)
+        count=0
+        for j in range(len(part)-1):
+            if part[0:j+1]==part[-1-j:]:
+                count=len(part[0:j+1])
+                check=1
+            elif check==0 and not output[i-1]:
+                break
+            else:
+                check=0
+        output.append(count)
     return output
 
 def solution(t,w):

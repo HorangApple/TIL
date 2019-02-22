@@ -1,48 +1,39 @@
-def backtrack(a,k,inp,result,total):
-    c=[False]*2
-    if k==inp:
-        print(result)
-        results.append(result)
-    else:
-        k+=1
-        ncandidates=construct_candidates(c)
-        for i in range(ncandidates):
-            if c[i]:
-                result.append(a[k])
-                total+=a[k]
-            else:
-                result.pop()
-            backtrack(a,k,inp,result,total)
+import sys
+sys.stdin = open("input.txt","r")
 
+t=input()
+w=input()
 
-def construct_candidates(c):
-    c[0]=True
-    c[1]=False
-    return 2
-a=[1,2,3,4,5,6,7,8,9,10]
-result=[]
-results=[]
-backtrack(a,-1,9,result,0)
-print(len(results))
+class KMP:
+    def partial(self, pattern):
+        """ Calculate partial match table: String -> [Int]"""
+        ret = [0]
+        
+        for i in range(1, len(pattern)):
+            j = ret[i - 1]
+            while j > 0 and pattern[j] != pattern[i]:
+                j = ret[j - 1]
+            ret.append(j + 1 if pattern[j] == pattern[i] else j)
+        return ret
+        
+    def search(self, T, P):
+        """ 
+        KMP search main algorithm: String -> String -> [Int] 
+        Return all the matching position of pattern string P in S
+        """
+        partial, ret, j = self.partial(P), [], 0
+        for i in range(len(T)):
+            while j > 0 and T[i] != P[j]:
+                j = partial[j - 1]
+            if T[i] == P[j]: j += 1
+            if j == len(P): 
+                ret.append(i - (j - 1))
+                j = 0
+            
+        return ret
 
-# def partition (a, begin,end):
-#     pivot = (begin+end)//2
-#     l=begin
-#     r=end
-#     while l<r:
-#         while(a[l]<a[pivot] and l<r):l+=1
-#         while(a[r]>=a[pivot] and l<r):r-=1
-#         if l<r:
-#             if l==pivot:pivot=r
-#             a[l],a[r]=a[r],a[l]
-#     a[pivot],a[r]=a[r],a[pivot]
-#     return r
-
-# def quickSort(a,begin,end):
-#     if begin<end:
-#         p=partition (a,begin,end)
-#         quickSort(a,begin,p-1)
-#         quickSort(a,p+1,end)
-# a=[69,10,30,2,16,8,31,22]
-# quickSort(a,0,7)
-# print(a)
+sol=KMP()
+result=sol.search(t,w)
+print(len(result))
+for i in result:
+    print(i+1)

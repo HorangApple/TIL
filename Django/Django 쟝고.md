@@ -765,7 +765,20 @@ CSRF(Cross-site Request Forgery)는 사용자가 요청하는 정보를 가로�
 
 예를 들어 form이 GET 방식으로 되어있다면 url로 파라미터를 보내야하는데 이 주소패턴을 이용하여 제 3자가 마음대로 만들 수 있다. 이를 POST로 막을 수 있다.
 
-오류를 없애기위해선 `{% csrf_token %}`를 `form` 태그 안에 넣고 `view.py`에서 값을 받을 때는 `request.POST.get()`방식으로 받아와야한다.
+오류를 없애기위해선 `{% csrf_token %}`를 `form` 태그 안에 넣고 `view.py`에서 값을 받을 때는 `request.GET.get()`대신 `request.POST.get()`로 받아와야한다.
+
+```html
+...
+<h3>댓글</h3>
+<form action="/articles/{{ article.id }}/comment/" method="POST">
+  {% csrf_token %}
+  <input type="text" name="content"/>
+  <input type="submit" value="Submit"/>
+</form>
+...
+```
+
+
 
 <img src="images/image 011.png">
 
