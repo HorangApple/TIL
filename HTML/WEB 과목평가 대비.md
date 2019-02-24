@@ -156,7 +156,7 @@ li:nth-child(2) {
 }
 ```
 
-여러 요소 중에서 특정 요소를 지목하는 방법이 없었던 시절이 기억나나요? 그 문제를 풀어줄 `nth-child` 가상 클래스가 있답니다!
+여러 요소 중에서 특정 요소를 지목하는 방법이 없었던 시절이 기억나나요? 그 문제를 풀어줄 `nth-child` 가상 클래스가 있답니다! nth는 'n번째'를 가리키는 말입니다.
 
 `nth-child`는 변숫값을 정수(integer)로 받습니다. 0부터 시작하지는 않습니다. 두 번째 항목을 대상으로 하고 싶다면 `li:nth-child(2)`로 작성합니다.
 
@@ -344,7 +344,7 @@ https://flexboxfroggy.com/#ko
 
 ### 컴포넌트 - 이름만 어떤 것 있다 정도
 
-navbar, modal, card, alert, button, form
+navbar, modal, card, alerts, button, forms, jumbotron
 
 
 
@@ -522,7 +522,7 @@ def comment(request,id):
 
 html 태그의 `form`의 `action`에 `method="POST"` 를 설정하면 다음과 같은 오류가 뜬다.
 
-<img src="C:/Users/JongMin/Documents/Github/TIL/Django/images/image%20010.png"/>
+<img src="images/image%20010.png"/>
 
 CSRF(Cross-site Request Forgery)는 사용자가 요청하는 정보를 가로챌 수 있는 취약점 중 하나이다. 사용자와 서버 간에 token을 주고 받는데 이는 서버에서 사용자를 구분짓기위해 존재한다. 그러나 사용자와 서버 중간에 프록시를 이용하여 끼여들어 사용자의 토큰을 가져올 수 있다.
 
@@ -543,7 +543,7 @@ CSRF(Cross-site Request Forgery)는 사용자가 요청하는 정보를 가로�
 
 
 
-<img src="C:/Users/JongMin/Documents/Github/TIL/Django/images/image%20011.png">
+<img src="images/image%20011.png">
 
 그러나 위처럼 주석처리 된 value가 토큰이기 때문에 응답 받은 코드에서 빼내서 토큰을 위변조할 수 있다.
 
