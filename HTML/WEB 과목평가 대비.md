@@ -4,6 +4,10 @@ HTML과 CSS, Bootstrap은 슬라이드를 최우선순위로 학습
 객관식 20문제, 주관식 5문제로 구성되어 있습니다.
 
 ## 1. HTML
+### DOM 트리
+
+<img src = "images/image 001.jpg">
+
 ###  시맨틱 태그
 
 <img src="images/image 002.jpg">
@@ -93,9 +97,11 @@ rem
 
 ###  선택자 및 우선 순위 (월말평가에도 나옵니다 미리 공부하세요.)
 
+`#X`은 id를, `.X`는 클래스를 가리킴
+
 ```css
 /*후손셀렉터*/
-/*문서 구조에서 특정 요소의 자손(자식,손자, 이후에 후손까지)을 선택하는 선택자로 div에서 p를 선택하여 그 이하까지 속성을 적용한다.*/
+/*문서 구조에서 특정 요소의 자손(자식,손자, 이후에 후손까지)을 선택하는 선택자로 div에서 p를 선택하여 그 이하의 p까지 속성을 적용한다.*/
 div p{
     color: crimson;
 }
@@ -107,10 +113,14 @@ div > p{
 }
 ```
 
-X > Y
+`X Y`는 X의 하위에 있는 Y를 가리킴
 
-```
-`div#container > ul {``  ``border``: ``1px` `solid` `black``;``}`
+#### X > Y
+
+```css
+div#container > ul{
+	border: 1px solid black;
+}
 ```
 
 일반 `X Y`와 `X > Y`의 차이점은 후자가 직계 자식만을 선택한다는 것입니다. 가령, 아래 마크업을 생각해 보세요.
@@ -134,9 +144,13 @@ X > Y
 
 이런 이유로 자식 선택자를 이용해 성능을 향상할 수 있습니다. 사실, 자바스크립트를 기반으로 하는 CSS 선택자 엔진으로 작업할 때 추천합니다.
 
- X:nth-child(n)
+<img src='images/image 007.png'/>
 
-```
+
+
+####  X:nth-child(n)
+
+```css
 li:nth-child(2) {
     color:red;
 }
@@ -148,30 +162,36 @@ li:nth-child(2) {
 
 자식 요소의 변수 집합을 선택하는 데에도 이 방식을 활용할 수 있습니다. 가령, 항목의 4번째마다 선택하려면 `li:nth-child(4n)`로 작성하면 됩니다.
 
-X:nth-last-child(n)
+#### X:nth-last-child(n)
 
 ```css
-`li:nth-last-child(``2``) {``   ``color``: ``red``;``}`
+li:nth-last-child(2) {
+    color: red;
+}
 ```
 
 만약 `ul`에 항목이 엄청 많고, 여러분은 끝에서 세 번째 항목만 필요하다고 한다면 어떨까요? `li:nth-child(397)`로 작성하지 말고 `nth-last-child` 가상 클래스를 쓰면 됩니다.
 
 이 선택자는 16번과 거의 동일합니다. 다만 집합의 끝에서부터 출발하면서 동작한다는 게 다릅니다.
 
-X:nth-of-type(n)
+#### X:nth-of-type(n)
 
 ```css
-`ul:nth-of-type(``3``) {``   ``border``: ``1px` `solid` `black``;``}`
+ul:nth-of-type(3) {
+    border: 1px solid black;
+}
 ```
 
 `child`를 선택하지 않고 요소의 `type`을 선택해야 하는 날이 있을 것입니다.
 
 순서를 정하지 않은 목록 5개가 있는 마크업을 상상해 보세요. 세 번째 `ul`에만 스타일을 지정하고 싶은데 그것을 지정할 유일한 `id`가 없다면, `nth-of-type(n)` 가상 클래스를 이용할 수 있습니다. 위의 코드에서 세 번째 `ul`에만 테두리 선이 둘려집니다.
 
-X:nth-last-of-type(n)
+#### X:nth-last-of-type(n)
 
 ```css
-`ul:nth-last-of-type(``3``) {``   ``border``: ``1px` `solid` `black``;``}`
+ul:nth-last-of-type(3) {
+    border: 1px solid black;
+}
 ```
 
 일관성을 유지하도록 목록 선택자의 끝부터 출발해 지정한 요소를 대상으로 하는 `nth-last-of-type`을 사용할 수도 있습니다.
@@ -182,7 +202,7 @@ Box model
 
 항상 네모로 생각해야한다. 둥근 모양도 사실 네모를 깎아서 표현했다고 해도 무방하다.
 
-<img src="images/image%20003.png">
+<img src="images/image%20008.png">
 
 margin은 박스 밖의 여백을 지칭한다. 여러 박스와 margin이 겹치게 될텐데 이는 합산하지 않고 margin 값이 큰 것을 기준으로 겹쳐진다.
 
@@ -208,11 +228,49 @@ border-style: dashed;
 
 padding은 box 내부의 여백을 가리킨다.
 
-###  Display
+###  [Display](https://ofcourse.kr/css-course/display-%EC%86%8D%EC%84%B1)
 
-none은 화면상에 아예 나타나지 않게 한다. `visibility: hidden`같은 경우 태그는 존재해서 드래그하면 공간이 있지만 컨텐츠가 보이지 않으나 `display: none`은 아예 보이지 않는다.
+#### block
 
-###  Position
+항상 새로운 라인에서 시작한다. 화면 크기 전체의 가로폭을 차지한다. (width: 100%)
+block 레벨 요소 내에 inline 레벨 요소를 포함할 수 있다. 
+
+block 레벨 요소 예 : div, h1 ~ h6, p, ol, ul, li, hr, table, form
+
+#### inline
+
+새로운 라인에서 시작하지 않으며 문장의 중간에 들어갈 수 있다. content의 너비만큼 가로폭을 차지한다. width, height, margin-top, margin-bottom 프로퍼티를 지정할 수 없다. 상, 하 여백은 line-height로 지정한다.
+
+inline 레벨 요소 예 : span, a, strong, img, br, input, select, textarea, button
+
+#### inline-block
+
+block과 inline 레벨 요소의 특징을 모두 갖는다. inline 레벨 요소처럼 한 줄에 표시 되면서 block에서의 width, height, margin(top, bottom) 속성을 모두 지정할 수 있다.
+
+#### none
+
+none은 화면상에 아예 나타나지 않게 한다. `visibility: hidden`(default : visible)같은 경우 태그는 존재해서 드래그하면 공간이 있지만 컨텐츠가 보이지 않으나 `display: none`은 아예 보이지 않는다.
+
+###  [Position](http://ko.learnlayout.com/position.html)
+
+#### static (기본위치)
+
+기본적인 요소의 배치 순서에 따라 위에서 아래로, 왼쪽에서 오른쪽으로 순서에 따라 배치되며 부모 요소 내에 자식 요소로서 존재할 때는 부모 요소의 위치를 기준으로 배치된다.
+
+#### relative (상대위치)
+
+기본 위치(static으로 지정되었을 때의 위치)를 기준으로 좌표 프로퍼티(top,bottom,left,right)를 사용하여 위치를 이동
+
+#### absolute (절대위치)
+
+부모 요소 또는 가장 가까이 있는 조상 요소(static 제외)를 기준으로 좌표 프로퍼티(top,bottom,left,right)만큼 이동한다. 즉, relative,absolute, fixed 프로퍼티가 선언되어 있는 부모 또는 조상 요소를 기준으로 위치가 결정된다.
+
+#### fixed (고정위치)
+
+부모 요소와 관계없이 브라우저의 viewport를 기준으로 좌표프로퍼티(top, bottom, left, right)을 사용하여 위치를 이동시킨다. 스크롤이 되더라도 화면에서 사라지지 않고 항상 같은 곳에 위치한다.
+
+
+
 ###  기초 CSS 문법 (금요일 프로젝트 및 homework/workshop)
 #### -  금요일 프로젝트
 #### -  homework/workshop
