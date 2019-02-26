@@ -343,7 +343,7 @@ Box model
 
 항상 네모로 생각해야한다. 둥근 모양도 사실 네모를 깎아서 표현했다고 해도 무방하다.
 
-<img src="images/image 003.png">
+<img src="images/image 008.png">
 
 margin은 박스 밖의 여백을 지칭한다. 여러 박스와 margin이 겹치게 될텐데 이는 합산하지 않고 margin 값이 큰 것을 기준으로 겹쳐진다.
 
