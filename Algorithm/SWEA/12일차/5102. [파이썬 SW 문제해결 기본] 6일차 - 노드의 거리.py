@@ -32,5 +32,5 @@ for num in range(1,TC+1):
         road[line[0]][line[1]]=line[1]
         road[line[1]][line[0]]=line[0]
     s,g=map(int,input().split())
-    print(road)
+    
     print(f'#{num} {solution(s,g,v)}')

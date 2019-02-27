@@ -20,7 +20,7 @@ def solution(n,start):
         # 목적지를 못찾으면 0을 리턴
         if len(que)==0:
             return 0
-        # 다음 갈 곳 팦바팦파팦ㅍ
+        # 갈 곳 팦바팦파팦ㅍ
         y,x,deep=que.pop(0)
         # 목적지에 도착하면 깊이를 리턴
         if inp[y][x]=='3':
