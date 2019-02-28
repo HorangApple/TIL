@@ -666,7 +666,7 @@ class Articles(models.Model):
 class Comment(models.Model):
     content=models.TextField()
     # CASCADE는 글이 삭제되면 같이 삭제 되는 필수 옵션
-    article=models.ForeignKey(Article, on_delete-models.CASCADE)
+    article=models.ForeignKey(Article, on_delete=models.CASCADE, related_name="comments")
 ```
 
 
@@ -721,11 +721,12 @@ id 값을 넣는 방법은 두 가지가 있다. 하나는 객체를 찾아와 �
 In [2]: Articles.objects.first().comments                                               
 Out[2]: <django.db.models.fields.related_descriptors.create_reverse_many_to_one_manager.<locals>.RelatedManager at 0x7f8e5414b6d8>
 
-In [3]: Articles.objects.first().comments.all()                                         
+In [3]: Articles.objects.first().comments.all()
+    # Articles.objects.first().comment_set.all()과 동일
 Out[3]: <QuerySet [<첫번째 댓글>]>
 ```
 
-
+`article=Articles.objects.first()`이고 DTL에서 사용할 때는 괄호를 뗀 `article.comments.all`으로 사용해야한다.
 
 `Articles`입장에서 검색을 할 때 django가 자동으로 `Articles`에도 `Comment`의 정보를 입력해주지 않았다면 다음과 같이 일일이 입력해야한다.
 
@@ -1019,7 +1020,7 @@ class Articles(models.Model):
         
 class Comment(models.Model):
     content=models.TextField()
-    article=models.ForeignKey(Articles, on_delete=models.CASCADE)
+    article=models.ForeignKey(Articles, on_delete=models.CASCADE, related_name="comments")
     def __repr__(self):
         return f"<{self.content}>"
 ```

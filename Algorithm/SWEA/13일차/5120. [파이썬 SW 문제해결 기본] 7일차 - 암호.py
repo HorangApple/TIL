@@ -21,15 +21,13 @@ def add(pre,data):
 def insert(head,m,n,lastNode):
     global Head
     node=head
-    if m>=n:
-        m=m%n-1
     i=0
     if m==0:
         nextNode=Head.link
         Head.link=Node(nextNode.data+Head.data,Head.link)
-        return
-    while i<=m:
-        if i==m-1:
+        return m
+    while node:
+        if i==m:
             nextNode=node.link
             if nextNode:
                 node.link=Node(node.data+nextNode.data,node.link)
@@ -37,6 +35,7 @@ def insert(head,m,n,lastNode):
                 node.link=Node(node.data+Head.data,node.link)
         i+=1
         node=node.link
+    return m
 
 def printLink(head,idx,num):
     node=head
@@ -66,8 +65,11 @@ for num in range(1,TC+1):
     for i in line[1:]:
         preNode=add(preNode,i)
     lastNode=preNode
+    target=m-1
     for i in range(1,k+1):
-        target=m*i
+        target=insert(Head,target,n,lastNode)
+        target+=m
         n+=1
-        insert(Head,target,n,lastNode)
+        if m>n:
+            m%=n
     printAll(Head,num)

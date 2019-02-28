@@ -187,7 +187,9 @@
 
   `child`를 선택하지 않고 요소의 `type`을 선택해야 하는 날이 있을 것입니다.
 
-  순서를 정하지 않은 목록 5개가 있는 마크업을 상상해 보세요. 세 번째 `ul`에만 스타일을 지정하고 싶은데 그것을 지정할 유일한 `id`가 없다면, `nth-of-type(n)` 가상 클래스를 이용할 수 있습니다. 위의 코드에서 세 번째 `ul`에만 테두리 선이 둘려집니다. 즉, 태그 X의 n번째를 선택합니다.
+  순서를 정하지 않은 목록 5개가 있는 마크업을 상상해 보세요. 세 번째 `ul`에만 스타일을 지정하고 싶은데 그것을 지정할 유일한 `id`가 없다면, `nth-of-type(n)` 가상 클래스를 이용할 수 있습니다. 위의 코드에서 세 번째 `ul`에만 테두리 선이 둘려집니다. 
+
+  즉, 태그 X의 n번째를 선택합니다.
 
   #### X:nth-last-of-type(n)
 
@@ -262,7 +264,9 @@
 
 해당 요소의 왼쪽에 offset에 지정한 크기만큼 여백으로 채움. 선언할 때 `col` 먼저 한 다음 `offset`을 선언해야한다.
 
-
+```html
+<div class="col-md-6 offset-md-3">
+```
 
 - 미리 작성된 HTML 파일 제공. (CDN을 통하여 Bootstrap도 추가되어 있음)
 - 예시 결과를 보고 알맞는 클래스를 채워 넣는 형식.
@@ -284,6 +288,8 @@
   ```html
   {% load static %} 
   : base template에서 static 폴더에 있는 외부파일(css 등)을 부를 때 사용
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  : css 호출
   {% extends 'articles/base.html' %}
   : base template을 불러옴
   {% block body %}~{% endblock %}
@@ -351,4 +357,4 @@
       return redirect('articles:detail',id)
   ```
 
-  ### 
+  

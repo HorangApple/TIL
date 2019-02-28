@@ -1,0 +1,21 @@
+{% extends 'articles/base.html' %}
+
+{% block body %}
+<div class="jumbotron text-center">
+  <h1 class="display-4">글 수정</h1>
+  <p></p>
+  <hr class="my-4">
+</div>
+
+<form action="/articles/{{ id }}/update/">
+  <div class="form-group">
+    <label>제목</label>
+    <input type="text" class="form-control" name="title" value={{ title }} />
+  </div>
+  <div class="form-group">
+    <label>내용</label>
+    <textarea class="form-control" name="content" rows='5'>{{ content }}</textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}

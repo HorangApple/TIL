@@ -1,16 +1,18 @@
 
-#test{font-family:'Courier New', Courier, monospace; 
-font-weight: 1000; 
-font-size: 4rem; 
-color: red;
-font-style:inherit}
+#test{
+    font-family:'Courier New', Courier, monospace; 
+    font-weight: 1000; 
+    font-size: 4rem; 
+    color: red;
+    font-style:inherit;
+}
 
 div>ol>li:nth-child(4){
     color:red;
 }
 
-#test1>ol>span{
-    font-size: 2rem;
+#ssafy>p:nth-child(3){
+    font-size: 7rem;
 }
 
 #ssafy>h2:nth-child(6){
