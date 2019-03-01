@@ -54,7 +54,7 @@ def printAll(head,num):
         result.append(str(node.data))
         i+=1
         node=node.link
-    print(f'#{num} {" ".join(result[::-1])}')
+    print(f'#{num} {" ".join(result[::-1][:10])}')
 
 TC=int(input())
 for num in range(1,TC+1):
@@ -70,6 +70,6 @@ for num in range(1,TC+1):
         target=insert(Head,target,n,lastNode)
         target+=m
         n+=1
-        if m>n:
-            m%=n
+        if target>=n:
+            target%=n
     printAll(Head,num)
