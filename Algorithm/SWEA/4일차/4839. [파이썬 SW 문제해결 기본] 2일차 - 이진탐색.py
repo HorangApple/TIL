@@ -1,6 +1,7 @@
 import sys
 sys.stdin = open("input.txt","r")
 
+# 재귀로 이진탐색 실행
 def search (l,p,inp,count):
     count+=1
     c=(l+p)//2
@@ -8,6 +9,7 @@ def search (l,p,inp,count):
         return search(l,c,inp,count)
     elif c<inp:
         return search(c,p,inp,count)
+    # 요소가 하나(c==inp)일 때 리턴
     else:
         return count
 
@@ -22,6 +24,7 @@ for i in range(T):
     countA = search(l,p,a,count)
     countB = search(l,p,b,count)
     
+    # 어느 쪽이 적은 횟수로 찾았는지 결정
     if countA > countB :
         result = 'B'
     elif countA < countB :

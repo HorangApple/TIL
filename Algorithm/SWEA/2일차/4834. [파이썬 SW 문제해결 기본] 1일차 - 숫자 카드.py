@@ -1,6 +1,7 @@
 import sys
 sys.stdin = open("sample_input.txt","r")
 
+# 해당 숫자(obj)의 갯수를 세는 함수
 def my_count(numList, obj) :
     count = 0
     for i in numList :
@@ -16,9 +17,11 @@ for test_case in range(1, T+1):
     maxNum = 0
     maxCount = 0
     for obj in numList :
+        # 갯수가 큰 쪽을 저장한다
         if my_count(numList, obj) > maxCount :
             maxCount = my_count(numList, obj)
             maxNum = obj
+        # 갯수가 같으면 숫자가 큰 쪽을 저장한다
         elif my_count(numList, obj) == maxCount and maxNum < obj :
             maxNum = obj
 

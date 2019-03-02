@@ -10,12 +10,14 @@ for i in range(T):
     a = list(map(int, input().split()))
     result = []
     
+    # 한 번에 두 개씩 검색하니 길이의 절반만큼 반복
     for k in range(len(a)//2) :
         maxnum = 1
         minnum = 100
         maxidx = 0
         minidx = 0
         idx = 0
+        # 최대, 최소 값과 index를 구하고 -1로 초기화
         while idx < len(a) :
             if a[idx]>maxnum and a[idx] != -1:
                 maxnum = a[idx]

@@ -1,7 +1,7 @@
 import sys
 sys.stdin = open("input.txt","r")
 
-
+# 해당하는 영역 크기만큼 2차원 리스트를 만들어 1로 초기화
 def converter (arr) :
     color = [[0]*(arr[3]+1) for i in range(arr[2]+1)]
     for y in range(arr[0],arr[2]+1):
@@ -9,6 +9,7 @@ def converter (arr) :
             color[y][x] = 1
     return color
 
+# converter로 구한 사각형을 길이 maxX+1,maxY+1 크기의 2차원 리스트에 적용
 def adder (arr) :
     ground = [[0]*(maxX+1) for i in range(maxY+1)]
     for i in arr :
@@ -17,7 +18,8 @@ def adder (arr) :
                 if ground[y][x] == 0:
                     ground[y][x] += i[y][x]
     return ground
-                
+
+# adder로 바꾼 두 영역을 겹쳐 2보다 큰 부분만 count        
 def selector (red,blue) :
     count=0
     for y in range(len(red)) :

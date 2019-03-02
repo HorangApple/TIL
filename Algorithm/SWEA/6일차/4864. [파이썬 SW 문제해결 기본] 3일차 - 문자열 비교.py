@@ -6,7 +6,7 @@ T = int(input())
 def search(str1,str2):
     str1len = len(str1)
     str2len = len(str2)
-
+    # 순서대로 대조하여 일치하지 않으면 break
     for i in range(str2len-str1len+1) :
         for j in range(str1len) :
             if str2[i+j]!=str1[j]:

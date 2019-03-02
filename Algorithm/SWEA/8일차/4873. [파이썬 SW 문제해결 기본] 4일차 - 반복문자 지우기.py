@@ -10,6 +10,7 @@ def stack(text):
         top+=1
         stack.append(i)
         if top-1>-1 :
+            # 같은 문자가 2개 연속으로 쌓여 있으면 2번 pop
             if (stack[top]==stack[top-1]) :
                 stack.pop()
                 stack.pop()

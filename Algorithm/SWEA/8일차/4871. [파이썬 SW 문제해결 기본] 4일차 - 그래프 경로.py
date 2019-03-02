@@ -1,13 +1,13 @@
 import sys
 sys.stdin = open("input.txt","r")
-
+# 다음 노드 검색
 def search(arr,visited):
     for i in arr:
         if i not in visited and i>0:
             return i
     else :
         return False
-
+# dfs 사용, 교재 참고
 def dfs (arr,s,g):
     v=s
     visited.append(v)
@@ -39,6 +39,7 @@ for i in range(TC) :
     visited = []
     stack = [0]
     arr=[[0 for _ in range(v)] for _ in range(v)]
+    # 인접행렬 생성
     for x,y in lines :
         arr[x-1][y-1]=y
  

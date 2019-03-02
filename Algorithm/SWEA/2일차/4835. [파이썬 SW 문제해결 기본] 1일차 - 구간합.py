@@ -1,11 +1,12 @@
 import sys
 sys.stdin = open("4835_input.txt","r")
-
+# 합치는 함수
 def mySum(numList):
     result = 0
     for i in numList:
         result += i
     return result
+
 T = int(input())
 for test_case in range(1, T+1):
     N, M = list(map(int, input().split()))
@@ -13,6 +14,7 @@ for test_case in range(1, T+1):
     minSum = mySum(numList[0:0+M])
     maxSum = mySum(numList[0:0+M])
 
+    # 길이 M 만큼 합쳐서 비교한다.
     for i in range(1, N-M+1) :
         obj = mySum(numList[i:i+M])
         if minSum > obj :

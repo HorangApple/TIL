@@ -22,19 +22,25 @@ def insert(head,od):
     global Head
     node=head
     i=0
+    # 추가
     if od[0]=='I':
+        # 맨 앞의 노드일 경우
         if od[1]=='0':
             Head=Node(od[2],Head)
             return
+        # 그 이후의 노드일 경우
         while i<=int(od[1]):
             if i==int(od[1])-1:
                 node.link=Node(od[2],node.link)
             i+=1
             node=node.link
+    # 삭제
     elif od[0]=='D':
+        # 맨 앞의 노드일 경우
         if od[1]=='0':
             Head=Head.link
             return
+        # 그 이후의 노드일 경우
         while i<=int(od[1]):
             if i==int(od[1])-1:
                 targetNode=node.link
@@ -42,10 +48,13 @@ def insert(head,od):
                 targetNode.link=None
             i+=1
             node=node.link
+    # 해당 인덱스의 data 수정
     elif od[0]=='C':
+        # 맨 앞의 노드일 경우
         if od[1]=='0':
             Head.data=od[2]
             return
+        # 그 이후의 노드일 경우
         while i<=int(od[1]):
             if i==int(od[1]):
                 node.data=od[2]
@@ -64,14 +73,6 @@ def printLink(head,idx,num):
             return
         node=node.link   
 
-def printAll(head):
-    node=head
-    i=0
-    while node:
-        print(f'{node.data}',end=" ")
-        i+=1
-        node=node.link
-
 TC=int(input())
 for num in range(1,TC+1):
     n,m,l = map(int,input().split())
@@ -83,6 +84,7 @@ for num in range(1,TC+1):
     preNode=Head
     for i in line[1:]:
         preNode=add(preNode,i)
+    # 편집 수행
     for i in order:
         insert(Head,i)
 

@@ -2,6 +2,7 @@ import sys
 sys.stdin = open("input.txt","r")
 
 TC=int(input())
+# 4방향으로 갈 길이 있는지 탐색, 갈 수 있는 길의 수를 반환함
 def search(y,x):
     count=0
     if y+1<length and inp[y+1][x]==0:
@@ -20,23 +21,29 @@ def go(start):
     x=start[1]
     stack=[]
     direc=0
-    for i in range(search(y,x)):
+    # 4방향으로 갈 길이 있는지 탐색, 갈 수 있는 길의 수만큼 stack에 저장
+    for _ in range(search(y,x)):
         stack.append([y,x])
     while True:
+        # 위로 움직임
         if y+1<length and (inp[y+1][x] not in fobi) or (y+1<length and inp[y+1][x]==0):
             while y+1<length and inp[y+1][x]!=1:
+                # 지나간 길은 -1로 초기화
                 inp[y][x]=-1
                 y+=1
+                # 목적지 발견하면 1을 리턴
                 if inp[y][x]==3:
                     return 1
+                # 진행하다가 만약 좌,우에 길이 있다면 동일하게 stack에 저장
                 if x+1<length and inp[y][x+1]==0:
                     for i in range(search(y,x)):
                         stack.append([y,x])
-                    direc=1
+                    direc=1 # 아직 둘러 볼 곳이 있음을 나타냄
                 elif x-1>0 and inp[y][x-1]==0:
                     for i in range(search(y,x)):
                         stack.append([y,x])
                     direc=1
+        # 아래로 움직임            
         elif y-1>-1 and (inp[y-1][x] not in fobi) or (y-1>-1 and inp[y-1][x]==0):
             while y-1>-1 and inp[y-1][x]!=1:
                 inp[y][x]=-1
@@ -51,6 +58,7 @@ def go(start):
                     for i in range(search(y,x)):
                         stack.append([y,x])
                     direc=1
+        # 오른쪽으로 움직임
         elif x+1<length and (inp[y][x+1] not in fobi) or (x+1<length and inp[y][x+1]==0):
             while x+1<length and inp[y][x+1]!=1:
                 inp[y][x]=-1
@@ -65,6 +73,7 @@ def go(start):
                     for i in range(search(y,x)):
                         stack.append([y,x])
                     direc=1
+        # 왼쪽으로 움직임
         elif x-1>-1 and (inp[y][x-1] not in fobi) or (x-1>-1 and inp[y][x-1]==0):
             while x-1>-1 and inp[y][x-1]!=1:
                 inp[y][x]=-1
@@ -81,10 +90,12 @@ def go(start):
                     direc=1
         if len(stack)==0:
             return 0
+        # 다 찾아 봤다면 이전 위치로 돌아감
         elif direc!=1:
             re=stack.pop()
             y=re[0]
             x=re[1]
+        # 한 방향으로 탐색이 완료되면 0으로 초기화
         else:
             direc=0
 
@@ -103,22 +114,6 @@ for num in range(1,TC+1):
                 break
     print(f'#{num} {go(start)}')
 
-# TC=int(input())
-
-# for num in range(1,TC+1):
-#     length=int(input())
-#     inp=[[int(i) for i in input()]for _ in range(length)]
-#     start=[]
-#     stack=[]
-#     for i in range(length):
-#         for j in range(length):
-#             if inp[i][j]==2:
-#                 start=[i,j]
-#             if start==True:
-#                 break
-#         if start==True:
-#                 break
-    
 # 00013
 # 01110
 # 20000
@@ -174,6 +169,7 @@ for tc in range(1, T + 1):
 
 
 
+# 선생님 풀이
 # 재귀ver.
 import sys
 sys.stdin = open("input.txt", "r")

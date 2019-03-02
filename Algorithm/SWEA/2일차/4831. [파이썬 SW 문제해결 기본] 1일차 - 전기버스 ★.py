@@ -9,14 +9,18 @@ for test_case in range(1, T+1):
     count = 0
     location = 0
     maxCharger = 0
+    # 0번 정류장부터 시작
     for i in range(m) :
+        # 도착여부 확인
         if location + k >= n :
-            break # 도착
+            break
+        # k칸을 앞으로 가서 충전소(mSet[j])를 지나면 maxCharger에 초기화
         for j in range(i,m):        
             if location + k >= mSet[j] :
                 maxCharger = mSet[j] 
             else :
                 break
+        # 어차피 충전소를 거쳐야 앞으로 가니 다음 출발점은 지나갔던 충전소로 초기화
         if location != maxCharger :
             location = maxCharger
             count +=1

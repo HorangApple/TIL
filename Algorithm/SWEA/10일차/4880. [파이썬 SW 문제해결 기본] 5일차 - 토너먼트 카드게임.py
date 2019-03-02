@@ -11,15 +11,19 @@ def vs(left,right):
         return right
     else: # 비길 때 왼쪽
         return left
-    
+
+# 합병정렬 사용    
 def merge(inp,idx):
     length=len(inp)
     if len(inp)<=1:
+        # [가위바위보, 선수번호] 형식으로 리턴
         return [inp,idx]
     middle=(length+1)//2
+    # 가위바위보
     left=inp[:middle]
     right=inp[middle:]
 
+    # 선수 번호도 같이 합병정렬
     leftidx=idx[:middle]
     rightidx=idx[middle:]
 

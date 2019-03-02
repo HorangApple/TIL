@@ -1,6 +1,7 @@
 import sys
 sys.stdin = open("input.txt","r")
 
+# 버블 정렬
 def my_max(lists, n):
     for i in range(n-1, 0, -1):
         for j in range(0,i):
@@ -8,6 +9,7 @@ def my_max(lists, n):
                 lists[j], lists[j+1] = lists[j+1], lists[j]
     return lists[-1]
 
+# 버블 정렬
 def my_min(lists,n):
     for i in range(0, n-1):
         for j in range(i, 0, -1):

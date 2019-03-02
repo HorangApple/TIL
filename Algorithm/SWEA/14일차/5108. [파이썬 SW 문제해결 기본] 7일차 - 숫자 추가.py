@@ -6,18 +6,19 @@ class Node:
         self.data=data
         self.link=link
 
+# 맨 앞부분 추가
 def addtoFirst(data):
-    global Head
+    global Head # 전역변수 생성
     Head = Node(data,None)
     return Head
-
+# 추가
 def add(pre,data):
     if pre== None:
         print('error')
     else:
         pre.link=Node(data,pre.link)
     return pre.link
-
+# 삽입
 def insert(head,od):
     global Head
     node=head
@@ -25,12 +26,14 @@ def insert(head,od):
     if od[0]==0:
         Head=Node(od[1],Head)
         return
+    # 추가하려는 인덱스의 이전 노드를 찾아서 추가
     while i<=od[0]:
         if i==od[0]-1:
             node.link=Node(od[1],node.link)
         i+=1
         node=node.link
 
+# 해당 인덱스의 data 출력
 def printLink(head,idx,num):
     node=head
     i=0
@@ -40,6 +43,7 @@ def printLink(head,idx,num):
         i+=1
         node=node.link   
 
+# linkedlist의 모든 data 출력
 def printAll(head):
     node=head
     i=0
