@@ -6,17 +6,22 @@ def solution(start):
     visited=[False]*8
     result=[]
     while que:
+        # 다음 목적지를 que에서 pop
         go=que.pop(0)
+        # 방문한 것을 저장
         visited[go]=True
         result.append(str(go))
+        # 다음 목적지 탐색
         for i in mp[go]:
+            # 방문한 적이 없고 que에도 없는(동시에 중복 방문 방지) 곳이면 que에 추가
             if i>0 and not visited[i] and i not in que:
                 que.append(i)
     return result
 
-# 입력으로 인접행렬 사용        
+       
 inp=list(map(int,input().split()))
 mp=[[0]*8 for _ in range(8)]
+# 인접행렬 생성
 for i in range(len(inp)//2):
     mp[inp[2*i]][inp[2*i+1]]=inp[2*i+1]
 

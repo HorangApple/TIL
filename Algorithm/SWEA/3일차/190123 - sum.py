@@ -11,12 +11,12 @@ for i in range(TC):
     TC1=int(input())
     for j in range(length):
         inp.append(list(map(int, input().split())))
-    # 왼->오 아래 대각선
+    # 왼->오 아래 대각선의 합
     for j in range(length):
         sums += inp[j][j]
     if maxi<sums : maxi=sums
     sums=0
-    # 오->왼 아래 대각선
+    # 오->왼 아래 대각선의 합
     for j in range(length):
         sums += inp[j][length-1-j]
     if maxi<sums : maxi=sums

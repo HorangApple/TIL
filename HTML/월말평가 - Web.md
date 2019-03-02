@@ -210,7 +210,7 @@
 
   ### 그리드 시스템
 
-  https://www.vikingcodeschool.com/web-design-basics/designing-with-grid-systems
+  http://bootstrap4.kr/docs/4.0/layout/grid/
 
   bootstrap의 꽃은 Container이다. Container라는 박스를 활용하여 깔끔하게 배치를 도와준다.
 
@@ -260,16 +260,89 @@
   </html>
   ```
 
-### Offset classes
+  ### Alignment
 
-해당 요소의 왼쪽에 offset에 지정한 크기만큼 여백으로 채움. 선언할 때 `col` 먼저 한 다음 `offset`을 선언해야한다.
+  <img src="images/image 009.png"/>
 
-```html
-<div class="col-md-6 offset-md-3">
-```
+  ```html
+  <div class="container">
+    <div class="row justify-content-start">
+      <div class="col-4">
+        두개의 칼럼중 하나
+      </div>
+      <div class="col-4">
+        두개의 칼럼중 하나
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-4">
+        두개의 칼럼중 하나
+      </div>
+      <div class="col-4">
+        두개의 칼럼중 하나
+      </div>
+    </div>
+    <div class="row justify-content-end">
+      <div class="col-4">
+        두개의 칼럼중 하나
+      </div>
+      <div class="col-4">
+        두개의 칼럼중 하나
+      </div>
+    </div>
+    <div class="row justify-content-around">
+      <div class="col-4">
+        두개의 칼럼중 하나
+      </div>
+      <div class="col-4">
+        두개의 칼럼중 하나
+      </div>
+    </div>
+    <div class="row justify-content-between">
+      <div class="col-4">
+        두개의 칼럼중 하나
+      </div>
+      <div class="col-4">
+        두개의 칼럼중 하나
+      </div>
+    </div>
+  </div>
+  ```
+
+  
+
+  ### Order classes
+
+  <img src="images/image 003.png"/>
+
+  ```html
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        첫번재, 순서 미지정됨
+      </div>
+      <div class="col order-12">
+        두번째, 하지만 마지막
+      </div>
+      <div class="col order-1">
+        세번째, 하지만 첫번째
+      </div>
+    </div>
+  </div>
+  ```
+
+  
+
+  ### Offset classes
+
+  해당 요소의 왼쪽에 offset에 지정한 크기만큼 여백으로 채움. 선언할 때 `col` 먼저 한 다음 `offset`을 선언해야한다. ex) `<div class="col-md-4 offset-md-4">`
+
+  
 
 - 미리 작성된 HTML 파일 제공. (CDN을 통하여 Bootstrap도 추가되어 있음)
+
 - 예시 결과를 보고 알맞는 클래스를 채워 넣는 형식.
+
 - Bootstrap 사이트 접속 불가능.
 
 ## 3. Django
@@ -289,15 +362,39 @@
   {% load static %} 
   : base template에서 static 폴더에 있는 외부파일(css 등)을 부를 때 사용
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  : css 호출
+  : DTL을 이용한 css import
   {% extends 'articles/base.html' %}
   : base template을 불러옴
-  {% block body %}~{% endblock %}
+  {% block 이름 %}~{% endblock %}
   : base template 내에서는 block 지정, 그 외의 곳에서는 block 작성
   {% for i in 변수명 %}~{% endfor %}
   : for문과 동일
   {{ 변수명 }}
   ```
+
+  
+
+  *models.py*
+
+  ```python
+  from django.db import models
+  
+  # Create your models here.
+  class Articles(models.Model):
+      title=models.TextField()
+      content=models.TextField()
+      def __repr__(self):
+          return f"{self.title}: {self.content}"
+      def __str__(self):
+          return f"<{self.title}: {self.content}>"
+          
+  class Comment(models.Model):
+      content=models.TextField()
+      # CASCADE는 글이 삭제되면 같이 삭제 되는 필수 옵션
+      article=models.ForeignKey(Article, on_delete-models.CASCADE)
+  ```
+
+  
 
   views.py
 
@@ -315,7 +412,6 @@
   
   def index(request):
       data=Articles.objects.all()
-      print(data)
       return render(request,'articles/index.html',{'data':data})
       
   def new(request):
@@ -358,3 +454,4 @@
   ```
 
   
+

@@ -2,19 +2,25 @@ import sys
 sys.stdin = open("input.txt","r")
 
 def detect():
+    # 가로
     for i in mp:
+        # 0부터 9까지의 합인 45가 아니면 리턴
         if sum(i)!=45:
             return 0
+    # 세로
     for i in range(9):
         total=0
         for j in range(9):
             total+=mp[j][i]
+        # 0부터 9까지의 합인 45가 아니면 리턴
         if total!=45:
             return 0
+    # 3X3
     for j in range(3):
         total1=0
         total2=0
-        total3=0    
+        total3=0
+        # 한 번에 세 군데를 검증    
         for i in mp[3*j:3*(j+1)]:
             total1+=sum(i[0:3])
             total2+=sum(i[3:6])
