@@ -17,37 +17,50 @@ rowCut.sort()
 columnCut.sort()
 rowlength=[]
 rowsave=[]
-for i in columnCut:
-    if rowsave:
-        obj=rowlength.pop()
-        l=obj[:(i-rowsave[-1])]
-        r=obj[(i-rowsave[-1]):]
-        rowsave.append(i)
-        rowlength.append(l)
-        rowlength.append(r)
-    else:
-        l=row[:i]
-        r=row[i:]
-        rowsave.append(i)
-        rowlength.append(l)
-        rowlength.append(r)
+if columnCut:
+    for i in columnCut:
+        if rowsave:
+            obj=rowlength.pop()
+            l=obj[:(i-rowsave[-1])]
+            r=obj[(i-rowsave[-1]):]
+            rowsave.append(i)
+            rowlength.append(l)
+            rowlength.append(r)
+        else:
+            l=row[:i]
+            r=row[i:]
+            rowsave.append(i)
+            rowlength.append(l)
+            rowlength.append(r)
+else :
+    rowlength.append(row)
+del columnCut
+del row
+del rowsave
 
 columnlength=[]
 columnsave=[]
-for i in rowCut:
-    if columnsave:
-        obj=columnlength.pop()
-        l=obj[:(i-columnsave[-1])]
-        r=obj[(i-columnsave[-1]):]
-        columnsave.append(i)
-        columnlength.append(l)
-        columnlength.append(r)
-    else:
-        l=column[:i]
-        r=column[i:]
-        columnsave.append(i)
-        columnlength.append(l)
-        columnlength.append(r)
+if rowCut:
+    for i in rowCut:
+        if columnsave:
+            obj=columnlength.pop()
+            l=obj[:(i-columnsave[-1])]
+            r=obj[(i-columnsave[-1]):]
+            columnsave.append(i)
+            columnlength.append(l)
+            columnlength.append(r)
+        else:
+            l=column[:i]
+            r=column[i:]
+            columnsave.append(i)
+            columnlength.append(l)
+            columnlength.append(r)
+else:
+    columnlength.append(column)
+del rowCut
+del column
+del columnsave
+
 result1=[]
 result2=[]
 for i in rowlength:
