@@ -48,6 +48,10 @@ for i in rowCut:
         columnsave.append(i)
         columnlength.append(l)
         columnlength.append(r)
-print(rowlength)
-print(columnlength)
-print(len(max(rowlength))*len(max(columnlength)))
+result1=[]
+result2=[]
+for i in rowlength:
+    result1.append(len(i))
+for i in columnlength:
+    result2.append(len(i))
+print(max(result1)*max(result2))
