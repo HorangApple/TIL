@@ -8,6 +8,42 @@ https://python.bakyeono.net/chapter-5-5.html
 
 `*변수`와 `**변수` 차이는 전자는 리스트, 후자는 딕셔너리를 받거나 전달한다고 생각하면 된다.
 
+```python
+>>> "{} {}".format(*[1,2])
+'1 2'
+
+>>> "{} {}".format(*[1,2,3])
+'1 2'
+
+>>> "{} {}".format(*{'key1':1,'key2':2})
+'key1 key2'
+
+>>> "{key1} {key2}".format(**{'key1':1,'key2':2})
+'1 2'
+
+>>> "{} {}".format(**{'key1':1,'key2':2})
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+IndexError: tuple index out of range
+    
+>>> "{} {}".format(**[1,2,3])
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: format() argument after ** must be a mapping, not list
+    
+>>> "{0} {1}".format(**[1,2,3])
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: format() argument after ** must be a mapping, not list
+    
+>>> "{[0]} {[1]}".format(**[1,2,3])
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: format() argument after ** must be a mapping, not list
+```
+
+
+
 
 
 # 02. filter 함수
