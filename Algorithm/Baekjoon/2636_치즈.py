@@ -50,6 +50,9 @@ while True:
     delete = []
     visited = [[False] * row for _ in range(col)]
     bfs()
+    for i in mp:
+        print(i)
+    print()
     for i in delete:
         mp[i[0]][i[1]]=0
     chiCnt=cnt()
