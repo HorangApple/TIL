@@ -1,0 +1,2 @@
+// babel6는 "es2015"로 작성
+{"presets":["@babel/preset-env"]}
