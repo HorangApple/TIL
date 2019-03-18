@@ -111,6 +111,8 @@ JS 개발 도구는 아래의 것들을 사용한다.
 5) ESLint : 자주 하는 실수를 알려주는 프로그램
 ```
 
+
+
 ## 1) Node.js의 npm
 
 npm은 패키지를 설치할 때 globally, 또는 locally로 설치할 수 있다. 전역 패키지는 터미널에서 실행하는 도구들이고 로컬 패키지는 각 프로젝트에 종속되는 패키지이다. `npm install`을 이용하여 설치한다. 특정 버전을 설치할 때는 `패키지 이름@*.*.*`형식으로 사용한다. 
@@ -145,7 +147,6 @@ package.json
     "gulp-eslint": "^5.0.0"
   }
 }
-
 ```
 
 `init`을 통해 package.json을 만든다. 생성시 묻는 name은 package 집합에 대한 이름을 묻는 것이며 임의로 작성하면 된다. 
@@ -154,20 +155,198 @@ package.json
 
 
 
-## 2) Gulp, Grunt
+## 2) Gulp
 
+반복 작업을 자동화하는 빌드 도구이며 `$ npm install -g gulp`를 입력하여 전역 설치한다. 그리고 프로젝트마다 로컬 걸프가 필요하므로 `$ npm install --save-dev gulp` 명령을 실행해 개발 의존성에 속하도록 한다. 이후 `gulpfile.js`를 만든다.
 
+*gulpfile.js*
 
-babel 7 기준으로 다음의 package가 설치되어 있어야 한다.
+```javascript
+const gulp = require('gulp');
+// 걸프 의존성 작업을 여기 작성
 
-```json
-...
-  "devDependencies": {
-    "@babel/core": "^7.3.4",
-    "@babel/preset-env": "^7.3.4",
-    "gulp": "^4.0.0",
-    "gulp-babel": "^8.0.0"
-  }
-...
+gulp.task('default',function() {
+    // 걸프 작업을 여기 작성
+});
 ```
 
+`$ gulp` 명령어로 성공적으로 설치됐는지 확인할 수 있다. 
+
+
+
+## 3) 트랜스컴파일러 (Babel+Gulp)
+
+바벨은 ES5를 ES6로 바꾸는 트랜스컴파일러로 시작했고, 프로젝트가 성장하면서 ES6와 React, ES7 등 여러 가지를 지원하는 범용 트랜스컴파일러가 됐다. 
+
+<img src="images/image 002.png">
+
+위와 같이 디렉터리 `es6`, `dist`, `public/es6`, `public/dist`를 만든다.
+
+`$ npm install --save-dev gulp-babel @babel/core @babel/preset-env` 를 입력하여 바벨과 걸프를 같이 이용하도록 만든다. 이후 `.babelrc`를 만들어 다음과 같이 입력한다.
+
+*.babelrc*
+
+```
+// babel6는 "es2015"로 작성
+{"presets":["@babel/preset-env"]}
+```
+
+그리고  `gulpfile.js`를 다음과 같이 수정한다.
+
+*gulpfile.js*
+
+```javascript
+const gulp = require('gulp');
+// 걸프 의존성 작업을 여기 작성
+const babel = require('gulp-babel');
+const eslint = require('gulp-eslint');
+
+gulp.task('default',function() {
+    // 걸프 작업을 여기 작성
+    // 노드 소스
+    gulp.src("es6/**/*.js")
+        .pipe(babel()) // 변형
+        .pipe(gulp.dest("dist")); // 변형한 코드 저장위치
+    // 브라우저 소스
+    gulp.src("public/es6/**/*.js")
+        .pipe(babel())
+        .pipe(gulp.dest("public/dist"));
+});
+```
+
+걸프는 파이프라인 개념으로 작업을 처리한다.  
+
+*es6/test.js*, *public/es6/test.js*
+
+```javascript
+'use strict';
+// es6 기능: 블록 스코프 변수 선언
+const sentence = [
+    {subject: 'JavaScript', verb: 'is', object: 'great'},
+    {subject: 'Elephants', verb: 'are', object: 'large'}
+];
+// es6 기능: 객체 분해
+function say({ subject, verb, object}){
+    // es6 기능: 템플릿 문자열
+    console.log(`${subject} ${verb} ${object}`);
+}
+// es6 기능: for ..of
+for(let s of sentence){
+    say(s);
+}
+```
+
+`$ gulp` 명령어를 통해 트랜스컴파일을 시키면 다음과 같이 변환된다.
+
+*dist/test.js*, *public/dist/test.js*
+
+```javascript
+'use strict'; // es6 기능: 블록 스코프 변수 선언
+
+var sentence = [{
+  subject: 'JavaScript',
+  verb: 'is',
+  object: 'great'
+}, {
+  subject: 'Elephants',
+  verb: 'are',
+  object: 'large'
+}]; // es6 기능: 객체 분해
+
+function say(_ref) {
+  var subject = _ref.subject,
+      verb = _ref.verb,
+      object = _ref.object;
+  // es6 기능: 템플릿 문자열
+  console.log("".concat(subject, " ").concat(verb, " ").concat(object));
+} // es6 기능: for ..of
+
+
+for (var _i = 0; _i < sentence.length; _i++) {
+  var s = sentence[_i];
+  say(s);
+}
+```
+
+`$ node es6/test.js`, `$ node dist/test.js` 를 각각 실행해보면 다음과 같은 결과가 출력된다.
+
+```bash
+JavaScript is great
+Elephants are large
+
+```
+
+과거에 `$ gulp`와  `$ node dist/test.js` 대신에 `$ babel-node es6/test.js`를 사용할 수 있었는데 `babel-node` 자체가 필요없이 무겁고 메모리를 많이 사용해서 더 이상 사용하지 않는다고 한다.
+
+## 4) Lint
+
+린트는 코드를 세심히 검토해서 자주 일어나는 실수를 알려준다. 여기서는 ESLint를 사용한다.
+
+`$ npm install -g eslint`를 실행하여 설치한다. 이후 프로젝트에 쓸 설정 파일인 `.eslintrc.yml`을 만들기 위해 `$ eslint --init` 명령을 내리고 몇 가지 질문에 답한다.
+
+그다음에 `$ npm install --save-dev gulp-eslint` 명령을 내리고 `gulpfile.js`에 eslint를 추가시킨다.
+
+*gulpfile.js*
+
+```javascript
+const gulp = require('gulp');
+// 걸프 의존성 작업을 여기 작성
+const babel = require('gulp-babel');
+const eslint = require('gulp-eslint');
+
+gulp.task('default',function() {
+    // 걸프 작업을 여기 작성
+    // ESLint를 실행
+    gulp.src(["es6/**/*.js", "public/es6/**/*.js"])
+        .pipe(eslint())
+        .pipe(eslint.format())
+    // 노드 소스
+    gulp.src("es6/**/*.js")
+        .pipe(babel())
+        .pipe(gulp.dest("dist"));
+    // 브라우저 소스
+    gulp.src("public/es6/**/*.js")
+        .pipe(babel())
+        .pipe(gulp.dest("public/dist"));
+});
+```
+
+
+
+# Chapter 03 리터럴과 변수, 상수, 데이터 타입
+
+## 1) 변수, 상수 선언
+
+```javascript
+let currentTempC = 22;
+let targetTempC; // let targetTempC=undefined;와 동일
+let targetTempC, room1 = "conference_room_a", room2 = "lobby"; // 변수 3개 선언
+const ROOM_TEMP_C = 21.5, MAX_TEMP_C = 30; // 상수 2개 선언
+```
+
+
+
+## 2) 식별자
+
+변수와 상수, 함수 이름을 식별자(idntifier)라 부르며 다음과 같은 규칙을 따른다.
+
+```
+1. 식별자는 반드시 글자나 달러 기호($), 밑줄(_)로 시작한다.
+2. 식별자에는 글자와 숫자, 달러 기호, 밑줄만 쓸 수 있다.
+3. 유니코드 문자도 쓸 수 있다.
+4. for, let 등과 같은 예약어는 식별자로 쓸 수 없다.
+```
+
+식별자를 만들 때는 다음과 같은 방침을 따른다.
+
+```
+1. 식별자는 대문자로 시작해서는 안되며 클래스에만 적용된다.
+2. 밑줄 한 개 또는 두 개로 시작하는 식별자는 아주 특별한 상황, 또는 '내부' 변수에서만 사용한다.
+3. jQuery를 사용할 경우, 달러 기호로 시작하는 식별자는 보통 jQuery 객체를 의미한다.
+```
+
+
+
+## 3) 리터럴
+
+리터럴(literal)은 직접 값을 만들어 식별자에 사용한다. 즉, 값을 만드는 방법이라 할 수 있다. 숫자형 리터럴과 문자열 리터럴이 있다.
