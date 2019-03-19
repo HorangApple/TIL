@@ -1,0 +1,15 @@
+{% extends 'users/base.html' %}
+{% block title %}
+home
+{% endblock %}
+
+{% block body %}
+     <h1 class="text-center">Welcome to TODO APP</h1>
+    <!--login이 되어있으면 출력-->
+    {% if user.is_authenticated %}
+        <p>이름 : {{ user.first_name }} {{ user.last_name }}</p>
+        <p>이메일 : {{ user.email }}</p>
+        <p>아이디 : {{ user.username }}</p>
+        <p>패스워드 : {{ user.password }}</p>
+    {% endif %}
+{% endblock %}
