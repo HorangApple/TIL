@@ -1174,3 +1174,133 @@ options = options || {};
 
 # Chapter 6 함수
 
+## 1) 반환 값
+
+함수 바디 안에 return 키워드를 사용하면 함수를 즉시 종료하고 값을 반환함. 그 값이 함수 호출의 값이다.
+
+## 2) 호출과 참조
+
+JS에서 함수도 객체이기에 다른 객체와 마찬가지로 넘기거나 할당할 수 있다.
+
+함수 식별자 뒤에 괄호를 쓰면 JS는 함수를 호출하려 한다고 이해하고, 함수 바디를 실행한다. 그리고 함수를 호출한 표현식은 반환 값이 된다.
+
+괄호를 쓰지 않으면 함수를 참조하는 것이며, 함수는 실행되지 않는다.
+
+```javascript
+function getGreeting(){
+    return "Hello world!"
+}
+
+getGreeting(); // "Hello World!"
+getGreeting; // function getGreeting()
+
+// 변수에 할당
+const f = getGreeting;
+f(); // "Hello world!"
+
+// 프로퍼티에 할당
+const o = {};
+o.f = getGreeting;
+o.f(); // "Hello world!"
+
+// 배열에 할당
+const arr = [1,2,3];
+arr[1] = getGreeting; // arr은 [1, function getGreeting(), 2]
+arr[1](); // "Hello world!"
+
+```
+
+## 3) 함수와 매개변수
+
+함수를 호출하면서 정보를 전달할 떄는 함수 매개변수(argument, parameter)를 이용한다. 매개변수는 함수가 호출되기 전에는 존재하지 않는다는 점을 제외하면 일반적인 변수나 마찬가지이다.
+
+```javascript
+// a,b는 정해진 매개변수(formal argument)
+function abg(a,b){
+    return (a+b)/2;
+}
+
+avg(5, 10); // 7.5, 매개변수는 값을 받아 실제 매개변수(actual argument)가 됨
+```
+
+원시 값을 담은 변수는 수정할 수 있지만(다른 값으로 바꿀 수 있지만) 원시 값 자체는 바뀌지 않는다. 그라나 객체는 바뀔 수 있다.
+
+원시 값을 값 타입(value type), 객체는 참조 타입(reference type)이라 부른다.
+
+### 3-1 매개변수가 함수를 결정하는가?
+
+C언어에서는 f(), f(x), f(x,y) 가 각각 다른 함수로 취급하지만, JS 경우 매개변수 숫자와 관계없이 같은 함수로 취급된다.
+
+정해진 매개변수에 값을 제공하지 않으면 내부의 실제 매개변수 값은 암시적으로 undefined가 된다.
+
+### 3-2 매개변수 해체
+
+```javascript
+// 프로퍼티가 있는 객체 해체
+function getSentence({ subject, verb, object }){
+    return `${subject} ${verb} ${object}`;
+}
+
+const o = {
+    subject: "I",
+    verb: "love",
+    object: "JavaScript",
+};
+
+getSentence(o); // "I love JavaScript"
+
+// 배열 해체
+function getSentence([ subject, verb, object ]){
+    return `${subject} ${verb} ${object}`;
+}
+
+const arr = ["I","love","JavaScript"]
+getSentence(arr); // "I love JavaScript"
+
+// 확산 연산자 활용, 항상 마지막 매개변수에 사용한다.
+function addPrefix(prefix, ...words){
+    const prefixedWords = [];
+    for(let i=0; i<words.length; i++){
+        prefixedWords[i] = prefix + words[i];
+    }
+    return prefixedWords;
+}
+
+addPrefix("con", "verse", "vex"); // ["converse", "convex"]
+```
+
+ES5에서는 함수 바디 안에서만 존재하는 특별한 변수 arguments를 사용해서 확산과 비슷한 일을 할 수 있다. arguments는 실제 배열이 아니라 배열 비슷한 객체이므로 특별 취급하거나 일반적인 객체로 변환해야 했다. ES6에서는 확산 매개변수를 사용해 이런 약점을 해결했다.
+
+### 3-3 매개변수 기본값
+
+ES6에서 매개변수에 기본값(default value)을 지정하는 기능이 추가 됐다. 일반적으로 매개변수에 값을 제공하지 않으면 undefined가 값으로 할당된다.
+
+```javascript
+function f(a, b = "default", c = 3){
+    return `${a} - ${b} - ${c}`;
+}
+
+f(5, 6, 7); // "5 - 6 - 7"
+f(5, 6); // "5 - 6 - 3"
+f(5); // "5 - default - 3"
+f(); // "undefined - default - 3"
+```
+
+## 4) 객체의 '프로퍼티'인 함수
+
+객체의 프로퍼티인 함수를 메서드(method)라고 불러서 일반적인 함수와 구별한다. 객체 리터럴에서도 메서드를 추가할 수 있다.
+
+```javascript
+const o = {
+    name: 'Wallace', // 원시 값 프로퍼티
+    // bark() { return 'Woof!';}, 과 동일, ES6부터 가능
+    bark: function() { return 'Woof!';}, // 함수 프로퍼티(메서드)
+}
+```
+
+## 5) this 키워드
+
+함수 바디 안에는 특별한 읽기 전용 값인 this가 있다. this는 일반적으로 객체지향 프로그래밍 개념에 밀접한 연관이 있다. 
+
+일반적으로 this는 객체의 프로퍼티인 함수에서 의미가 있다. 메서드를 호출하면 this는 호출한 메서드를 소유하는 객체가 된다.
+
