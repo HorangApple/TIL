@@ -1,11 +1,7 @@
-const f1 = function() {return "hello!";}
-// 또는
-const f1 = () => "hello!";
+const updateBruce = update.bind(bruce);
 
-const f2 = function(name) {return `Hello, ${name}!`;}
-// 또는
-const f2 = name => `Hello, ${name}!`;
-
-const f3 = function(a,b){return a+b;}
-// 또는
-const f3 = (a,b) => a+b;
+updateBruce(1904, "actor");
+// bruce는 이제 { name: "Bruce", birthYear: 1904, occupation: "actor"}
+updateBruce(madeline, 1274, "king"); 
+// bruce는 이제 { name: "Bruce", birthYear: 1274, occupation: "king"}
+// madeline은 변하지 않는다.

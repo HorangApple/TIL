@@ -1382,4 +1382,109 @@ const f3 = (a,b) => a+b;
 
 화살표 함수는 익명 함수를 만들어 다른 곳에 전달하려 할 때 가장 유용하다.
 
-일반적인 함수와 다른 점은 this가 다른 변수와 마찬가지로, 정적으로(lexically) 묶인다는 것이다.
+```javascript
+const o ={
+    name:'Julie',
+    greetBackWards: function(){
+        // const self = this; 사용하지 않아도 된다.
+        function getReverseName = () => {
+            let nameBackwards = '';
+            for(let i=self.name.length-1; i>=0; i--){
+                nameBackwards += this.name[i];
+            }
+            return nameBackwards;
+        }
+        return `${getReverseName()} si eman ym, olleH`;
+    },
+};
+console.log(o.greetBackWards());
+```
+
+일반적인 함수와 다른 점은 this가 다른 변수와 마찬가지로, 정적으로(lexically) 묶인다는 것이다. 그렇기 때문에 이전의 예제처럼 별도의 `self`를 만들지 않아도 의도한 대로 this가 가리켜진다.
+
+또 다른 차이점은 화살표 함수는 객체 생성자로 사용할 수 없고, arguments 변수도 사용할 수 없다. 그러나 ES6에서 확산 연산자가 생겼으니 arguments 변수는 필요없다.
+
+## 8) call과 apply, bind
+
+```javascript
+const bruce = { name: "Bruce" };
+const madeline = { name: "Madeline"};
+
+function greet(){
+    return `Hello, I'm ${this.name}!`;
+}
+
+greet(); // "Hello, I'm undefined!" - this는 어디에도 묶이지 않았다.
+greet.call(bruce); // "Hello, I'm Bruce!" - this는 bruce
+greet.call(madeline); // "Hello, I'm Madeline!" - this는 madeline
+
+function update(birthYear, occupation){
+    this.birthYear = birthYear;
+    this.occupation = occupation;
+}
+
+update.call(bruce, 1949, 'singer');
+// bruce는 이제 {name: "Bruce", birthYear: 1949, occupation: "singer"}
+update.call(madeline, 1942, 'actress');
+// madeline은 이제 {name: "Madeline", birthYear: 1942, occupation: "actress"}
+```
+
+call 메서드는 모든 함수에서 사용할 수 있으며, this를 특정값으로 지정할 수 있다.
+
+함수를 호출하면서 call을 사용하고 this로 사용할 객체를 넘기면 해당 함수가 주어진 객체의 메서드인 것처럼 사용할 수 있다. 
+
+call의 첫 번째 매개변수는 this로 사용할 값이고, 매개변수가 더 있으면 그 매개변수는 호출하는 함수로 전달된다.
+
+
+
+```javascript
+function update(birthYear, occupation){
+    this.birthYear = birthYear;
+    this.occupation = occupation;
+}
+
+update.apply(bruce, [1949, 'singer']);
+// bruce는 이제 {name: "Bruce", birthYear: 1949, occupation: "singer"}
+update.apply(madeline, [1942, 'actress']);
+// madeline은 이제 {name: "Madeline", birthYear: 1942, occupation: "actress"}
+```
+
+apply는 함수 매개변수를 처리하는 방법을 제외하면 call과 완전히 같다. 
+
+call은 일반적인 함수와 마찬가지로 매개변수를 직접 받지만, apply는 매개변수를 배열로 받는다. 그렇기에 배열 요소를 함수 매개변수로 사용해야 할 때 유용하다.
+
+```javascript
+const arr = [2, 3, -5, 15, 7];
+Math.min.apply(null, arr); // -5
+Math.max.apply(null, arr); // 15
+
+const newBruce = [1940, "martial artist"];
+update.call(bruce, ...newBruce); // apply(bruce, newBruce)와 같다.
+Math.min(...arr); // -5
+Math.max(...arr); // 15
+```
+
+Math.min와 Math.max는 this와 관계없이 작동되기에 null이외에 아무값이나 넣어도 돌아간다.
+
+ES6의 확장 연산자(...)를 사용해도 apply와 같은 결과를 얻을 수 있다.
+
+```javascript
+const updateBruce = update.bind(bruce);
+
+updateBruce(1904, "actor");
+// bruce는 이제 { name: "Bruce", birthYear: 1904, occupation: "actor"}
+updateBruce(madeline, 1274, "king"); 
+// bruce는 이제 { name: "Bruce", birthYear: 1274, occupation: "king"}
+// madeline은 변하지 않는다.
+
+const updateBruce1949 = update.bind(bruce, 1949);
+// 태어난 해가 1949로 항상 고정
+updateBruce1949("singer, songwriter");
+// bruce는 이제 { name: "Bruce", birthYear: 1949, occupation: "singer, songwriter"}
+```
+
+bind를 사용하면 함수의 this 값을 영구적으로 바꿀 수 있다. call이나 apply, 다른 bind와 함께 호출하더라도 this 값이 bruce가 되도록 하려면 bind를 사용한다.
+
+bind는 함수의 동작을 영구적으로 바꾸므로 찾기 어려운 버그의 원인이 될 수 있다. 그렇기에 함수의 this가 어디에 묶이는지 정확히 파악하고 사용해야한다.
+
+bind에 매개변수를 넘기면 항상 그 매개변수를 받으면서 호출되는 새 함수를 만드는 효과가 있다.
