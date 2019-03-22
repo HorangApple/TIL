@@ -1304,3 +1304,82 @@ const o = {
 
 일반적으로 this는 객체의 프로퍼티인 함수에서 의미가 있다. 메서드를 호출하면 this는 호출한 메서드를 소유하는 객체가 된다.
 
+```javascript
+const o = {
+    name: 'Wallace',
+    speak() {return `My name is ${this.name}!`}
+}
+o.speak(); // "My name is Wallace!", 함수 호출시 this는 o에 묶임, o에서 함수를 호출한 상황
+const speak = 0.speak;
+speak === o.speak; // true
+speak(); // "My name is undefined!"
+//JS는 이 함수가 어디서 호출하는지 모르니까 name은 undefined된다.
+```
+
+중첩된 함수일 경우 의도한 대로 값을 읽기 위해서는 별도로 `const self=this;`처럼 선언해야한다.
+
+```javascript
+const o ={
+    name:'Julie',
+    greetBackWards: function(){
+        const self = this; // 이후의 다른 함수 안에서 사용하기위해 o를 가리키는 this를 저장
+        function getReverseName(){
+            let nameBackwards = '';
+            for(let i=self.name.length-1; i>=0; i--){
+                nameBackwards += self.name[i];
+            }
+            return nameBackwards;
+        }
+        return `${getReverseName()} si eman ym, olleH`;
+    },
+};
+console.log(o.greetBackWards());
+```
+
+## 6) 함수 표현식과 익명 함수
+
+함수 표현식(function expression)은 함수를 선언하는 한 가지 방법이며, 함수의 이름을 생략하는 익명 함수(anonymous function)이 될 수도 있다. 또한 식별자에 할당할 수도 있고 즉시 호출할 수도 있다.
+
+```javascript
+// 함수 표현식, 이름을 생략한 함수 선언
+const f = function(){
+    //...
+}
+
+// 재귀를 사용하려면 일반적인 함수 선언을 해야한다.
+const g = function f(stop){
+    if(stop) console.log('f stopped');
+    f(true);
+};
+g(false);
+```
+
+함수 선언과 함수 표현식이 완전히 똑같이 보인다면, JS는 컨텍스트를 이용해 구분한다. 즉 ,함수 선언이 표현식으로 사용됐다면 함수 표현식이고 표현식으로 사용되지 않았다면 함수 선언으로 구분한다.
+
+호출할 생각으로 함수를 만든다면 함수 선언을 사용하면 되고, 다른곳에 할당하거나 다른 함수에 넘길 목적으로 함수를 만든다면 함수 표현식을 사용한다.
+
+## 7) 화살표 표기법
+
+화살표 표기법(arrow notation)은 `function`이라는 단어와 중괄호 숫자를 줄이려고 고안된 단축 문법이다.
+
+- function을 생략해도 된다.
+- 함수에 매개변수가 단 하나 뿐이라면 괄호도 생략할 수 있다.
+- 함수 바디가 표현식 하나라면 중괄호와 return 문도 생략할 수 있다.
+
+```javascript
+const f1 = function() {return "hello!";}
+// 또는
+const f1 = () => "hello!";
+
+const f2 = function(name) {return `Hello, ${name}!`;}
+// 또는
+const f2 = name => `Hello, ${name}!`;
+
+const f3 = function(a,b){return a+b;}
+// 또는
+const f3 = (a,b) => a+b;
+```
+
+화살표 함수는 익명 함수를 만들어 다른 곳에 전달하려 할 때 가장 유용하다.
+
+일반적인 함수와 다른 점은 this가 다른 변수와 마찬가지로, 정적으로(lexically) 묶인다는 것이다.

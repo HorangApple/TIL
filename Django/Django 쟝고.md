@@ -1138,4 +1138,3 @@ class Comment(models.Model):
 
 {% endblock %}
 ```
-

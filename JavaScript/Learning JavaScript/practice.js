@@ -1,5 +1,11 @@
-const o = {
-    name: 'Wallace', // 원시 값 프로퍼티
-    // bark() { return 'Woof!';}, 과 동일, ES6부터 가능
-    bark: function() { return 'Woof!';}, // 함수 프로퍼티(메서드)
-}
+const f1 = function() {return "hello!";}
+// 또는
+const f1 = () => "hello!";
+
+const f2 = function(name) {return `Hello, ${name}!`;}
+// 또는
+const f2 = name => `Hello, ${name}!`;
+
+const f3 = function(a,b){return a+b;}
+// 또는
+const f3 = (a,b) => a+b;

@@ -1,2 +1,6 @@
 .idea/
 .vscode/
+.venv/
+*.csv
+*.sqlite3
+*.pdf
