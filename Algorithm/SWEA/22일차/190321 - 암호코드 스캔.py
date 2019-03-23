@@ -56,17 +56,12 @@ def invert16to2():
             if result[k-7*mul:k] in dic:
                 value.append(int(dic[result[k-7*mul:k]]))
                 k-=7*mul
-                if len(value)==8 and value not in values:
-                    if num==20:
-                        print(i)
-                        print(value)
-                    values.append(value)
+                if len(value)==8:
+                    if value not in values:
+                        values.append(value)
                     value=[]
                     mul=1
-                    break
-                elif len(value)==8 and value in values:
-                    value=[]
-                    mul=1
+                    #break <-- 왜 적었을까...
                 continue
             elif result[k-1] =='1' and result[k-7*mul:k] not in dic:
                 if mul*7>k:
@@ -77,7 +72,7 @@ def invert16to2():
 
     for i in values:
         total+=detect(i)
-    print(total, len(values), len(line16))
+    print(total)
 
 
 def detect(value):

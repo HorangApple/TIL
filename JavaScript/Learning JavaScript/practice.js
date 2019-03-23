@@ -1,7 +1,11 @@
-const updateBruce = update.bind(bruce);
+const x = 3;
 
-updateBruce(1904, "actor");
-// bruce는 이제 { name: "Bruce", birthYear: 1904, occupation: "actor"}
-updateBruce(madeline, 1274, "king"); 
-// bruce는 이제 { name: "Bruce", birthYear: 1274, occupation: "king"}
-// madeline은 변하지 않는다.
+function f() {
+    console.log(x);  // 3
+    console.log(y);  // 5, y는 정적 스코프에 해당
+}
+
+{
+    y=5;
+    f();
+}
