@@ -1,6 +1,3 @@
-(function(){
-    'use strict';
-    // 코드를 전부 이 안에 작성한다.
-    // 이 코드와 함 께 동작하는 다른 스크립트는
-    // 스트릭트 모드에 영향받지 않는다.
-})();
+const arr = [{id:5,name:"Suzanne"},{id:7,name:"Jim"}]
+arr.find(o => o.id === 5); // 객체 {id:5,name:"Suzanne"}
+arr.find(o => o.id === 2); // undefined
