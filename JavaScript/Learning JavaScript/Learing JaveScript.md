@@ -1927,7 +1927,483 @@ findIndex는 일치하는 것을 찾지 못했을 때 -1을 반환하고 보조 
 const arr = [{id:5,name:"Suzanne"},{id:7,name:"Jim"}]
 arr.find(o => o.id === 5); // 객체 {id:5,name:"Suzanne"}
 arr.find(o => o.id === 2); // undefined
+
+const arr = [1,17,16,5,4,16,10,3,49]
+arr.find((x,i)=>i>2 && Number.isInteger(Math.sqrt(x))); // 4
 ```
 
 find는 조건에 맞는 요소의 인덱스가 아닌 요소 자체를 원할 때 사용한다. find는 findIndex와 마찬가지로 검색 조건을 함수로 전달할 수 있다. 조건에 맞는 요소가 없을 때는 undefined를 반환한다.
 
+find와 findIndex에 전달하는 함수는 배열의 각 요소를 첫 번째 매개변수로 받고, 현재 요소의 인덱스와 배열 자체도 매개변수로 받는다. 이런 점에서 다양하게 응용할 수 있다.
+
+```javascript
+class Person{
+    constructor(name){
+        this.name = name;
+        this.id = Person.nextId++;
+    }
+}
+Person.nextId = 0;
+const jamie = new Person("Jamie"),
+juliet = new Person("Juliet"),
+peter = new Person("Peter"),
+jay = new Person("Jay");
+const arr = [jamie,juliet,peter,jay];
+
+// 옵션 1: ID를 직접 비교하는 방법
+arr.find(p => p.id === juliet.id); // juliet 객체
+
+// 옵션 2: "this" 매개변수를 이용하는 방법
+arr.find(function(p){
+    return p.id === this.id
+}, juliet); // juliet 객체
+```
+
+find와 findIndex에 전달하는 함수의 this도 수정할 수 있다. 이를 이용해서 함수가 객체의 메서드인 것처럼 호출할 수 있다. 
+
+```javascript
+const arr = [5,7,12,15,17];
+arr.some(x => x%2 === 0); // ture; 12는 짝수이다.
+arr.some(x => Number.isInteger(Math.sqrt(x))); // false; 제곱수가 없다.
+
+const arr = [4,6,16,36];
+arr.every(x => x%2 === 0); // true; 홀수가 없다.
+arr.every(x => Number.isInteger(Math.sqrt(x))); // false; 6은 제곱수가 아니다.
+```
+
+some은 조건에 맞는 요소를 찾으면 즉시 검색을 멈추고 true를 반환하며, 조건에 맞는 요소를 찾지 못하면 false를 반환한다.
+
+every는 배열의 모든 요소가 조건에 맞아야 true를 반환하며 그렇지 않다면 false를 반환한다. every는 조건에 맞지 않는 요소를 찾아야만 검색을 멈추고 false를 반환한다. 조건에 맞지않는 요소를 찾지 못하면 배열 전체를 검색한다.
+
+some과 every도 콜백 함수를 호출할 때 this로 사용할 값을 두 번째 매개변수로 받을 수 있다.
+
+
+## 4) map과 filter (반환)
+map은 배열 요소를 변형한다. 일정한 형식의 배열을 다른 형식으로 바꿔야 할 때 map을 사용한다. 
+
+```javascript
+const cart = [ {name:"Widget", price:9.95},{name:"Gadget",price:22.95}];
+const names = cart.map(x => x.name); // ["Widget","Gadget"]
+const prices = cart.map(x => x.price); // [9.95,22.95]
+const discountPrices = prices.map(x => x*0.8) // [7.96,18.36]
+```
+
+콜백 함수는 각 요소에서 호출될 때 요소 자체와 요소 인덱스, 배열 전체를 매개변수로 받는다(배열 매개변수는 유유용하지 않다). 
+
+```javascript
+const items = ["Widget","Gadget"];
+const prices = [9.95,22.95];
+const cart = items.map((x,i) => ({name:x,price:prices[i]}));
+// cart: [{name:"Widget",price:9.95},{name:"Gadget",price:22.95}]
+```
+
+객체를 괄호로 감싼 이유는, 이렇게 하지 않으면 화살표 표기법에서 객체 리터럴의 중괄호를 블록으로 판단하기 때문이다.
+
+```javascript
+// 카드 덱을 만든다.
+const card = [];
+for(let suit of ['H','C','D','S'])
+    for(let value=1; value<=13; value++)
+        card.push({suit,value});
+
+// value 가 2인 카드
+card.filter(c => c.value === 2);
+
+// 다이아몬드
+cards.filter(c => c.suit === 'D'); // length: 13
+// 킹,퀸,주니어
+cards.filter(c => c.value > 10); // length: 12
+```
+
+filter는 배열에서 필요한 것들만 남길 목적으로 만들어졌다. filter는 map과 마찬가지로 사본을 반환하며 새 배열에는 필요한 요소만 남는다. 어떤 요소를 남길지 판단할 함수를 넘겨도 된다.
+
+## 5) 배열의 마법 reduce
+map이 배열의 각 요소를 변형한다면 reduce는 배열 자체를 변형한다. reduce라는 이름은 이 메서드가 보통 배열을 값 하나로 줄이는 데 쓰이기 때문에 붙여졌다.
+
+reduce가 반환하는 값 하나는 객체일 수도 있고, 다른 배열일 수도 있다. map과 filter를 비롯한 여러 배열 메서드의 동작을 대부분 대신할 수 있다.
+
+```javascript
+const arr = [5,7,2,4];
+// 누적값이 0부터 시작
+const sum = arr.reduce((a,x) => a += x,0); // 18
+// 누적값이 undefined부터 시작
+const sum = arr.reduce((a,x) => a += x); // 18
+```
+
+reduce 역시 콜백 함수를 받는다. 첫번째 매개변수는 배열이 줄어드는 대상인 어큐뮬레이터(accumulator)이다. 두 번째 매개변수부터는 콜백의 순서대로 현재 배열요소, 현재 인덱스, 배열 자체가 입력된다.
+
+누적값이 제공되지 않으면 reduce는 첫 번째 배열 요소를 초깃값으로 보고 두 번째 요소에서부터 함수를 호출한다.
+
+```javascript
+const words = ["Beachball","Rodeo","Angel",
+"Aardvark","Xylophone","November","Chocolate",
+"Papaya","Uniform","Joker","Clover","Bali"];
+
+const alphabetical = words.reduce((a,x)=>{
+    // 단어의 알파벳 첫 글자를 index로 배열 생성 (없다면)
+    if(!a[x[0]]) a[x[0]] = [];
+    a[x[0]].push(x);
+    return a;
+}, {});
+
+console.log(alphabetical)
+// { B: [ 'Beachball', 'Bali' ],
+//   R: [ 'Rodeo' ],
+//   A: [ 'Angel', 'Aardvark' ],
+//   X: [ 'Xylophone' ],
+//   N: [ 'November' ],
+//   C: [ 'Chocolate', 'Clover' ],
+//   P: [ 'Papaya' ],
+//   U: [ 'Uniform' ],
+//   J: [ 'Joker' ] }
+```
+
+## 6) 삭제되거나 정의되지 않은 요소들
+```javascript
+const arr = Array(10).map(function(x) {return 5})
+console.log(arr) // arr의 모든 요소는 undefined
+
+const arr = [1,2,3,4,5];
+delete arr[2];
+arr.map(x => 0); // [0,0,undefined,0,0]
+```
+Array메서드인 map과 filter, reduce는 삭제되거나 정의되지 않은 요소들에서 콜백 함수를 호출하지 않는다.
+
+배열에 delete를 사용할 일은 거의 없으니 이런 문제가 발생할 가능성은 낮다.
+
+## 7) 문자열 병합
+```javascript
+const arr = [1,null,"hello","world",true,undefined];
+delete arr[3];
+arr.join(); // "1,,hello,,true,"
+arr.join(''); // "1hellotrue"
+arr.join(' -- '); // "1 -- -- hello -- -- true --"
+```
+Array.prototype.join은 매개변수로 구분자 하나를 받고 요소들을 하나로 합친 문자열을 반환한다. 이 매개변수가 생략됐을 때의 기본값은 쉼표이며, 문자열 요소를 합칠 때 정의되지 않은 요소, 삭제된 요소, null, undefined는 모두 빈 문자열로 취급한다.
+
+
+# Chapter 9 객체와 객체지향 프로그래밍
+JS 객체 역시 컨테이너지만, 크게 보면 다음 두 가지 측면에서 배열과 다르다. 
+- 배열은 값을 가지며 각 값에는 숫자형 인덱스가 있다. 객체는 프로퍼티를 가지며 각 프로퍼티에는 문자열이나 심볼 인덱스가 있다.
+- 배열에는 순서가 있다. 즉, arr[0]은 항상 arr[1]보다 앞에 있다. 반면 객체에는 그런 순서가 보장되지 않는다. obj.a가 obj.b보다 앞에 있다고 말할 수 없다.
+
+객체를 정말로 객체답게 만드는 것은 프로퍼티이며 프로퍼티는 키(문자열 또는 심볼)과 값으로 구성된다. 객체의 진짜 특징은 키를 통해 프로퍼티에 접근 할 수 있다는 점이다.
+
+## 1) 프로퍼티 나열
+일반적으로 어떤 컨테이너의 콘텐츠를 리스트로 나열한다고 하면, 보통 배열을 생각하지 객체를 생각하지 않는다. 하지만 객체도 분명 컨테이너이고 프로퍼티 나열을 지원한다.
+
+프로퍼티 나열에서 기억해야 할 것은 순서가 보장되지 않는다는 점이다. 브라우저나 노드 등의 프로그램에서 속도나 효율 향상을 목적으로 언제든 바뀔 수도 있다.
+
+### 1-1 for...in
+```javascript
+const SYM = Symbol();
+const o = {a:1,b:2,c:3,[SYM]:4};
+for(let prop in o){
+    if (!o.hasOwnProperty(prop)) continue;
+    console.log(`${prop}: ${o[prop]}`);
+}
+// a: 1
+// b: 2
+// c: 3
+```
+hasOwnProperty는 for...in에 나타날 위험을 제거하기 위해 사용한다. 생략해도 아무 차이도 없으나 다른 타입의 객체, 특히 다른 사람이 만든 객체의 프로퍼티를 나열하다 보면 예상치 못한 상황이 생길 수도 있다.
+
+for...in 루프에는 키가 심볼인 프로퍼티는 포함되지 않다.
+
+for..in을 배열에 사용할 수도 있겠지만, 배열에는 일반적인 for 루프나 forEach를 사용하는 것이 좋다.
+
+### 1-2 Object.keys
+```javascript
+const SYM = Symbol();
+const o = {a:1,b:2,c:3,[SYM]:4};
+Object.keys(o).forEach(prop => console.log(`${prop}: ${o[prop]}`));
+```
+Object.keys는 객체에서 나열 가능한 문자열 프로퍼티를 배열로 반환한다.
+
+객체의 프로퍼티 키를 배열로 가져와야 할 때는 Object.keys가 편리하다.
+
+## 2) 객체지향 프로그래밍
+OOP의 개념 중 일부는 1950년대부터 있었지만, 시뮬러 67과 스몰토크가 등장하면서 OOP의 형태가 갖춰지기 시작했다.
+
+객체는 데이터와 기능을 논리적으로 묶어놓은 것이다. OOP는 우리가 사물을 이해하는 자연스러운 방식을 반영하도록 설계되었다.
+
+클래스는 어떤 자동차처럼 추상적이고 범용적인 것이다. 인스턴스는 특정 자동차처럼 구체적이고 한정적인 것이다. 그것의 기능은 메서드라고 부른다. 클래스에 속하지만 특정 인스턴스에 묶이지 않는 기능을 클래스 메서드라고 부른다. 인스턴스를 처음 만들 때는 생성자(constructor)가 실행된다. 생성자는 객체 인스턴스를 초기화한다.
+
+예를 들어 운송 수단을 자동차의 수퍼 클래스(superclass)라 부르고, 자동차를 운송 수단의 서브클래스(subclass)라 부른다.
+
+### 2-1 클래스와 인스턴스 생성
+ES6 이전에 JS에서 클래스를 만드는 건 직관적이도 않고 무척 번거로운 일이었다. ES6에서는 클래스를 만드는 간편한 새 문법을 도입했다.
+```javascript
+class Car{
+    constructor(make,model){
+        this.make = make;
+        this.model = model;
+        this.userGears = ['P','N','R','D'];
+        this.userGear = this.userGears[0];
+    }
+    shift(gear){
+        if(this.userGears.indexOf(gear) < 0)
+            throw new Error(`Invalid gear: ${gear}`);
+        this.userGear = gear;
+    }
+}
+
+const car1 = new Car("Tesla","Model S"); // Car의 인스턴스 car1
+const car2 = new Car("Mazda","3i"); // Car의 인스턴스 car2
+
+car1 instanceof Car // ture, 인스턴스 확인
+car1 instanceof Array // False
+
+car1.shift('D');
+car2.shift('R');
+
+```
+여기서 this 키워드는 의도한 목적, 즉 메서드를 호출한 인스턴스를 가리키는 목적으로 쓰였다. 클래스를 만들 때 사용한 this 키워드는 나중에 만들 인스턴스의 플레이스홀더이다. 메서드를 호출하는 시점에서 this가 무엇인지 알 수 있게 된다.
+
+```javascript
+car1.userGear // "D"
+car2.userGear // "R"
+```
+Car 클래스에 shift 메서드를 사용하면 잘못된 기어를 선택하는 실수를 방지할 수 있을 것처럼 보인다. 하지만 완벽하게 보호되는 것은 아니다. 직접 car1.userGear = 'X'라고 설정한다면 막을 수 없다. 대부분의 객체지향 언어에서는 메서드와 프로퍼티에 어느 수준까지 접근할 수 있는지 대단히 세밀하게 설정할 수 있는 메커니즘을 제공해서 직접 선언하는 것을 막을 수 있다. 하지만 JS에는 그런 메커니즘이 없기에 다른 방법을 사용해야한다.
+
+그러한 약속으로 외부에서 접근하면 안 되는 프로퍼티 이름 앞에 밑줄을 붙이는 방법을 사용한다. 이렇게 하여 실수를 빨리 찾을 수 있도록 한다.
+
+```javascript
+const Car = (function(){
+
+    const carProps = new WeakMap();
+
+    class Car{
+        constructor(make,model){
+            this.make = make;
+            this.model = model;
+            this._userGears = ['P','N','R','D'];
+            carProps.set(this,{userGear:this._userGears[0]});
+        }
+        get userGear() {return carProps.get(this).userGear;}
+        set userGear(value){
+            if(this._userGears.indexOf(value) < 0)
+                throw new Error(`Invalid gear: ${value}`);
+            carProps.get(this).userGear = value;
+        }
+        shift(gear){this.userGear = gear;}
+    }
+    return Car;
+})();
+```
+
+프로퍼티를 꼭 보호해야 한다면 위와 같이 스코프를 이용해 보호하는 WeakMap 인스턴스를 사용할 수 있다. 
+
+여기서는 즉시 호출하는 함수 표현식을 써서 WeakMap을 클로저로 감싸고 바깥에서 접근할 수 없게 했다. 
+
+프로퍼티 이름에 심볼을 쓰는 방법도 있으나 역시 접근 불가능한 것은 아니므로 한계가 있다.
+
+### 2-2 클래스는 함수다
+ES6에서 class 키워드를 도입하기 전까지, 클래스를 만든다는 것은 곧 클래스 생성자로 사용할 함수를 만든다는 의미였다.
+
+```javascript
+// ES5에서의 클래스와 같은 문법 구현
+function Car(make,model){
+    this.make = make;
+    this.model = model;
+    this._userGears = ['P','N','R','D'];
+    this._userGear = this._userGears[0];
+}
+
+class Es6Car {}
+function Es5Car {}
+> typeof Es6Car // "function"
+> typeof Es5Car // "function"
+```
+
+사실 class는 단축 문법일 뿐이며 JS의 클래스 자체가 바뀐 것은 아니다. 클래스는 함수일 뿐이다.
+
+### 2-3 프로토타입
+클래스의 인스턴스에서 사용할 수 있는 메서드라고 하면 그건 프로토타입(prototype) 메서드를 말하는 것이다. Array의 forEach를 Array.prototype.forEach라고 쓰는 것과 동일하다.
+
+최근에는 프로토타입 메서드를 Array#forEach 처럼 #으로 표시하는 표기법이 널리 쓰인다.
+
+모든 함수에는 prototype이라는 특별한 프로퍼티가 있다. 일반적인 함수에서는 프로토타입을 사용할 일이 없지만, 객체 생성자(클래스)로 동작하는 함수에서는 프로토타입이 대단히 중요하다.
+
+함수의 prototype 프로퍼티가 중요해지는 시점은 new 키워드로 새 인스턴스를 만들었을 때이다. new 키워드로 만든 새 객체는 생성자의 prototype 프로퍼티에 접근할 수 있다. 객체 인스턴스는 생성자의 prototype 프로퍼티를 __proto__ 프로퍼티에 저장한다. 밑줄 두 개로 둘러싼 프로퍼티는 JS의 내부 동작 방식에 영향을 미치기에 되도록 손대지 않는 것이 좋다.
+
+프로토타입에서 중요한 것은 동적 디스패치라는 메커니즘이다. 객체의 프로퍼티나 메서드에 접근하려 할 때 그런 프로퍼티나 메서드가 존재하지 않으면 JS는 객체의 프로포타입에서 해당 프로퍼티나 메서드를 찾는다. 클래스의 인스턴스는 모두 같은 프로토타입을 공유하므로 프로토타입에 프로퍼티나 메서드가 있다면 해당 클래스의 인스턴스는 모두 그 프로퍼티나 메서드에 접근할 수 있다.
+
+클래스의 프로토타입에서 데이터 프로퍼티를 수정하는 것은 일반적으로 권장하지 않는다. 인스턴스 중 하나에 동일 이름의 프로퍼티가 있다면 해당 인스턴스는 프로토타입에 있는 값이 아닌 인스턴스에 있는 값을 사용한다. 이는 혼란과 버그를 초래할 수 있기에 초깃값이 필요하다면 생성자에서 만드는 편이 낫다.
+
+```javascript
+// Car 클래스는 이전에 만든 거
+const car1 = new Car();
+const car2 = new Car();
+car1.shift === Car.prototype.shift; // true
+car1.shift('D');
+car1.shift('d'); // error
+car1.userGear; // 'D'
+car1.shift === car2.shift // true
+
+car1.shift = function(gear) {this.userGear = gear.toUppercase();}
+car1.shift === Car.prototype.shift; // false
+car1.shift === car2.shift; // false
+car1.shift('d');
+car1.userGear; // 'D'
+```
+
+인스턴스에서 메서드나 프로퍼티를 정의하면 프로토타입에 있는 것을 가리는 효과가 있다. JS는 먼저 인스턴스를 체크하고 거기에 없으면 프로토타입을 체크하기 때문이다.
+
+위의 예제처럼 car1 객체에는 shift 메서드가 없지만, car1.shift('D')를 호출하면 JS는 car1의 프로토타입에서 그런 이름의 메서드를 검색한다. car1에 shift 메서드를 추가하면 이후에 프로토타입의 메서드는 호출되지 않는다. 이것을 통해 동적 디스패치가 어떻게 구현되는지 알 수 있다.
+
+### 2-4 정적 메서드
+인스턴스 메서드 외에도 정적메서드(클래스 메서드)가 있다. 이 메서드는 특정 인스턴스에 적용되지 않는다. 정적 메서드에서 this는 인스턴스가 아니라 클래스 자체에 묶인다. 하지만 일반적으로 정적 메서드에는 this 대신 클래스 이름을 사용하는 것이 좋은 습관이다.
+
+```javascript
+class Car {
+    static getNextVin(){
+        return Car.nextVin++;
+        // this대신 Car를 앞에 쓰면 
+        //정적 메서드라는 점을 상기하기 쉽다.
+    }
+    constructor(maek,model) {
+        this.make = make;
+        this.model = model;
+        this.vin = Car.getNextVin();
+    }
+    static areSimilar(car1,car2) {
+        return car1.make===car2.make && car1.model===car2.model;
+    }
+    static areSame(car1,car2) {
+        return car1.vin===car2.vin;
+    }
+}
+Car.nextVin=0;
+
+const car1 = new Car("Tesla","S");
+const car2 = new Car("Mazda","3");
+const car3 = new Car("Mazda","3");
+
+car1.vin; // 0
+car2.vin; // 1
+car3.vin; // 2
+
+Car.areSimilar(car1,car2); // false
+Car.areSimilar(car2,car3); // ture
+Car.areSame(car2,car3); // false
+Car.areSame(car2,car2); // true
+```
+
+정적 메서드는 클래스에 관련되지만 인스턴스와는 관련이 없는 범용적인 작업에 사용된다. 그리고 여러 인스턴스를 대상으로 하는 작업에도 종종 쓰인다.
+
+### 2-5 상속
+상속은 한 단계로 끝나지 않는다. 객체의 프로토타입에서 메서드를 찾지 못하면 자바스크립트는 프로토타입의 프로토타입을 검색한다. 프로토타입 체인은 이런식으로 만들어진다. 조건에 맞는 프로토타입을 찾지 못하면 에러를 일으킨다.
+
+프로토타입 체인에서 가장 적절한 위치에 메서드를 정의해야 효율적인 구조를 만들 수 있다.
+
+```javascript
+class Vehicle {
+    constructor(){
+        this.passengers = [];
+        console.log("Vehicle created");
+    }
+    addPassenger(p) {
+        this.passengers.push(p);
+    }
+}
+
+// Car를 Vehicle의 서브클래스로 만듦
+class Car extends Vehicle {
+    constructor() {
+        // 슈퍼클래스의 생성자를 호출하는 함수
+        super();
+        console.log("Car created");
+    }
+    deployAirbags() {
+        console.log("BWOOSH!");
+    }
+}
+
+const v = new Vehicle();
+v.addPassenger("Frank");
+v.addPassenger("Judy");
+v.passengers; // ["Frank", "Judy"]
+
+const c = new Car();
+c.addPassenger("Alice");
+c.addPassenger("Cameron");
+c.passengers; // ["Alice","Cameron"]
+
+v.deployAirbags(); // error
+c.deployAirbags(); // "BWOOSH!"
+```
+서브클래스에서 super 함수를 반드시 호출해야하며 그렇지 않으면 에러가 일어난다.
+
+예제에서 볼 수 있듯이 상속은 단방향이다.
+
+### 2-6 다형성
+```javascript
+class Motorcycle extends Vehicle {}
+const c = new Car();
+const m = new Motorcycle();
+c instanceof Car; // true
+c instanceof Vehicle // true
+m instanceof Car; // false
+m instanceof Motorcycle; //true
+m instanceof Vehicle; //true
+```
+
+다형성(polymorphism)은 객체지향 언어에서 여러 슈퍼클래스의 멤버인 인스턴스를 가리킨다. JS는 느슨한 타입을 사용하고 어디서든 객체를 쓸 수 있으므로, 어떤 면에서 JS의 객체는 모두 다형성을 갖고 있다고 할 수 있다.
+
+JS의 모든 객체는 루트 클래스인 Object의 인스턴스이다. 즉, 객체 o에서 o instanceof Object는 항상 true이다(__proto__프로퍼티를 수정한다면 다른 결과가 나올수 있으며 건들면 안된다).
+
+### 2-7 객체 프로퍼티 나열 다시보기
+객체 obj와 프로퍼티 x에서, obj.hasOwnProperty(x)는 obj에 프로퍼티 x가 있다면 true를 반환하며, 프로퍼티 x가 obj에 정의되지 않았거나 프로토타입 체인에만 정의되었다면 false를 반환한다.
+
+```javascript
+class Super {
+    constructor() {
+        // 인스턴스에 정의
+        this.name = 'Super';
+        this.isSuper = true;
+    }
+}
+
+// 유효하지만, 권장하지 않는다.
+// 슈퍼클래스의 프로토타입에 직접 정의
+Super.prototype.sneaky = 'not recommended!';
+
+class Sub extends Super {
+    constructor(){
+        super();
+        // 인스턴스에 정의
+        this.name = 'Sub';
+        this.isSub = true;
+    }
+}
+
+const obj = new Sub();
+
+for(let p in obj) {
+    console.log(`${p}: ${obj[p]}` + 
+    (obj.hasOwnProperty(p) ? '' : ' (inherited)'))
+}
+// name: Sub
+// isSuper: true
+// isSub: true
+// sneaky: not recommended! (inherited)
+```
+
+ES6 클래스를 설계 의도대로 사용한다면 데이터 프로퍼티는 항상 프로토타입 체인이 아니라 인스턴스에 정의해야 한다. 하지만 프로퍼티를 프로토타입에 정의하지 못하도록 강제하는 장치는 없으므로 확실히 확인하려면 항상 hasOwnProperty를 사용하는 편이 좋다.
+
+### 2-8 문자열 표현
+```javascript
+class Car {
+    toString() {
+        return `${this.make} ${this.model}: ${this.vin}`;
+    }
+    //...
+}
+```
+모든 객체는 Object를 상속하므로 Object의 메서드는 기본적으로 모든 객체에서 사용할 수 있다. 객체의 기본적인 문자열 표현을 제공하는 toString도 그런 메서드 중 하나이다. 기본 동작은 쓸모 없으나 객체에 관한 중요한 정보를 제공한다면 디버깅에도 유용하고, 객체를 한 눈에 파악할 수 있다.
+
+## 3) 다중 상속, 믹스인, 인터페이스
+다중 상속(multiple inheritance)는 클래스가 슈퍼클래스 두 개를 가지는 기능이며, 슈퍼클래스의 슈퍼클래스가 존재하는 일반적인 상속과는 다르다. 다중 상속은 동일한 메서드가 존재할 때 등의 충돌의 위험이 있다.
+
+JS가 다중 상속이 필요한 문제에 대한 해답으로 내놓은 개념이 믹스인(mixin)이다. 믹스인은 기능을 필요한 만큼 섞어 놓은 것이다. JS는 느슨한 타입을 사용하고 대단히 관대한 언어이므로 그 어떤 기능이라도 언제든, 어떤 객체에든 추가할 수 있다.
