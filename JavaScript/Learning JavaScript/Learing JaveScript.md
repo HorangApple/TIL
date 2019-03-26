@@ -2406,4 +2406,44 @@ class Car {
 ## 3) 다중 상속, 믹스인, 인터페이스
 다중 상속(multiple inheritance)는 클래스가 슈퍼클래스 두 개를 가지는 기능이며, 슈퍼클래스의 슈퍼클래스가 존재하는 일반적인 상속과는 다르다. 다중 상속은 동일한 메서드가 존재할 때 등의 충돌의 위험이 있다.
 
+```javascript
+class InsurancePolicy() {}
+function makeInsurable(o) {
+    o.addInsurancePolicy = function(p) {this.insurancePolicy = p;}
+    o.getInsurancePolicy = function() {return this.insurancePolicy;}
+    o.isInsured = function() {return !!this.insurancePolicy;}
+}
+
+makeInsurable(Car); // error
+
+const car1 = new Car();
+car1.addInsurancePolicy(new InsurancePolicy()); // error
+
+// 되지만 모든 자동차에서 makeInsurable 호출 필요
+const car1 = new Car();
+makeInsurable(car1);
+car1.addInsurancePolicy(new InsurancePolicy()); // works
+
+// 보험 관련 메서드들은 모두 Car 클래스에 정의된 것처럼 동작
+makeInsurable(Car.prototype);
+const car1 =new Car();
+car1.addInsurancePolicy(new InsurancePolicy()); // works
+```
+
 JS가 다중 상속이 필요한 문제에 대한 해답으로 내놓은 개념이 믹스인(mixin)이다. 믹스인은 기능을 필요한 만큼 섞어 놓은 것이다. JS는 느슨한 타입을 사용하고 대단히 관대한 언어이므로 그 어떤 기능이라도 언제든, 어떤 객체에든 추가할 수 있다.
+
+```javascript
+class InsurancePolicy() {}
+const ADD_POLICY = Symbol();
+const GET_POLICY = Symbol();
+const IS_INSURED = Symbol();
+const _POLICY = Symbol();
+function makeInsurable(o) {
+    o[ADD_POLICY] = function(p) { this[_POLICY] = p;}
+    o[GET_POLICY] = function() {return this[_POLICY];}
+    o[IS_INSURED] = function() {return !!this[_POLICY];}
+}
+```
+
+그러나 믹스인이 모든 문제를 해결해 주지는 않기에 심볼을 이용해 문제 일부를 경감 시킬 수 있다. 만약 Car 클래스의 메서드와의 충돌을 방지한다고 하면 위와 같이 믹스인을 작성할 수 있다.
+
