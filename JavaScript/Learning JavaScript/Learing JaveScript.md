@@ -2447,3 +2447,201 @@ function makeInsurable(o) {
 
 그러나 믹스인이 모든 문제를 해결해 주지는 않기에 심볼을 이용해 문제 일부를 경감 시킬 수 있다. 만약 Car 클래스의 메서드와의 충돌을 방지한다고 하면 위와 같이 믹스인을 작성할 수 있다.
 
+# Chapter 10 맵과 셋
+맵(map)과 셋(set)은 ES6에서 새로 도입한 데이터 구조이다.
+
+## 1) 맵
+ES6 이전에는 객체를 사용해야 키와 값을 연결할 수 있었다. 이런 경우에 발생하는 단점은 다음과 같다.
+
+- 프로토타입 체인 때문에 의도하지 않은 연결이 생길 수 있다.
+- 객체 안에 연결된 키와 값이 몇 개나 되는지 쉽게 알아낼 수 있는 방법이 없다.
+- 키는 반드시 문자열이나 심볼이어야 하므로 객체를 키로 써서 값과 연결할 수 없다.
+- 객체는 프로퍼티 순서를 전혀 보장하지 않는다.
+
+Map 객체는 이들 결함을 모두 해결했고, 키와 값을 연결할 목적이면 Map 객체를 사용하는 것이 좋다.
+
+```javascript
+const u1 = {name:'Cynthia'};
+const u2 = {name:'Jackson'};
+const u3 = {name:'Olive'};
+const u4 = {name:'James'};
+
+// #1
+const userRoles = new Map();
+userRoles.set(u1,'User');
+userRoles.set(u2,'User');
+userRoles.set(u3,'Admin');
+
+// #2 체인으로 연결
+const userRoles = new Map();
+userRoles
+    .set(u1,'User')
+    .set(u2,'User')
+    .set(u3,'Admin');
+
+// #3 생성자에 배열의 배열을 넘김
+const userRoles = new Map([
+    [u1,'User'],
+    [u2,'User'],
+    [u3,'Admin'],
+]);
+```
+
+위와 같이 선언을 하면 된다.
+
+```javascript
+userRoles.has(u1); // true, 키 존재 확인
+userRoles.get(u4); // undefined
+userRoles.get(u1); // 'User'
+userRoles.set(u1,'Admin'); // 값 교체
+userRoles.get(u1); // 'Admin'
+userRoles.size; // 3
+```
+
+has(), get(), set() 메서드를 사용하여 데이터를 다룰 수 있다.
+
+```javascript
+for(let u of userRoles.keys())
+    console.log(u.name);
+// Cynthia
+// Jackson
+// Olive
+
+for(let r of userRoles.values())
+    console.log(r);
+// Admin
+// User
+// Admin
+
+for(let ur of userRoles.entries())
+    console.log(`${ur[0].name}: ${ur[1]}`);
+// Cynthia: Admin
+// Jackson: User
+// Olive: Admin
+
+//맵도 분해(destruct)할 수 있다.
+for(let [u,r] of userRoles.entries())
+    console.log(`${u.name}: ${r}`);
+// Cynthia: Admin
+// Jackson: User
+// Olive: Admin
+
+// entries() 메서드는 맵의 기본 이터레이터라 
+// 아래와 같이 단축해서 사용할 수 있다.
+for(let [u,r] of userRoles)
+    console.log(`${u.name}: ${r}`);
+// Cynthia: Admin
+// Jackson: User
+// Olive: Admin
+```
+
+keys() 메서드는 맵의 키를, values() 메서드는 값을, entries() 메서드는 첫 번째 요소가 키이고 두 번째 요소가 값인 배열을 각각 반환한다. 모두 이터러블 객체를 반환하므로 for...of 루프를 사용할 수 있다.
+
+```javascript
+// 배열이 필요하면 확산 연산자(spread operator) 사용
+[...userRoles.values()]; // ["Admin","User","Admin"]
+
+// 맵의 한 요소 삭제
+userRoles.delete(u2);
+userRoles.size; // 2
+
+// 맵의 요소를 모두 삭제
+userRoles.clear();
+userRoles.size; // 0
+```
+
+## 2) 위크맵
+WeakMap은 다음 차이점을 제외하면 Map과 같다.
+- 키는 반드시 객체
+- WeakMap의 키는 가비지 콜렉션에 포함될 수 있음
+- WeakMap은 이터러블이 아니며 clear() 메서드도 없다.
+
+```javascript
+const SecretHolder = (function(){
+    const secrets = new WeakMap();
+    return class {
+        setSecret(secret){
+            secrets.set(this, secret);
+        }
+        getSecret(){
+            return secrets.get(this);
+        }
+    }
+})();
+
+const a = new SecretHolder();
+const b = new SecretHolder();
+
+a.setSecret('secret A');
+b.setSecret('secret B');
+a.getSecret(); // 'secret A'
+b.getSecret(); // 'secret B'
+```
+
+이러한 특징으로 객체 인스턴스의 private 키를 저장하기에 알맞다.
+예제는 위크맵과 그 위크맵을 사용하는 클래스와 함께 IIFE에 넣었다. 결과적으로 비밀을 저장할 때 setSecret 메서드를 쓰고, 보려 할 때는 getSecret 메서드를 쓰는 SecretHolder 클래스를 얻게 된다.
+
+## 3) 셋
+```javascript
+const roles = new Set();
+roles.add("User"); // Set ["User"]
+roles.add("Admin"); // Set ["User", "Admin"]
+
+roles.size; // 2
+roles.add("User"); // Set ["User", "Admin"]
+roles.size; // 2
+
+roles.delete("Admin"); // true
+roles; // Set ["User"]
+roles.delete("Admin"); // false
+```
+
+셋은 중복을 허용하지 않는 데이터 집합이다.
+
+## 4) 위크셋
+```javascript
+const naughty = new WeakSet();
+
+const children = [
+    {name: "Suzy"},
+    {name: "Derek"},
+];
+
+naughty.add(children[1]);
+
+for(let child of children){
+    if(naughty.has(child))
+        console.log(`Coal for ${child.name}!`);
+    else
+        console.log(`Presents for ${child.name}!`);
+}
+// Presents for Suzy!
+// Coal for Derek!
+```
+
+위크셋은 객체만 포함할 수 있으며, 이 객체들은 가비지 콜렉션의 대상이 된다. WeakMap과 마찬가지로 WeakSet도 이터러블이 아니므로 위크 셋의 용도는 매우 적다. 주어진 객체가 셋 안에 존재하는지 여부를 알아보는 것에만 사용된다.
+
+# Chapter 11 예외와 에러 처리
+예외 처리(exeception handling)는 에러를 컨트롤하는 메커니즘이다. 예상치 못한 상황에 대처하는 방식이며 예상한 에러와 예상치 못한 에러(예외)를 구분하는 기준은 불명확하고 상황에 따라 크게 달라진다.
+
+## 1) Error 객체
+```javascript
+// instanceof 연산자와 써서 Error 인스턴스가 반환됐는지 확인
+// 에러메시지는 message 프로퍼티에 있다.
+function validateEmail(email){
+    return email.match(/@/) ?
+        email :
+        new Error(`invalid email: ${email}`);
+}
+
+const email = "janedoe.com";
+
+const validatedEmail = validateEmail(email);
+if(validatedEmail instanceof Error){
+    console.error(`Error: ${validatedEmail.message}`);
+} else {
+    console.log(`Valid email: ${validatedEmail}`);
+}
+// Error: invalid email: janedoe.com
+```
+JS에는 내장된 Error 객체가 있고 이 객체는 에러 처리에 간편하게 사용할 수 있다. Error 인스턴스를 만들면서 에러 메시지를 지정할 수 있다. 이 인스턴스는 에러와 통신하는 수단이다.
