@@ -41,7 +41,7 @@ for i in range(E):
     u,v,w = map(int, input().split())
     G[u].append((v,w))
     G[v].append((u,w))
-    G[w].append((u,v))
+
 D = [0xfffff]*(V+1) # D[1] = 0, 나머지 큰 값, 값 설정하는 것이 중요하다.
 P = [i for i in range(V+1)]
 D[1] = 0

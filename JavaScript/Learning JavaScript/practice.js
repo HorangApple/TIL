@@ -1,14 +1,14 @@
-function validateEmail(email){
-    return email.match(/@/) ?
-        email :
-        new Error(`invalid email: ${email}`);
+try {
+    console.log("this line is executed...");
+    throw new Error("whoops");
+    console.log("this line is not...");
+} catch(err) {
+    console.log("there was an error...");
+} finally {
+    console.log("...always executed");
+    console.log("perform cleanup here");
 }
-
-const email = "janedoe.com";
-
-const validatedEmail = validateEmail(email);
-if(validatedEmail instanceof Error){
-    console.error(`Error: ${validatedEmail.message}`);
-} else {
-    console.log(`Valid email: ${validatedEmail}`);
-}
+// this line is executed...
+// there was an error...
+// ...always executed
+// perform cleanup here

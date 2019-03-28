@@ -19,7 +19,7 @@ DFS로 최단 경로를 찾으려면 가능한 모든 경로들을 찾아봐야�
 '''
 def dfs(v): # v: 시작점
     stack = [] # 스택
-    visited = [False] * (V+1)
+    visited = [False] * (n+1)
     visited[v] = True
     print(v, end=' ')
     stack.append(v)
@@ -47,7 +47,7 @@ def dfs2(v): # v: 현재 방문 정점
 
 
 # 인접 리스트 구현
-V, E = map(int, input().split())
+n, e = map(int, input().split())
 G=[[] for _ in range(V+1)]
 for i in range(E):
     u,v = map(int,input().split())

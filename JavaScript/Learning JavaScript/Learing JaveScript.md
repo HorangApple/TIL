@@ -2627,7 +2627,7 @@ for(let child of children){
 ## 1) Error 객체
 ```javascript
 // instanceof 연산자와 써서 Error 인스턴스가 반환됐는지 확인
-// 에러메시지는 message 프로퍼티에 있다.
+// 에러메시지는 Error 인스턴스의 message 프로퍼티에 있다.
 function validateEmail(email){
     return email.match(/@/) ?
         email :
@@ -2644,4 +2644,119 @@ if(validatedEmail instanceof Error){
 }
 // Error: invalid email: janedoe.com
 ```
-JS에는 내장된 Error 객체가 있고 이 객체는 에러 처리에 간편하게 사용할 수 있다. Error 인스턴스를 만들면서 에러 메시지를 지정할 수 있다. 이 인스턴스는 에러와 통신하는 수단이다.
+JS에는 내장된 Error 객체가 있고 이 객체는 에러 처리에 간편하게 사용할 수 있다. Error 인스턴스를 만들면서 에러 메시지를 지정할 수 있다. 이 인스턴스는 에러와 통신하는 수단이다. 주로 예외 처리에서 더 자주 사용된다.
+
+## 2) try/catch와 예외 처리
+뭔가를 시도(try)하고, 예외가 있으면 그것을 캐치(catch)한다는 것처럼 예상치 못한 에러를 대치할 수 있다.
+
+```javascript
+const email = null;
+
+try {
+    const validatedEmail = validateEmail(email);
+    if(validatedEmail instanceof Error) {
+        console.error(`Error: ${validatedEmail.message}`);
+    } else {
+        console.log(`Valid email: ${validatedEmail}`);
+    }
+} catch(err) {
+    console.error(`Error: ${err.message}`);
+}
+
+// Error: Cannot read property 'match' of null
+```
+
+에러를 캐치했으므로 프로그램은 멈추지 않는다. 엘어가 일어나는 즉시 catch 블록으로 이동한다. 즉, validatedEmail을 호출한 다음에 있는 if문은 실행되지 않는다. try 블록 안에 쓸 수 있는 문의 숫자에 제한은 없고 그중 에러가 일어나는 문에서 실행 흐름을 catch 블록으로 넘긴다.
+
+## 3) 에러 일으키기
+JS가 에러를 일으키기만 기다릴 필요 없이 직접 에러를 일으켜서(throw,raise) 예외 처리 작업을 시작할 수 있다.
+JS는 에러를 일으킬 때 꼭 객체만이 아니라 숫자나 문자열 등 어떤 값이든 catch 절에 넘길 수 있다. 하지만 Error 인스턴스를 넘기는 것이 편하다. 대부분의 catch 블록은 Error 인스턴스를 받을 것이라고 간주하고 만든다.
+
+```javascript
+function billPay (amount, payee, account) {
+    if(amount > account.balance)
+        throw new Error("insufficient funds");
+    account.transfer(payee, amount);
+}
+```
+
+throw를 호출하면 현재 함수는 즉시 실행을 멈춘다. 따라서 위 예제에서 account.transfer가 호출되지 않으므로 잔고가 부족한데도 현금을 찾아가는 사고는 발생하지 않는다.
+
+## 4) 예외 처리와 호출 스택
+프로그램이 함수 a를 호출하고, 그 함수는 다른 함수 b를 호출하고, 호출된 함수는 또 다른 함수 c를 호출하는 일이 반복된다. JS 인터프리터는 이런 과정을 모두 추적하고 있어야한다. a, b 함수들은 완료되지 않고 쌓이는데 이를 호출 스택(call stack)이라 부른다.
+
+에러는 호출 스택 어디에서든 캐치할 수 있다. 어디에서 이 에러를 캐치하지 않으면 JS 인터프리터는 프로그램을 멈춘다. 이런 것을 처리하지 않은(unhandled) 예외, 캐치하지 않은(uncaught) 예외라고 부르며 프로그램이 충돌하는 원인이 된다. 에러가 일어날 수 있는 곳은 다양해서 모두다 캐치하기는 어렵다.
+
+```javascript
+function a() {
+    console.log('a: calling b');
+    b();
+    console.log('a: done');
+}
+function b() {
+    console.log('b: calling c');
+    c();
+    console.log('b: done');
+}
+function c() {
+    console.log('c: throwing error');
+    throw new Error('c error');
+    console.log('c: done');
+}
+function d() {
+    console.log('d: calling c');
+    c();
+    console.log('d: done');
+}
+
+try {
+    a();
+} catch(err) {
+    console.log(err.stack);
+}
+
+try {
+    d();
+} catch(err) {
+    console.log(err.stack);
+}
+// a: calling b
+// b: calling c
+// c: throwing error
+// Error: c error
+// ...생략
+// d: calling c
+// c: throwing error
+// Error: c error
+// ...생략
+```
+
+에러를 캐치하면 호출 스택에서 발생한 문제를 해결하는데에 유용한 정보를 얻을 수 있다.
+
+## 5) try...catch...finally
+try 블록의 코드가 HTTP 연결이나 파일 같은 일종의 '자원'을 처리할 때가 있다. 프로그램에서 이 자원을 계속 가지고 있을 수 없으므로 에러 여부와 상관 없이 어느 시점에서는 이 자원을 해제해야 한다. 만약 에러가 난다면 자원을 해제할 기회가 사라지므로 try 블록에서 자원을 해제하는 건 안전하지 않다. 또한 에러가 일어나지 않으면 실행되지 않는 catch 블록 역시 안전하지 않다. 이런 상황에서 finally 블록이 필요하다. 
+
+```javascript
+try {
+    console.log("this line is executed...");
+    throw new Error("whoops");
+    console.log("this line is not...");
+} catch(err) {
+    console.log("there was an error...");
+} finally {
+    console.log("...always executed");
+    console.log("perform cleanup here");
+}
+// this line is executed...
+// there was an error...
+// ...always executed
+// perform cleanup here
+```
+
+finally 블록은 에러가 일어나든, 일어나지 않든 반드시 호출된다.
+
+예외 처리 자체도 대가를 지불해야 하는 연산이다. 예외는 catch 블록을 만날 때까지 스택을 거슬러 올라가야 하므로 JS 인터프리터가 예외를 계속 추적하고 있어야 한다. 자주 실행되는 코드에서 예외를 발생시키면 성능 문제가 발생할 가능성이 있다.
+
+프로그램을 일부러 멈추려 하는 게 아니라면, 예외를 일으켰으면 반드시 캐치해야 한다. 원인 없는 결과는 없는 법이다. 예외 처리는 예상할 수 없는 상황에 대비한 마지노선으로 생각하고, 예상할 수 있는 에러는 조건문으로 처리하는 것이 최선이다.
+
+# Chapter 12 이터레이터와 제너레이터
