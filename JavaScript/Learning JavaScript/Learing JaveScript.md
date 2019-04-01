@@ -2760,3 +2760,192 @@ finally 블록은 에러가 일어나든, 일어나지 않든 반드시 호출�
 프로그램을 일부러 멈추려 하는 게 아니라면, 예외를 일으켰으면 반드시 캐치해야 한다. 원인 없는 결과는 없는 법이다. 예외 처리는 예상할 수 없는 상황에 대비한 마지노선으로 생각하고, 예상할 수 있는 에러는 조건문으로 처리하는 것이 최선이다.
 
 # Chapter 12 이터레이터와 제너레이터
+
+ ES6에서 매우 중요한 새로운 개념 이터레이터(iterator)와 제너레이터(generator)를 도입했다. 제너레이터는 이터레이터에 의존하는 개념이다.
+
+이터레이터는 '지금 어디 있는지' 파악할 수 있도록 돕는다는 면에서 일종의 책갈피와 비슷한 개념이다. 예시로 배열이 이터러블(iterable) 객체의 좋은 예이다. 
+
+```javascript
+const book = [
+    "Twinkle, twinkle, little star",
+    "How I wonder what you are!",
+    "Up above the world so high",
+    "Like a diamond in the sky!",
+];
+
+// values 메서드를 이용하여 이터레이터 생성
+const it = book.values();
+console.log(it.next());
+console.log(it.next());
+console.log(it.next());
+console.log(it.next());
+console.log(it.next());
+console.log(it.next());
+
+// { value: 'Twinkle, twinkle, little star', done: false }
+// { value: 'How I wonder what you are!', done: false }
+// { value: 'Up above the world so high', done: false }
+// { value: 'Like a diamond in the sky!', done: false }
+// { value: undefined, done: true }
+// { value: undefined, done: true }
+```
+
+next에서 마지막을 반환했다 해서 끝난 것은 아니다. 더 진행할 것이 없으면 value는 undefined가 되지만, next는 계속 호출할 수 있다. 일단 이터레이터가 끝까지 진행하면 뒤로 돌아가서 다른 데이터를 제공할 수 없다.
+
+배열의 요소를 나열하는 것이 목적이라면 for 루프나 for...of 루프를 쓸 수 있다. for 루프는 인덱스를 사용하지만 for...of 루프는 이터레이터라서 인덱스 없이 사용 가능하다.
+
+이터레이터는 모두 독립적이라 새 이터레이터를 만들 때마다 처음에서 시작한다. 그리고 각각 다른 요소를 가리키는 이터레이터 여러 개를 동시에 사용할 수도 있다.
+
+## 1) 이터레이션 프로토콜
+이터레이터 프로토콜은 모든 객체를 이터러블 객체로 바꿀 수 있다.
+
+```javascript
+class Log {
+    constructor() {
+        this.messages = [];
+    }
+    add(messages) {
+        this.messages.push({messages,timestamp:Date.now()});
+    }
+    [Symbol.iterator](){
+        return this.messages.values();
+    }
+}
+
+const log = new Log();
+log.add("first day at sea");
+log.add("spotted whale");
+log.add("spotted another vessel");
+
+// 배열처럼 순회
+for (let entry of log) {
+    console.log(`${entry.messages} @ ${entry.timestamp}`);
+}
+
+// first day at sea @ 1554126308321
+// spotted whale @ 1554126308321
+// spotted another vessel @ 1554126308321
+```
+
+이터레이션 프로토콜은 클래스에 심볼 메서드 Symbol.iterator가 있고 이 메서드가 이터레이터처럼 동작하는 객체, 즉 value와 done 프로퍼티가 있는 객체를 반환하는 next 메서드를 가진 객체를 반환한다면 그 클래스의 인스턴스는 이터러블 객체라는 뜻이다.
+
+```javascript
+class Log {
+    //...
+    [Symbol.iterator]() {
+        let i = 0;
+        const messages = this.messages;
+        return {
+            next() {
+                if(i>=messages.lenght)
+                    return { values: undefined, done: true};
+                return {values: messages[i++], done: false};
+            }
+        }
+    }
+}
+```
+
+위와 같이 직접 이터레이터를 만들 수도 있다.
+
+## 2) 제너레이터
+제너레이터는 이터레이터를 사용해 자신의 실행을 제어하는 함수다. 일반적인 함수는 매개변수를 받고 값을 반환하지만, 호출자는 매개변수 외에는 함수의 실행을 제어할 방법이 전혀 없다. 함수를 호출하면 그 함수가 종료될 때까지 제어권을 완전히 넘기는 것이다. 제너레이터에서는 그렇지 않다.
+
+- 함수의 실행을 개별적 단계로 나눔으로써 함수의 실행을 제어한다.
+- 실행 중인 함수와 통신한다.
+- 언제든 호출자에게 제어권을 넘길(yield) 수 있다.
+- 호출한 즉시 실행되지는 않고 이터레이터를 반환한다. 이터레이터의 next 메서드를 호출함에 따라 실행된다.
+
+제너레이터를 만들 떄는 function 키워드 뒤에 '*' 를 붙인다. 이것을 제외하면 문법은 일반적인 함수와 같다.
+
+```javascript
+function* rainbow() {
+    yield 'red';
+    yield 'orange';
+    yield 'yellow';
+    yield 'green';
+    yield 'blue';
+    yield 'indigo';
+    yield 'violet';
+}
+
+const it = rainbow();
+console.log(it.next());
+console.log(it.next());
+console.log(it.next());
+
+// 제너레이터는 이터레이터를 반환하므로 
+// for...of를 사용할 수 있다.
+for(let color of rainbow()){
+    console.log(color);
+}
+
+// { value: 'red', done: false }
+// { value: 'orange', done: false }
+// { value: 'yellow', done: false }
+// red
+// orange
+// yellow
+// green
+// blue
+// indigo
+// violet
+```
+
+### 2-1 yield 표현식과 양방향 통신
+제너레이터와 호출자 사이의 양방향 통신은 yield 표현식을 통해 이뤄진다. 표현식은 값으로 평가되고 yield는 표현식이므로 반드시 어떤 값으로 평가된다. yield 표현식의 값은 호출자가 제너레이터의 이터레이터에서 next를 호출할 때 제공하는 매개변수이다.
+
+```javascript
+function* interrogate() {
+    const name = yield "What is your name?";
+    const color = yield "What is your favorite color?";
+    return `${name}'s favorite color is ${color}.`;
+}
+
+const it =interrogate();
+console.log(it.next()); // 'undefined'를 제너레이터에 넘김
+console.log(it.next('Ethan')); // name에 'Ethan' 초기화
+console.log(it.next('orange')); // color에 'orange' 초기화
+
+// { value: 'What is your name?', done: false }
+// { value: 'What is your favorite color?', done: false }
+// { value: 'Ethan\'s favorite color is orange.', done: true }
+```
+
+next를 호출하면 제너레이터는 첫 번째 행을 실행하려 한다. 하지만 그 행에는 yield 표현식이 들어 있으므로 제너레이터는 반드시 제어권을 호출자에게 넘겨야 한다. 제너레이터의 첫 번째 행이 완료(resolve)되려면 호출자가 next를 다시 호출해야 한다. 그러면 name은 next에서 전달하는 값을 받는다.
+
+호출자가 제너레이터에 정보를 전달하므로, 제너레이터는 그 정보에 따라 자신의 동작 방식 자체를 바꿀 수 있다.
+
+제너레이터는 화살표 표기법으로 만들 수 없으며 반드시 function*을 써야한다.
+
+### 2-2 제너레이터와 return
+yield 문은, 제너레이터의 마지막 문이라도 제너레이터를 끝내지 않는다. return 문을 사용하면 그 위치와 관계없이 done은 true가 되고, value 프로퍼티는 return이 반환하는 값이 된다.
+
+```javascript
+function* abc() {
+    yield 'a';
+    yield 'b';
+    return 'c';
+}
+
+const it = abc();
+console.log(it.next());
+console.log(it.next());
+console.log(it.next());
+
+for(let l of abc()){
+    console.log(l);
+}
+
+// { value: 'a', done: false }
+// { value: 'b', done: false }
+// { value: 'c', done: true }
+// a
+// b
+```
+
+제너레이터를 사용할 때는 보통 done이 true이면 value 프로퍼티에 주의를 기울이지 않는다는 점을 염두해야 한다. 예를 들어 for...of 루프에서 사용하면 c는 출력되지 않는다.
+
+그러므로 제너레이터가 반환하는 값을 사용하려 할 때는 yield, 중간에 종료하는 목적으로 사용하려 할 때는 return을 사용하도록 한다.
+
+이터레이터로 할 수 있는 일은 ES6 이전에도 모두 할 수 있었지만 중요하면서도 자주 사용하는 패턴을 표준화했다는 점에서 의미가 있다.

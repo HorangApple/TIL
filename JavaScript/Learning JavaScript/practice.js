@@ -1,14 +1,14 @@
-try {
-    console.log("this line is executed...");
-    throw new Error("whoops");
-    console.log("this line is not...");
-} catch(err) {
-    console.log("there was an error...");
-} finally {
-    console.log("...always executed");
-    console.log("perform cleanup here");
+function* abc() {
+    yield 'a';
+    yield 'b';
+    return 'c';
 }
-// this line is executed...
-// there was an error...
-// ...always executed
-// perform cleanup here
+
+const it = abc();
+console.log(it.next());
+console.log(it.next());
+console.log(it.next());
+
+for(let l of abc()){
+    console.log(l);
+}
