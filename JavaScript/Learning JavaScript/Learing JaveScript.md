@@ -2949,3 +2949,233 @@ for(let l of abc()){
 그러므로 제너레이터가 반환하는 값을 사용하려 할 때는 yield, 중간에 종료하는 목적으로 사용하려 할 때는 return을 사용하도록 한다.
 
 이터레이터로 할 수 있는 일은 ES6 이전에도 모두 할 수 있었지만 중요하면서도 자주 사용하는 패턴을 표준화했다는 점에서 의미가 있다.
+
+# Chapter 13 함수와 추상적 사고
+
+## 1) 서브루틴으로서의 함수
+서브루틴(subroutine)은 아주 오래 된 개념이며 복잡한 코드를 간단하게 만드는 기초적인 수단이다. 프로시저(procedure), 루틴(routine), 서브프로그램(subprogram), 매크로(macro) 등 다양한 이름으로 불린다.
+
+서브루틴은 대개 어떤 알고리즘을 나타내는 형태이다.
+
+## 2) 값을 반환하는 서브루틴으로서의 함수
+`return`을 사용해서 값을 반환할 수 있다.
+
+## 3) 함수로서의 함수
+입력은 모두 어떤 결과와 관계되어 있다. 함수의 수학적인 정의에 충실한 함수를 순수한 함수(pure function)이라고 부른다. 입력이 같으면 결과도 반드시 같다는 점과 부수 효과(side effect)가 없다는 특징, 즉 프로그램의 상태가 바뀌어서는 안된다는 특징을 갖고 있다. 
+
+```javascript
+const colors = ['red','orange','yellow','green',
+    'blue','indigo','violet'];
+let colorIndex = -1;
+function getNextRainbowColor(){
+    if(++colorIndex >= colors.length) colorIndex = 0;
+    return colors[colorIndex];
+}
+```
+
+위 함수는 순수한 함수의 두 가지 정의를 모두 어긴다. 입력이 같아도 결과가 항상 다르고, getNextRainbowColor 함수에 속하지도 않은 변수 colorIndex를 바꾸는 부수 효과가 있다. 이를 순수한 함수를 만드려면 다음과 같이 변경해야한다.
+
+```javascript
+function getRainbowIterator(){
+    const colors = ['red','orange','yellow','green',
+        'blue','indigo','violet'];
+    let colorIndex = -1;
+    return {
+        next() {
+            if(++colorIndex >= colors.length) colorIndex = 0;
+            return colors[colorIndex];
+        }
+    };
+}
+
+const rainbowIterator = getRainbowIterator();
+setInterval(function(){
+    // 브라우저 코드 사용
+    document.querySelector('.rainbow')
+        .style['background-color'] = rainbowIterator.next().value;
+},500);
+```
+
+next()는 함수가 아니라 멤서드라는 점에 주목할 필요가 있다. 메서드는 자신이 속한 객체라는 컨텍스트 안에서 동작하므로 메서드의 동작은 그 객체에 의해 좌우된다. 프로그램의 다른 부분에서 getRainbowIterator를 호출하더라도 독립적인 이터레이터가 생성되므로 다른 이터레이터를 간섭하지 않는다.
+
+## 4) 그래서?
+함수를 서브루틴이라는 관점에서 보면 반복을 없애는 점에서 장점이 있다. 자주 사용하는 동작을 하나로 묶을 수 있다는 점에 매우 분명한 장점이 있다.
+
+순수한 함수는 사용하면 코드를 테스트하기 쉽고, 이해하기 쉽고, 재사용하기가 쉽다.
+
+함수가 상황에 따라 다른 값을 반환하거나 부작용이 있다면 그 함수는 컨텍스트에 좌우되는 함수이다. 99%는 제대로 동작하다가 1% 상황에서 버그를 일으키는 상황은 심각하다. 가장 악질적인 버그는 숨어 있는 버그이므로 순수한 함수를 사용하길 권장한다.
+
+### 4-1 함수도 객체다
+JS 함수는 Function 객체의 인스턴스이다. v가 함수더라도 v instanceof Object는 여전히 true를 반환하므로, 변수가 함수인지 아닌지 확인하고 싶다면 먼저 typeof를 써보는 편이 좋다.
+
+## 5) IIFE와 비동기적 코드
+IIFE를 사용하는 사례 중 하나는 비동기적 코드가 정확히 동작할 수 있도록 새 변수를 새 스코프에 만드는 것이다. 
+
+```javascript
+var i;
+for(i=5; i>=0; i--) {
+    setTimeout(function() {
+        console.log(i===0?'go!':i);
+    },(5-i)*1000);
+}
+// -1이 6번 출력
+```
+
+setTimeout에 전달된 함수가 루프 안에서 실행되지 않고 루프가 종료된 뒤에 실행됐기 때문에 -1이 6번 출력됐다. -1이 되기 전에 콜백 함수는 전혀 호출되지 않았다. 따라서 콜백 함수가 호출되는 시점에서 i의 값은 -1이다.
+
+```javascript
+function loopBody(i) {
+    setTimeout(function() {
+        console.log(i===0?'go!':i);
+    },(5-i)*1000);
+}
+var i;
+for(i=5; i>=0; i--) {
+    loopBody(i);
+}
+// 5
+// 4
+// 3
+// 2
+// 1
+// go!
+```
+
+블록 스코프 변수가 도입되기 전에는 이런 문제를 해결하기 위해 함수를 하나 더 썼다. 함수를 하나 더 쓰면 스코프가 새로 만들어지고 각 단계에서 i의 값이 클로저에 캡처된다.
+
+```javascript
+// IIFE 사용
+var i;
+for(i=5; i>=0; i--) {
+    (function(i) {
+        setTimeout(function(){
+            console.log(i===0?"go!":i);
+        },(5-i)*1000);
+    })(i);
+}
+
+// 블록 스코프 변수 사용
+for(let i=5; i>=0; i--) {
+    setTimeout(function(){
+        console.log(i===0?"go!":i);
+    },(5-i)*1000);
+}
+// 5
+// 4
+// 3
+// 2
+// 1
+// go!
+```
+
+블록 스코프 변수를 사용함으로써 함수를 새로 만드는 일을 하지 않아도 된다. 이 경우 JS는 루프의 단계마다 변수 i의 복사본을 새로 만든다. 만약 let을 for 문 밖에 선언했다면 -1만 출력될 것이다.
+
+## 6) 변수로서의 함수
+함수도 다른 변수와 마찬가지로 이리저리 전달할 수 있다. 함수는 호출되었을 때는 능동적이며 호출하기 전에는 다른 변수와 마찬가지로 수동적이다. 변수가 있을 수 있는 곳에는 함수도 있을 수도 있다.
+
+- 함수를 가리키는 변수를 만들어 별명을 정할 수 있다.
+- 배열에 함수를 넣을 수 있다. 물론 다른 타입의 데이터와 섞일 수 있다.
+- 함수를 객체의 프로퍼티로 사용할 수 있다.
+- 함수를 함수에 전달할 수 있다.
+- 함수가 함수를 반환할 수 있다.
+- 함수를 매개변수로 받는 함수를 반환하는 것도 물론 가능하다.
+
+```javascript
+// require는 라이브러리를 불러오는 노드 함수
+const Money = require('math-money');
+
+// oneDollar와 twoDollar는 같은 타입의 인스턴스
+const oneDollar = Money.Dollar(1);
+const Dollar = Money.Dollar;
+const twoDollars = Dollar(2);
+```
+
+### 6-1 배열 안의 함수
+```javascript
+const sin = Math.sin;
+const cos = Math.cos;
+const theta = Math.PI/4;
+const zoom = 2;
+const offset = [1,-3];
+
+const pipeline=[
+    function rotate(p) {
+        return {
+            x: p.x*cos(theta) - p.y*sin(theta),
+            y: p.x*sin(theta) + p.y*cos(theta),
+        };
+    },
+    function scale(p) {
+        return {x:p.x*zoom, y:p.y*zoom};
+    },
+    function translate(p) {
+        return {x:p.x+offset[0],y:p.y+offset[1]};
+    },
+];
+
+const p = {x:1,y:1};
+let p2 = p;
+for (let i = 0; i<pipeline.length; i++) {
+    p2 = pipeline[i](p2);
+    console.log(p2);
+}
+// p2는 이제 p1을 좌표 원점 기준으로 45도 회전(rotate),
+// 원점에서 2단위만큼 떨어뜨린 후(scale),
+// 1단위 오른쪽, 3단위 아래쪽으로 움직인다.(translate)
+
+// { x: 1.1102230246251565e-16, y: 1.414213562373095 }
+// { x: 2.220446049250313e-16, y: 2.82842712474619 }
+// { x: 1.0000000000000002, y: -0.17157287525381015 }
+```
+
+자주 하는 일을 한 셋으로 묶는 파이프라인이 좋은 예이다. 배열을 사용하면 작업 단계를 언제든 쉽게 바꿀 수 있다는 장점이 있다. 일정한 순서에 따라 함수를 실행해야 한다면 파이프라인을 사용하는 것이 좋다.
+
+### 6-2 함수에 함수 전달
+함수에 함수를 전달하는 다른 용도는 비동기적 프로그래밍이다. 이런 용도로 전달하는 함수를 보통 콜백(callback)이라고 부르며, 약자로 cb를 쓸 때가 많다.
+
+```javascript
+function sum(arr,f) {
+    // 함수가 전달되지 않았으면 매개변수를 그대로 반환하는 null 함수를 쓴다.
+    if(typeof f != 'function') f= x => x;
+    return arr.reduce((a,x) => a += f(x));
+}
+sum([1,2,3]); // 6
+sum([1,2,3], x => x*x); // 14
+sum([1,2,3], x => Math.pow(x,3)); //36
+```
+
+함수는 동작이고, 함수를 받은 함수는 그 동작을 활용할 수 있다. 예제에서 에러를 방지하기 위해 함수가 아닌 것은 모두 'null 함수', 즉 아무 일도 하지 않은 것으로 바꾼다.
+
+### 6-3 함수를 반환하는 함수
+함수를 반환하는 함수는 아마 함수의 가장 난해한 사용법이지만 그만큼 유용하다. 
+
+```javascript
+function sum(arr,f) {
+    // 함수가 전달되지 않았으면 매개변수를 그대로 반환하는 null 함수를 쓴다.
+    if(typeof f != 'function') f= x => x;
+    return arr.reduce((a,x) => a += f(x));
+}
+sum([1,2,3]); // 6
+sum([1,2,3], x => x*x); // 14
+sum([1,2,3], x => Math.pow(x,3)); //36
+
+// function sumOfSquares(arr) {
+//     return sum(arr,x => x*x);
+// }
+
+function newSummer(f) {
+    return arr => sum(arr,f);
+}
+
+const sumOfSquares = newSummer(x => x*x);
+const sumofCubes = newSummer(x => Math.pow(x,3));
+sumOfSquares([1,2,3]); // return 14
+sumofCubes([1,2,3]); // return 36
+```
+
+위 예제처름 매개변수 여러 개를 받는 함수를 매개변수 하나만 받는 함수로 바꾸는 것을 커링(currying)이라고 부른다.
+
+## 7) 재귀
+재귀(recursion)는 자기 자신을 호출하는 함수이다. 같은 일을 반복하면서 그 대상이 점차 줄어드는 상황에서 재귀를 유용하게 활용할 수 있다.
+
+재귀 함수에는 종료 조건이 있어야한다. 종료 조건이 없다면 JS 인터프리에터에서 스택이 너무 깊다고 판단할 때까지 재귀 호출을 계속하다가 프로그램이 멈춘다.
