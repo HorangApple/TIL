@@ -1,8 +1,20 @@
-function sum(arr,f) {
-    // 함수가 전달되지 않았으면 매개변수를 그대로 반환하는 null 함수를 쓴다.
-    if(typeof f != 'function') f= x => x;
-    return arr.reduce((a,x) => a += f(x));
+class Car{
+    constructor(make,model){
+        this.make = make;
+        this.model = model;
+        this.userGears = ['P','N','R','D'];
+        this.userGear = this.userGears[0];
+    }
+    shift(gear){
+        if(this.userGears.indexOf(gear) < 0)
+            throw new Error(`Invalid gear: ${gear}`);
+        this.userGear = gear;
+    }
 }
-sum([1,2,3]); // 6
-sum([1,2,3], x => x*x); // 14
-sum([1,2,3], x => Math.pow(x,3)); //36
+
+car1 = new Car('sam','xd')
+car1.shift('N');
+console.log(car1.userGear);
+console.log(Car.prototype.userGear);
+console.log(car1.userGears==Car.prototype.userGears);
+car1.siva=()=>console.log('hi');
