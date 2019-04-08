@@ -3593,3 +3593,192 @@ c.go()
 
 결정되지 않은 프라미스를 방지하는 한 가지 방법은 프라미스에 타임아웃을 거는 것이다. 충분한 시간이 지났는데도 프라미스가 결정되지 않으면 자동으로 실패하게 만들 수 있다. 물론 얼마나 기다려야 '충분히' 기다렸는지는 스스로 판단해야 한다. 10분 정도는 걸릴 거로 생각하는 복잡한 알고리즘에 1초 타임아웃을 걸어서는 안 된다.
 
+```javascript
+// 프라미스를 반환하는 어떤 함수에든 타임아웃을 걸 수 있게함
+function addTimeout(fn, timeout) {
+    if(timeout === undefined) timeout = 1000;
+    return function(...args) {
+        return new Promise(function(resolve, reject) {
+            const tid = setTimeout(reject,timeout,
+                new Error("promise timed out"));
+            fn(...args)
+                .then(function(...args) {
+                    clearTimeout(tid);
+                    resolve(...args);
+                })
+                .catch(function(...args) {
+                    clearTimeout(tid);
+                    reject(...args);
+                });
+        });
+    }
+}
+
+
+function launch() {
+    return new Promise(function(resolve, reject) {
+        // 50% 확률로 문제생기는 launch 함수
+        if(Math.random()<0.5) return;
+        console.log("Lift off!");
+        setTimeout(function() {
+            resolve("In orbit!");
+        }, 2*1000);
+    });
+}
+
+const c = new Countdown(15)
+    .on('tick', i => console.log(i + '...'));
+
+c.go()
+    // 타임 아웃 11초 설정
+    .then(addTimeout(launch,11*1000))
+    .then(function(msg) {
+        console.log(msg);
+    })
+    .catch(function(err) {
+        console.error("Houston, we have a problem....");
+    });
+
+// 15...
+// 14...
+// 13...
+// 12...
+// 11...
+// 10...
+// 9...
+// 8...
+// 7...
+// 6...
+// 5...
+// 4...
+// 3...
+// 2...
+// 1...
+// 0...
+// Houston, we have a problem....
+```
+`addTimeout`과 같이 프라미스에 타임아웃을 걸기 위한 함수를 반환하는 함수를 사용했기에 `launch` 함수에 문제가 있더라도 프라미스 체인은 항상 결정된다.
+
+## 4) 제너레이터
+제너레이터는 함수와 호출자 사이의 양방향 통신을 가능하게 한다. 원래 동기적인 성격을 가졌지만, 프라미스와 결합하면 비동기 코드를 효율적으로 관리할 수 있다.
+
+어려운 문제를 해결해야 할 때 1단계, 2단계, 3단계 식으로 동기적으로 생각할 때가 있다. 이렇게 하면 성능 문제가 있는데 이를 해결하기 위해 비동기 코드가 등장했다. 비동기 코드가 난해하지만 제너레이터를 사용하면 일정 부분은 개선할 수 있다.
+
+예를 들어 a.txt, b.txt, c.txt 내용들을 가지고 와서 6초 후 d.txt에 병합하여 저장하는 프로그램을 만들자고 하자.
+
+가장 먼저 할 일은 노드의 오류 우선 콜백을 프라미스로 바꾸는 것이다.
+
+```javascript
+const fs = require('fs');
+
+function nfcall (f, ...args) {
+    return new Promise (function(resolve, reject) {
+        f.call(null, ...args, function(err, ...args) {
+            if(err) return reject(err);
+            resolve(args.length<2 ? args[0] : args);
+        });
+    });
+}
+```
+
+이제 콜백을 받는 노드 스카일 메서드를 모두 프라미스로 바꿀 수 있다. 
+
+```javascript
+function ptimeout(delay) {
+    return new Promise(function(resolve, reject) {
+        setTimeout(resolve, delay);
+    });
+}
+```
+
+setTimeout은 노드보다 먼저 나왔고 오류 우선 콜백의 패턴을 따르지 않는다. 그러므로 같은 기능을 가진 함수를 새로 만든다.
+
+```javascript
+function grun(g) {
+    const it = g();
+    (function iterate(val) {
+        const x = it.next(val);
+        if(!x.done) {
+            if(x.value instanceof Promise) {
+                x.value.then(iterate).catch(err => it.throw(err));
+            } else {
+                setTimeout(iterate, 0, x.value);
+            }
+        }
+    })();
+}
+```
+
+다음에 필요한 것은 제너레이터 실행기이다. 호출자와 통신할 수 있으므로 제너레이터와의 통신을 관리하고 비동기적 호출을 처리하는 함수를 만들 수 있다.
+
+`grun`은 기초적인 제너레이터 재귀 실행기이다. `grun`에 제너레이터 함수를 넘기면 해당 함수가 실행된다. 6장에서 배웠듯, yield로 값을 넘긴 제너레이터는 이터레이터에서 next를 호출할 때까지 기다린다. grun은 그 과정을 재귀적으로 반복한다.
+
+이터레이터에서 프라미스를 반환하면 grun은 프라미스가 완료될 때까지 기다린 다음 이터레이터 실행을 재개한다. 이터레이터가 값을 반환하면 이터레이터 실행을 즉시 재개한다. 
+
+grun에서 iterate를 바로 호출하지 않고 setTimeout을 거친 이유는 효율성 때문이다. JS 엔진은 재귀 호출을 비동기적으로 실행할 때 메모리를 좀 더 빨리 회수한다.
+
+nfcall은 과거의 방법인 노드 오류 우선 콜백을 현재의 방법인 프라미스에 적응시키고, grun은 미래의 기능을 현재로 가져온다. ES7에서 도입하리라 예상되는 await 키워드는 grun과 거의 같은 기능을 지원하며 더 자연스러운 문법을 제공할 것이다.
+
+```javascript
+function* theFutureIsNow() {
+    const dataA = yield nfcall(fs.readFile, 'a.txt');
+    const dataB = yield nfcall(fs.readFile, 'b.txt');
+    const dataC = yield nfcall(fs.readFile, 'c.txt');
+    yield ptimeout(6*1000);
+    yield nfcall(fs.writeFile, 'd.txt', dataA+dataB+dataC);
+}
+
+grun(theFutureIsNow);
+```
+
+콜백 헬보다는 훨씬 낫고, 프라미스 하나만 쓸 때보다 더 단순하다. 사람이 생각하는 것과 거의 같은 동작을 하며 실행 또한 간단하다.
+
+## 4-1 1보 전진과 2보 후퇴?
+Promise에는 all 메서드가 있다. 이 메서드는 배열로 받은 프라미스가 모두 완료될 때 완료되며, 가능하다면 비동기적 코드를 동시에 실행한다. theFutureIsNow 함수가 Promise.all을 사용하도록 수정하기만 하면 된다.
+
+```javascript
+function* theFutureIsNow() {
+    const data = yield Promise.all([
+        nfcall(fs.readFile, 'a.txt'),
+        nfcall(fs.readFile, 'b.txt'),
+        nfcall(fs.readFile, 'c.txt'),
+    ]);
+    yield ptimeout(6*1000);
+    yield nfcall(fs.writeFile, 'd.txt', data[0]+data[1]+data[2]);
+}
+```
+
+Promise.all이 반환하는 프라미스에는 매개변수로 주어진 각 프라미스의 완료 값이 배열에 들어있었던 순서대로 들어있다. c.txt를 a.txt보다 먼저 읽더라도 data[0]에는 a.txt의 내용이, data[2]에는 c.txt의 내용이 들어 있다.
+
+가장 중요한 것은 프로그램에서 어떤 부분을 동시에 실행할 수 있고 어떤 부분은 동시에 실행할 수 없는지를 판단하는 것은 문제에 따라 다르다. 세 파일을 읽는 것과 무관하게 6초 이상이 흐른 다음 네번째 파일에 결과를 저장하는 것이 중요하다면 타임아웃을 Promise.all로 옮기는 편이 좋을 것이다.
+
+## 4-2 제너레이터 실행기를 직접 만들지 마세요
+더 좋은 것은 이미 만들어져 있기 때문이다. co(https://github.com/tj/co)는 기능이 풍부하고 단단하게 잘 만들어진 제너레이터 실행기이다.
+웹사이트를 만들고 있다면 Koa 미들웨어(http://koajs.com/)를 살펴보길 권한다. Koa는 co와 함께 사용하도록 설계된 미들웨어이다.
+
+## 4-3 제너레이터 실행기와 예외 처리
+콜백이나 프라미스를 사용하면 예외 처리가 쉽지 않다. 콜백에서 일으킨 예외는 그 콜백 밖에서 캐치할 수 없다. 제너레이터 실행기는 비동기적으로 실행하면서도 동기적인 동작 방식을 유지하므로 try/catch 문과 함께 쓸 수 있다.
+
+```javascript
+function* theFutureIsNow() {
+    let data;
+    try{
+        const data = yield Promise.all([
+            nfcall(fs.readFile, 'a.txt'),
+            nfcall(fs.readFile, 'b.txt'),
+            nfcall(fs.readFile, 'c.txt'),
+        ]);
+    } catch(err) {
+        console.error("Unable to read one or more input files: " + err.message);
+        throw err;
+    }
+    yield ptimeout(6*1000);
+    try {
+        yield nfcall(fs.writeFile, 'd.txt', data[0]+data[1]+data[2]);
+    } catch(err) {
+        console.error("Unable to write output file: " + err.message);
+        throw err;
+    }
+}
+```
+
