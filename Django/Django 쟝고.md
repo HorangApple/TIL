@@ -1138,3 +1138,5 @@ class Comment(models.Model):
 
 {% endblock %}
 ```
+
+settings.py의 TEMPLATES에서 'DIRS': [os.path.join(BASE_DIR, 'templates')] 를 입력하여 templates 경로를 설정할 수 있다. '공통 템플릿 폴더'

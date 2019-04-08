@@ -1,60 +1,68 @@
-# https://www.acmicpc.net/problem/9012
 import sys
-sys.stdin = open("input.txt","r")
+sys.stdin = open('input.txt', 'r')
 
-#----------------------------
+import copy
+def archer(k,a):
+    if k==3:
+        for i in cases:
+            if set(i)==set(a):
+                return
+        cases.append(a)
+    else:
+        k+=1
+        for i in range(m):
+            if i not in a:
+                archer(k,a+[i])
 
-def check(i):
-    global top
-    stack.append(i)
-    top+=1
-    while True:
-        if top==0 and (stack[top]==")"or stack[top]=="]"):
-            return 0
-        elif top>0 and stack[top]==")" and stack[top-1]=="[":
-            return 0
-        elif top>0 and stack[top]=="]" and stack[top-1]=="(":
-            return 0
-        elif top>0 and stack[top]==")" and stack[top-1]=="(":
-            stack.pop()
-            stack.pop()
-            stack.append(2)
-            top-=1
-        elif top>0 and stack[top]=="]" and stack[top-1]=="[":
-            stack.pop()
-            stack.pop()
-            stack.append(3)
-            top-=1
-        elif top>0 and (str(stack[top]) not in "[]()") and (str(stack[top-1])  not in "[]()"):
-            a=stack.pop()
-            b=stack.pop()
-            stack.append(a+b)
-            top-=1
-        elif top>1 and stack[top]=="]" and stack[top-2]=="[" and (str(stack[top-1])  not in "[]()"):
-            stack.pop()
-            a=stack.pop()
-            stack.pop()
-            stack.append(a*3)
-            top-=2
-        elif top>1 and stack[top]==")" and stack[top-2]=="(" and (str(stack[top-1])  not in "[]()"):
-            stack.pop()
-            a=stack.pop()
-            stack.pop()
-            stack.append(a*2)
-            top-=2
-        else:
-            return 1
+def serch(case,stage):
+    for i in range(n-1-stage,n-1-d-stage,-1):
+        for j in range(m):
+            if mp[i][j]>0:
+                one=[i,j]
+                for k in case:
+                    one+=[abs(i-n+stage)+abs(j-k)]
+                enemy.append(one)
 
-TC=1
-for _ in range(TC):
-    stack=[]
-    top=-1
-    for i in input():
-        a=check(i)
-        if a=='0':
+def attack(enemy):
+    global killCnt
+    archer=[[] for _ in range(3)]
+    for i in enemy:
+        for j in range(2,5):
+            if i[j]<=d:
+                if archer[j-2]==[]:
+                    archer[j-2]=i
+                elif (archer[j-2][1]>i[1] and archer[j-2][j]==i[j]) or archer[j-2][j]>i[j]:
+                    archer[j-2]=i
+
+    for i in archer:
+        if i!=[] and mp[i[0]][i[1]]>0:
+            mp[i[0]][i[1]]=0
+            killCnt+=1
+
+# T=int(input())
+# for i in range(T):
+n,m,d=map(int,input().split())
+mp=[list(map(int,input().split())) for _ in range(n)]
+save=copy.deepcopy(mp)
+cases=[]
+archer(0,[])
+maxi=0
+for case in cases[0:1]:
+    mp=copy.deepcopy(save)
+    k=0
+    killCnt=0
+    while k<n:
+        if killCnt+(n-k)*3<maxi:
             break
-    if a=='0'or len(stack)>1:
-        print(0)
-    elif len(stack)==1:
-        print(stack[0])
-#----------------------------
+        enemy=[]
+        serch(case,k)
+        print(enemy)
+        attack(enemy)
+        # print(k,case)
+        # for i in mp:
+        #     print(i)
+        # print()
+        k+=1
+    # print(killCnt)
+    maxi=max(maxi,killCnt)
+print(maxi)

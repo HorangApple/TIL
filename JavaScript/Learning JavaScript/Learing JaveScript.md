@@ -3189,3 +3189,407 @@ sumofCubes([1,2,3]); // return 36
 재귀(recursion)는 자기 자신을 호출하는 함수이다. 같은 일을 반복하면서 그 대상이 점차 줄어드는 상황에서 재귀를 유용하게 활용할 수 있다.
 
 재귀 함수에는 종료 조건이 있어야한다. 종료 조건이 없다면 JS 인터프리에터에서 스택이 너무 깊다고 판단할 때까지 재귀 호출을 계속하다가 프로그램이 멈춘다.
+
+# Chapter 14. 비동기적 프로그래밍
+JS의 본성 떄문에 비동기적 프로그래밍이 필요하다. JS 애플리케이션은 **단일 스레드**에서 동작한다. 즉, 한 번에 한 가지 일만 할 수 있다. 부드럽게 동작하는 SW를 만들기 위해 사용자의 입력뿐만 아니라 여러 문제를 비동기적 관점에서 생각해야한다. JS의 비동기적 프로그래밍에는 뚜렷이 구분되는 세 가지 패러다임이 있다. 처음에는 콜백(callback), 프라미스(promise), 마지막은 제너레이터(generator)이다.
+
+제너레이터 자체는 비동기적 프로그래밍을 전혀 지원하지 않지만 프라미스나 특수한 콜백과 함께 사용해 구현한다. 프라미스 역시 콜백에 의존한다. 콜백은 제너레이터나 프라미스 외에도 이벤트 처리 등에 유용하게 쓸 수 있다.
+
+사용자 입력 외에, 비동기적 테크닉을 사용해야 하는 경우는 크게 세 가지가 있다.
+
+- Ajax 호출을 비롯한 네트워크 요청
+- 파일을 읽고 쓰는 등의 파일시스템 작업
+- 의도적으로 시간 지연을 사용하는 기능(알람 등)
+
+## 1) 비유
+콜백과 프라미스를 바쁜 음식점에 비유하면 다음과 같다.
+
+- 콜백 : 손님의 전화번호를 받아서 자리가 나면 전화한다.
+- 프라미스 : 자리가 났을 때 진동하는 호출기를 손님한테 건넨다.
+
+## 2) 콜백
+콜백은 간단히 말해 나중에 호출할 함수이다. 콜백 함수는 일반적으로 다른 함수에 넘기거나 객체의 프로퍼티로 사용한다. 대개 콜백은 익명 함수로 사용한다.
+
+```javascript
+console.log("Before timeout: " + new Date());
+function f() {
+    console.log("After timeout: " + new Date());
+}
+setTimeout(f, 60*1000); //1분
+console.log("I happen after setTimeout!");
+console.log("Me too!");
+
+// Before timeout: Mon Apr 08 2019 08:33:05 GMT+0900 (GMT+09:00)
+// I happen after setTimeout!
+// Me too!
+// After timeout: Mon Apr 08 2019 08:34:05 GMT+0900 (GMT+09:00)
+```
+
+1분이 지나서야 함수 `f`가 출력되었다. 보통 setTimeout과 setInterval은 대부분 익명 함수와 함께 사용한다. 지연 매개변수는 마지막 행에 쓴다는 원칙을 세워 두면 혼란을 피할 수 있다.
+
+## 2-1 setInterval과 clearInterval
+setTimeout은 콜백 함수를 한 번만 실행하고 멈추지만, setInterval은 콜백을 정해진 주기마다 호출하며 clearInterval을 사용할 때까지 멈추지 않습니다.
+
+```javascript
+const start = new Date();
+let i = 0;
+const intervalId = setInterval(function() {
+    let now = new Date();
+    if(now.getMinutes() !== start.getMinutes() || ++i>10)
+        return clearInterval(intervalId);
+    console.log(`${i}: ${now}`);
+},5*1000);
+
+// 1: Mon Apr 08 2019 09:04:27 GMT+0900 (GMT+09:00)
+// 2: Mon Apr 08 2019 09:04:32 GMT+0900 (GMT+09:00)
+// 3: Mon Apr 08 2019 09:04:37 GMT+0900 (GMT+09:00)
+// 4: Mon Apr 08 2019 09:04:42 GMT+0900 (GMT+09:00)
+// 5: Mon Apr 08 2019 09:04:47 GMT+0900 (GMT+09:00)
+// 6: Mon Apr 08 2019 09:04:52 GMT+0900 (GMT+09:00)
+// 7: Mon Apr 08 2019 09:04:57 GMT+0900 (GMT+09:00)
+```
+
+이 예제를 보면 setInterval이 ID를 반환한다는 사실을 알 수 있다. 이 ID를 써서 실행을 멈출 수 있다. clearTimeout은 setInterval이 반환하는 ID를 받아 타임아웃을 멈춘다.
+
+setTimeout, setInterval, clearInterval은 모두 전역 객체(브라우저에서는 window, 노드에서는 global)에 정의되어 있다.
+
+## 2-2 스코프와 비동기적 실행
+비동기적 실행에서 혼란스럽고 에러도 자주 일어나는 부분은 스코프와 클로저가 비동기적 실행에 영향을 미치는 부분이다. 함수를 호출하면 항상 클로저가 만들어진다. 매개변수를 포함해 함수 안에서 만든 변수는 모두 무언가가 자신에 접근할 수 있는 한 계속 존재한다.
+
+```javascript
+function countdown() {
+    let i;
+    console.log("Countdown:");
+    for(i=5;i>=0;i--) {
+        setTimeout(function() {
+            console.log(i===0 ? "GO!" : i);
+        }, (5-i)*1000);
+    }
+}
+countdown();
+
+// -1
+// -1
+// -1
+// -1
+// -1
+// -1
+```
+
+for 루프가 실행을 마치고 i의 값이 -1이 된 다음에서야 콜백이 실행되기 시작한다. 문제는, 콜백이 실행될 때 i의 값은 이미 -1이라는 것이다. for 루프 안에 let i를 선언하면 해결된다. 
+
+주의할 부분은 콜백이 어느 스코프에서 선언됐느냐이다. 콜백은 자신을 선언한 스코프(클로저)에 있는 것에 접근할 수 있다. 따라서 i의 값은 콜백이 실제 실행되는 순간마다 다를 수 있다. 이 원칙은 콜백뿐만 아니라 모든 비동기적 테크닉에 적용된다.
+
+## 2-3 오류 우선 콜백
+노드가 점점 인기를 얻어가던 시기에 오류 우선 콜백(error-first callback)이라는 패턴이 생겼다. 콜백을 사용하면 예외 처리가 어려워지므로, 콜백과 관련된 에러를 처리할 방법의 표준이 필요했다. 이에 따라 나타난 패턴이 **콜백의 첫 번째 매개변수에 에러 객체를 쓰자는 것**이다. 에러가 null이나 undefined이면 에러가 없는 것이다.
+
+오류 우선 콜백을 다룰 때 가장 먼저 생각할 것은 **에러 매개변수를 체크하고 그에 맞게 반응하는 것**이다. 노드에서 파일 콘텐츠를 읽는다고 할 때, 오류 우선 콜백을 사용한다면 다음과 같은 코드를 쓰게 된다.
+
+```javascript
+const fs = require('fs');
+
+const fname = 'may_or_may_not_exist.txt';
+fs.readFile(fname,function(err,data) {
+    if(err) return console.error(`error reading file ${fname}: ${err.message}`);
+    console.log(`${fname} contents: ${data}`);
+});
+
+// error reading file may_or_may_not_exist.txt: ENOENT: no such file or directory, open 'c:\Users\...\may_or_may_not_exist.txt'
+```
+
+콜백에서 가장 먼저 하는 일은 err이 참 같은 값인지 확인하는 것이다. err이 참 같은 값이라면 파일을 읽는 데 문제가 있다는 뜻이므로 콜솔에 오류를 보고하고 즉시 빠져나온다. 여기서 가장 많이 실수가 일어난다. 에러 객체를 체크해야 한다는 사실을 기억하고, 아마 로그를 남기기도 하겠지만, 빠져나와야 한다는 사실은 잊는 사람이 많다. 
+
+콜백이 실패했으니, 빠져나가지 않으면 오류를 예약하는 것이나 다름이 없다. 물론, 콜백을 만들 때 실패하는 경우도 염두에 두고 만들었다면 에러를 기록 하기만 하고 계속 진행해도 된다.
+
+프라미스를 사용하지 않으면 오류 우선 콜백은 노드 개발의 표준이나 다름없다. 콜백을 사용하는 인터페이스를 만들 때는 오류 우선 콜백을 사용하길 강력히 권한다.
+
+## 2-4 콜백 헬
+콜백을 사용해 비동기적으로 실행할 수 있긴 하지만, 현실적인 단점이 있다. 한 번에 여러가지를 기다려야 한다면 콜백을 관리하기가 상당히 어려워진다.
+
+```javascript
+const fs =require('fs');
+function readSketchyFile() {
+    try {
+        fs.readFile('does_not_exist.txt', function(err,data) {
+            if(err) throw err;
+        });
+    } catch(err) {
+        console.log('warning: minor issue occurred, program continuing');
+    }
+}
+readSketchyFile();
+// error reading file may_or_may_not_exist.txt: ENOENT: no such file or directory, open 'c:\Users\...\may_or_may_not_exist.txt'
+```
+
+위의 예제에서 예외처리가 의도대로 동작하지 않는 이유는 try...catch 블록은 같은 함수 안에서만 동작하기 때문이다. try...catch 블록은 readSketchyFile 함수 안에 있지만, 정작 예외는 fs.readFile이 콜백으로 호출하는 익명 함수 안에서 일어났다.
+
+또한, 콜백이 우연히 두 번 호출되거나, 아예 호출되지 않는 경우를 방지하는 안전장치도 없다. 콜백이 정확히 한 번만 호출될 것을 가정하고 코드를 작성해도 JS는 그런 걸 보장하지 않는다.
+
+해결할 수 없는 문제는 아니지만 비동기적 코드가 늘어나면 늘어날수록 버그가 없고 관리하기 쉬운 코드를 작성하기는 매우 어려워진다. 그래서 프라미스가 등장했다.
+
+## 3) 프라미스
+프라미스는 콜백의 단점을 해결하려는 시도 속에서 만들어졌다. 프라미스를 간혹 번고롭게 느껴질 수 있지만, 일반적으로 안전하고 관리하기 쉬운 코드를 만들 수 있게 된다.
+
+프라미스가 콜백을 대체하는 것은 아니며 오히려 콜백을 사용한다. 프라미스는 콜백을 예측 가능한 패턴으로 사용할 수 있게 하며, 프라미스 없이 콜백만 사용했을 때 나타날 수 있는 엉뚱한 현상이나 찾기 힘든 버그를 상당수 해결한다.
+
+프라미스의 기본 개념은 간단하다. 프라미스 기반 비동기적 함수를 호출하면 그 함수는 Promise 인스턴스를 반환한다. 프라미스를 성공(fulfilled)하거나, 실패(rejected)하거나 둘 중 하나만 일어난다고 확신한다. 또한 그것은 단 한 번만 일어난다. 이러한 과정을 프라미스가 결정됐다(settled)라고 한다.
+
+프라미스는 객체이므로 어디든 전달할 수 있다는 점도 콜백에 비해 간편한 장점이다. 비동기적 처리를 여기서 하지않고 다른 함수에서 (또는 다른 동료가) 처리하게 하고 싶다면 프라미스를 넘기기만 하면 된다.
+
+### 3-1 프라미스 만들기
+프라미스는 resolve(성공)와 reject(실패) 콜백이 있는 함수로 새 Promise 인스턴스를 만들기만 하면 된다. 
+
+```javascript
+function countdown(seconds) {
+    return new Promise (function(resolve,reject) {
+        for(let i=seconds;i>=0;i--) {
+            setTimeout(function() {
+                if(i>0) console.log(i+'...');
+                else resolve(console.log("GO!"));
+            }, (seconds-i)*1000);
+        }
+
+    });
+}
+countdown(5);
+
+// 5...
+// 4...
+// 3...
+// 2...
+// 1...
+// GO!
+```
+resolve와 reject는 함수이다. resolve나 reject를 여러번 호출하든, 섞어서 호출하든 결과는 같다. 첫 번째로 호출한 것만 의미 있다. 프라미스는 성공 또는 실패를 나타낼 뿐이다.
+
+### 3-2 프라미스 사용
+```javascript
+countdown(5).then(
+    function() {
+        console.log("countdown completed successfully");
+    },
+    function(err) {
+        console.log("countdown experienced an error: " + err. message);
+    }
+);
+// 5...
+// 4...
+// 3...
+// 2...
+// 1...
+// GO!
+// countdown completed successfully
+```
+
+예제에서는 반환된 프라미스를 변수에 할당하지 않고 then 핸들러를 바로 호출했다. then 핸들러는 성공 콜백과 에러 콜백을 받는다. 
+
+```javascript
+p = countdown(5);
+p.then(function() {
+        console.log("countdown completed successfully");
+});
+p.catch(function(err) {
+        console.log("countdown experienced an error: " + err. message);
+});
+// 5...
+// 4...
+// 3...
+// 2...
+// 1...
+// GO!
+// countdown completed successfully
+```
+
+프라미스는 catch 핸들러도 지원하므로 핸들러를 둘로 나눠서 써도 된다.
+
+```javascript
+function countdown(seconds) {
+    return new Promise (function(resolve,reject) {
+        for(let i=seconds;i>=0;i--) {
+            setTimeout(function() {
+                if(i===13) return reject(new Error("Oh my god"));
+                if(i>0) console.log(i+'...');
+                else resolve(console.log("GO!"));
+            }, (seconds-i)*1000);
+        }
+
+    });
+}
+countdown(15)
+
+// 15...
+// 14...
+// (node:4412) UnhandledPromiseRejectionWarning: Error: Oh my god
+// [생략...]
+// 12...
+// 11...
+// 10...
+// 9...
+// 8...
+// 7...
+// 6...
+// 5...
+// 4...
+// 3...
+// 2...
+// 1...
+// GO!
+```
+13을 만나면 에러를 내도록 만들었지만 콘솔에는 12부터 다시 카운트를 기록한다. reject나 resolve가 함수를 멈추지 않는다. 이들은 그저 프라미스의 상태를 관리할 뿐이다.
+
+일반적으로 함수가 성공이든 실패든 결정됐다면(settled) 멈춰야 하는데 countdown 함수는 실패한 후에도 계속 진행한다. 콘솔에 기록하는 부분이 별로 필요하지 않고 카운트다운을 컨트롤 하는 기능이 필요하다.
+
+프라미스는 비동기적 작업이 성공 또는 실패하도록 확정하는, 매우 안전하고 잘 정의된 메커니즘을 제공하지만 현재는 진행 상황을 전혀 알려주지 않는다. 즉 프라미스는 완료되거나 파기될 뿐, '50% 진행됐다'라는 개념은 아예 없는 것이다.
+
+Q(https://github.com/kriskowal/q) 같은 프라미스 라이브러리에는 진행 상황을 보고하는 기능도 있다.
+
+## 3-3 이벤트
+이벤트가 일어나면 이벤트 발생을 담당하는 개체(emitter)에서 이벤트가 일어났음을 알린다. 필요한 이벤트는 모두 콜백을 통해 주시(listen)할 수 있다. 노드에는 이벤트를 지원하는 모듈 `EventEmitter`가 내장돼 있다. 이 모듈을 써서 countdown 함수를 개선한다. `EventEmitter`는 원래 클래스와 함께 사용하도록 설계되었기에 함수를 클래스로 변경한다.
+
+```javascript
+const EventEmitter = require('events').EventEmitter;
+
+class Countdown extends EventEmitter {
+    constructor(seconds, superstitious) {
+        super();
+        this.seconds = seconds;
+        this.superstitious = !!superstitious;
+    }
+    go() {
+        const countdown = this;
+        return new Promise(function(resolve,reject){
+            for(let i=countdown.seconds; i>=0; i--) {
+                setTimeout(function() {
+                    if(countdown.superstitious && i === 13)
+                        return reject(new Error("Oh my god"));
+                    countdown.emit('tick', i);
+                    if(i===0) resolve();
+                }, (countdown.seconds-i)*1000);
+            }
+        });
+    }
+}
+
+```
+
+EventEmitter를 상속하는 클래스는 이벤트를 발생시킬 수 있다. 실제로 카운트다운을 시작하고 프라미스를 반환하는 부분은 go 메서드이다. go 메서드 안에서 가장 먼저 한 일은 countdown에 this를 할당한 것이다. 카운트다운이 얼마나 남았는지 알기 위해서는 this 값을 알아야 하고, 13인지 아닌지 역시 콜백 안에서 알아야 한다. this는 특별한 변수이고 콜백 안에서는 값이 달라진다. 따라서 this의 현재 값을 다른 변수에 저장해야 프라미스 안에서 쓸 수 있다.
+
+가장 중요한 부분은 `countdown.emit('tick', i)`인데 이 부분에서 tick 이벤트를 발생시키고, 필요하다면 프로그램의 다른 부분에서 이 이벤트를 주시할 수 있다.
+
+```javascript
+const c = new Countdown(5);
+c.on('tick', function(i) {
+    if(i>0) console.log(i+'...');
+});
+c.go()
+    .then(function() {
+        console.log('GO!');
+    })
+    .catch(function(err) {
+        console.error(err.message);
+    })
+
+// 5...
+// 4...
+// 3...
+// 2...
+// 1...
+// GO!
+```
+
+EventEmitter의 on 메서드가 이벤트를 주시하는 부분이다. 이 예제에서는 tick 이벤트 전체에 콜백을 등록했다. tick이 0이 아니면 출력한 다음 카운트다운을 시작하는 go를 호출한다. 카운트다운이 끝나면 `GO!`를 출력한다. 물론 `GO!`를 tick 이벤트 리스너 안에서 출력할 수도 있지만, 이렇게 하는 편이 이벤트와 프라미스의 차이를 더 잘 드러낸다.
+
+```javascript
+const EventEmitter = require('events').EventEmitter;
+
+class Countdown extends EventEmitter {
+    constructor(seconds, superstitious) {
+        super();
+        this.seconds = seconds;
+        this.superstitious = !!superstitious;
+    }
+    go() {
+        const countdown = this;
+        const timeoutIds = [];
+        return new Promise(function(resolve,reject){
+            for(let i=countdown.seconds; i>=0; i--) {
+                timeoutIds.push(setTimeout(function(){
+                    if(countdown.superstitious && i === 13) {
+                        // 대기중인 타임아웃을 모두 취소한다.
+                        timeoutIds.forEach(clearTimeout);
+                        return reject(new Error("Oh my god"));
+                    }
+                    countdown.emit('tick', i);
+                    if(i===0) resolve();
+                }, (countdown.seconds-i)*1000));
+            }
+        });
+    }
+}
+
+const c = new Countdown(15,true)
+    .on('tick', function(i) {
+        if(i>0) console.log(i+'...');
+    });
+c.go()
+    .then(function() {
+        console.log('GO!');
+    })
+    .catch(function(err) {
+        console.error(err.message);
+    })
+
+// 15...
+// 14...
+// Oh my god
+```
+
+### 3-4 프라미스 체인
+
+프라미스에는 체인으로 연결할 수 있다는 장점이 있다. 즉, 프라미스가 완료되면 다른 프라미스를 반환하는 함수를 즉시 호출할 수 있다.
+
+```javascript
+function launch() {
+    return new Promise(function(resolve, reject) {
+        console.log("Lift off!");
+        setTimeout(function() {
+            resolve("In orbit!");
+        }, 2*1000);
+    });
+}
+
+const c = new Countdown(5)
+    .on('tick', i => console.log(i + '...'));
+
+c.go()
+    .then(launch)
+    .then(function(msg) {
+        console.log(msg);
+    })
+    .catch(function(err) {
+        console.error("Houston, we have a problem....");
+    })
+
+// 5...
+// 4...
+// 3...
+// 2...
+// 1...
+// 0...
+// Lift off!
+// In orbit!
+
+// ----- Countdown(15, true) 일 때 -----
+// 15...
+// 14...
+// Houston, we have a problem....
+```
+
+프라미스 체인을 사용하면 모든 단계에서 에러를 캐치할 필요는 없다. 체인 어디에서든 에러가 생기면 체인 전체가 멈추고 catch 핸들러가 동작한다.
+
+## 3-5 결정되지 않는 프라미스 방지하기
+
+프라미스는 비동기적 코드를 단순화하고 콜백이 두 번 이상 실행되는 문제를 방지한다. 하지만 resolve나 reject를 호출하는 걸 잊어서 프라미스가 결정되지 않는 문제까지 자동으로 해결하지 못한다. 에러가 일어나지 않으므로 실수는 찾기 매우 어렵다. 
+
+결정되지 않은 프라미스를 방지하는 한 가지 방법은 프라미스에 타임아웃을 거는 것이다. 충분한 시간이 지났는데도 프라미스가 결정되지 않으면 자동으로 실패하게 만들 수 있다. 물론 얼마나 기다려야 '충분히' 기다렸는지는 스스로 판단해야 한다. 10분 정도는 걸릴 거로 생각하는 복잡한 알고리즘에 1초 타임아웃을 걸어서는 안 된다.
+
