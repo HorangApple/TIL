@@ -112,3 +112,13 @@ print(result) # [[5, 8], [5, 6]]
   문서끼리 비교할 때 자주 사용한다.
 
 <img src = 'images/image 005.png'>
+
+### 2) Process
+
+- 파일 불러오기
+- 파일을 읽어서 단어사전 (corpus) 만들기
+- 단어별로 Index 만들기
+- 만들어진 인덱스로 문서별로 Bag of words vector 생성
+- 비교하고자 하는 문서 비교하기
+- 얼마나 맞는지 측정하기
+
