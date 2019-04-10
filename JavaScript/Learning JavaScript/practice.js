@@ -1,68 +1,46 @@
-const fs = require('fs');
-
-// fs.readFile('a.txt', function(err, dataA) {
-//     if(err) console.error(err);
-//     fs.readFile('b.txt', function(err, dataB){
-//         if(err) console.error(err);
-//         fs.readFile('c.txt', function(err, dataC) {
-//             if(err) console.error(err);
-//             setTimeout(function() {
-//                 fs.writeFile('d.txt', dataA+dataB+dataC, function(err){
-//                     if(err) console.error(err);
-//                 });
-//             }, 60*1000);
-//         });
-//     });
-// });
-
-function nfcall (f, ...args) {
-    return new Promise (function(resolve, reject) {
-        f.call(null, ...args, function(err, ...args) {
-            if(err) return reject(err);
-            resolve(args.length<2 ? args[0] : args);
-        });
-    });
-}
-
-function ptimeout(delay) {
-    return new Promise(function(resolve, reject) {
-        setTimeout(resolve, delay);
-    });
-}
-
-function grun(g) {
-    const it = g();
-    (function iterate(val) {
-        const x = it.next(val);
-        if(!x.done) {
-            if(x.value instanceof Promise) {
-                x.value.then(iterate).catch(err => it.throw(err));
-            } else {
-                setTimeout(iterate, 0, x.value);
-            }
-        }
-    })();
-}
-
-function* theFutureIsNow() {
-    let data;
-    try{
-        const data = yield Promise.all([
-            nfcall(fs.readFile, 'a.txt'),
-            nfcall(fs.readFile, 'b.txt'),
-            nfcall(fs.readFile, 'c.txt'),
-        ]);
-    } catch(err) {
-        console.error("Unable to read one or more input files: " + err.message);
-        throw err;
+//https://learn.freecodecamp.org/javascript-algorithms-and-data-structures/basic-javascript/profile-lookup
+//Setup
+var contacts = [
+    {
+        "firstName": "Akira",
+        "lastName": "Laine",
+        "number": "0543236543",
+        "likes": ["Pizza", "Coding", "Brownie Points"]
+    },
+    {
+        "firstName": "Harry",
+        "lastName": "Potter",
+        "number": "0994372684",
+        "likes": ["Hogwarts", "Magic", "Hagrid"]
+    },
+    {
+        "firstName": "Sherlock",
+        "lastName": "Holmes",
+        "number": "0487345643",
+        "likes": ["Intriguing Cases", "Violin"]
+    },
+    {
+        "firstName": "Kristian",
+        "lastName": "Vos",
+        "number": "unknown",
+        "likes": ["JavaScript", "Gaming", "Foxes"]
     }
-    yield ptimeout(6*1000);
-    try {
-        yield nfcall(fs.writeFile, 'd.txt', data[0]+data[1]+data[2]);
-    } catch(err) {
-        console.error("Unable to write output file: " + err.message);
-        throw err;
+];
+
+
+function lookUpProfile(name, prop){
+// Only change code below this line
+  if (contacts[name]) {
+    if (contacts[name][prop]){
+      return contacts[name][prop];
+    } else {
+      return 'No such property';
     }
+  } else {
+    return 'No such contact';
+  }
+// Only change code above this line
 }
 
-grun(theFutureIsNow);
+// Change these values to test your function
+console.log(lookUpProfile("Akira", "likes"));

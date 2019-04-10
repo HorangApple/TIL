@@ -3782,3 +3782,273 @@ function* theFutureIsNow() {
 }
 ```
 
+# Chapter 15. 날짜와 시간
+자바의 java.util.Date에서 가져온 것이나 다름이 없다.
+
+## 1) 날짜, 타임존, 타임스탬프, 유닉스 시간
+세계는 타임존으로 나뉘는데 UTC(Coordinated Universal Time)를 기준으로 한 시차로 나뉜다. UTC는 때때로 그리니치 표준시, GMT(Greenwich MeanTime)라고 불리기도 한다. 여기에 서머타임까지 적용이되면 복잡해진다.
+
+```javascript
+const d = new Date();
+console.log(d); // 타임존이 들어간 그레고리력 날짜
+console.log(d.valueOf()); // 유닉스 타임스탬프
+
+// 2019-04-10T02:06:17.556Z
+// 1554861977556
+```
+
+1970년 1월 1일 0시 0분 0초(UTC) (유닉스 시간 원점, Unix Epoch)으로부터 몇 밀리초가 지났는지 나타낸다. JS에서는 그레고리력으로 날짜를 변환시켜준다. 숫자형 표현이 필요하면 valueOf()메서드를 사용한다.
+
+## 2) Date 객체 만들기
+```javascript
+// JS의 월은 0으로 시작한다. 즉 0은 1월이고, 1은 2월입니다.
+console.log(new Date(2015, 1, 14, 13, 30, 5, 500));
+// 2015-02-14T04:30:05.500Z
+
+// 유닉스 타임스탬프로 날짜 생성
+console.log(new Date(1234));
+// 1970-01-01T00:00:01.234Z
+
+// 유닉스 시간 원점 이전의 날짜를 구할 때
+console.log(new Date(-1234));
+// 1969-12-31T23:59:58.766Z
+
+// 날짜 문자열 해석 (표준시를 기준)
+console.log(new Date('June 14, 1903')); // 지역 표준시
+console.log(new Date('June 14, 1903 GMT-0000')); // UTC
+
+//1903-06-13T15:32:08.000Z
+//1903-06-14T00:00:00.000Z
+```
+
+항상 현재 지역의 표준시에 따라 출력된다. 문제가 되는 것은 타임존을 명시할 방법이 없다는 것이다. 인터넷은 전 세계 어디서든 쓰이고, 노드가 JS를 서버로 가져감에 따라 타임존을 더 일관되게 처리할 방법이 필요해졌다.
+
+## 3) Moment.js
+
+http://momentjs.com
+
+Moment.js에는 타임존을 지원하는 버전과 지원하지 않는 버전 두 가지가 있다. 타임존 버전은 세계의 타임존 정보를 모두 담고 있어서 양이 꽤 많다.
+
+웹 기반은 CDN을 통해, 노드를 사용할 때는 아래의 명령을 통해 설치하여 사용한다.
+
+```bash
+npm install --save moment-timezone
+```
+
+```javascript
+const moment = require('moment-timezone')
+```
+
+## 4) 현실적인 JS 날짜 접근법
+Date 객체에 대해 더 알고 싶다면 MDN 문서를 참고해라.
+
+## 5) 날짜 데이터 만들기
+Date로는 타임존을 명시하지 않고 날짜를 생성할 때는 어느 타임존이 사용되는지 생각해야 하고, 그건 어느 지역에서 날짜를 생성하느냐에 따라 다르기에 많은 사람들을 괴롭힌다.
+
+### 5-1 서버에서 날짜 생성하기
+서버에서 날짜를 생성할 때는 항상 UTC를 사용하거나 타임존을 명시하는 편이 좋다. 클라우드 기반으로 애플리케이션을 운영하여 특정 지역 기준으로 날짜를 생성한다면 골칫거리를 예약한 것이나 다름이 없다.
+
+```javascript
+const d = new Date(Date.UTC(2016, 4, 27)); 
+
+console.log(d);
+
+// 2016-05-27T00:00:00.000Z
+```
+Date.UTC는 Date의 매개변수를 똑같이 받지만, 새 Date 인스턴스를 반환하지 않고 해당 날짜의 숫자형 값을 반환한다. 이 숫자를 Date 생성자에 넘기면 날짜 인스턴스를 얻을 수 있다.
+
+```javascript
+const moment = require('moment-timezone')
+
+// Moment.js에 넘기는 배열은 JS의 Date 생성자에 넘기는 매개변수와 똑같고,
+// 월은 0으로 시작한다.
+// toDate() 메서드는 Moment.js 객체를 JS Date 객체로 변환한다.
+const d = moment.tz([2016, 3, 27, 9, 19], 'America/Los_Angeles').toDate();
+const s = moment.tz([2016, 3, 27, 9, 19], 'Asia/Seoul').toDate();
+
+console.log(d);
+console.log(s);
+
+// 2016-04-27T16:19:00.000Z
+// 2016-04-27T00:19:00.000Z
+```
+
+특정 타임존에 있는 서버에서 날짜를 생성할 때는 moment.tz를 써서 Date 인스턴스를 만들면 타임존을 손으로 변환할 필요가 없다.
+
+### 5-2 브라우저에서 날짜 생성하기
+일반적으로 JS의 기본 동작은 브라우저에서 사용하기에 알맞다. 브라우저는 운영체제를 통해 타임존 정보를 알 수 있고, 사용자는 일반적으로 그 지역의 시간을 선호한다. 앱에서 다른 타임존의 날짜를 처리해야 한다면 Moment.js을 이용해 타임존으로 변환해라.
+
+## 6) 날짜 데이터 전송하기
+서버에서 브라우저로 날짜를 전송하거나, 반대로 브라우저에서 서버로 날짜를 전송할 때는 조금 복잡할 수 있다. 다행히 JS의 Date 인스턴스는 날짜를 저장할 때 UTC를 기준으로 유닉스 타임스탬프를 저장하므로, Date 객체를 그냥 전송해도 일반적으로 안전하다.
+
+날짜를 전송하는 가장 확실한 방법은 JSON을 사용하는 것이다. 날짜는 JSON에서 1:1 대칭이 되게끔 파싱할 수 없으므로 JSON 명세에는 날짜에 대한 데이터 타입을 정의하지 않았다.
+
+```javascript
+const before = { d: new Date() };
+console.log(before.d instanceof Date); // true
+const json = JSON.stringify(before);
+const after = JSON.parse(json);
+console.log(after.d instanceof Date); // false
+console.log(typeof after.d); // "string"
+
+after.d = new Date(after.d);
+console.log(after.d instanceof Date); // true
+```
+
+즉, JSON으로 바로 날짜를 다룰 수는 없지만, 전송된 문자열에서 날짜를 '복구'하는 것은 가능하다. 원래 날짜가 어느 타임존에 있었든, 일단 JSON으로 인코드된 날짜는 UTC이다. 그리고 JSON으로 인코드된 문자열을 Date 생성자에 넘겨서 얻은 날짜는 사용자의 타임존을 기준으로 표시된다.
+
+```javascript
+const before = { d: new Date().valueOf() };
+console.log(typeof before.d); // "number"
+const json = JSON.stringify(before);
+const after = JSON.parse(json);
+console.log(typeof after.d); // "number"
+
+after.d = new Date(after.d);
+console.log(after.d instanceof Date); // true
+```
+
+문자열로 인코드하지 않고 valueOf() 메서드로 얻은 숫자를 그냥 전송해도 된다.
+
+JS에서 JSON으로 인코드된 날짜 문자열을 일관되게 처리하지만, 다른 언어나 운영체제에서 제공하는 JSON 라이브러리는 그렇지 않다. JS가 아닌 다른 시스템과 날짜 데이터를 주고받을 때는 그 시스템에서 날짜를 어떻게 직렬화하는지 알아둬야 한다. 이런 경우 유닉스 타임스탬프를 주고받는 편이 더 안전하나 라이브러리에 따라 밀리초가 아닌 초 기준으로 해석할 수도 있다.
+
+## 7) 날짜 형식
+JS의 Date에서 제공하는 날짜 형식은 별로 다양하지 않다. Moment.js는 원하는 형식을 쉽게 만들 수 있는 편이다.
+
+Moment.js의 format 메서드를 써서 날짜를 원하는 형식으로 만들 수 있다. 이 메서드는 메타 문자가 포함된 문자열을 받고, 메타 문자는 그에 해당하는 날짜 구성 요소로 변환된다.
+
+```javascript
+const d = new Date(Date.UTC(1930, 4, 10));
+const moment = require('moment-timezone')
+
+console.log(d.toLocaleDateString());
+console.log(d.toLocaleString());
+console.log(d.toLocaleTimeString());
+console.log(d.toTimeString());
+console.log(d.toUTCString());
+
+// 1930-5-10
+// 1930-5-10 09:00:00
+// 09:00:00
+// 09:00:00 GMT+0900 (GMT+09:00)
+// Sat, 10 May 1930 00:00:00 GMT
+
+console.log(moment(d).format("YYYY-MM-DD HH:mm [UTC]Z"));
+console.log(moment(d).format("YYYY년 M월 D일 HH:mm"));
+console.log(moment(d).format("dddd, MMMM [the] Do, YYYY"));
+console.log(moment(d).format("h:mm a"));
+
+// 1930-05-10 09:00 UTC+09:00
+// 1930년 5월 10일 09:00
+// Saturday, May the 10th, 1930
+// 9:00 am
+```
+
+메타 문자가 길면 해당하는 구성 요소도 더 길게 표시된다.
+
+- "M" : 1, 2, 3...
+- "MM" : 01, 02, 03...
+- "MMM" : Jan, Feb, Mar...
+- "MMMM" : January, February, March...
+
+소문자 "o"를 "Do"와 같이 붙이면 1st, 2nd, 3rd 등으로 서수로 바뀐다. M이나 o 등을 있는 그대로 표시하려면 "[M]" 처럼 대괄호 안에 넣으면 된다.
+
+Moment.js조차 EST나 PST 같은 타임존 약어는 완전히 해결하지 못했다. 타임존 약어에 관한 일관된 국제 표준이 없기 때문에 Moment.js는 포맷 문자 z를 폐기했다.
+
+## 8 날짜 구성 요소
+Date 인스턴스의 각 구성 요소에 접근할 때는 다음 메서드를 사용한다.
+
+```javascript
+const d = new Date(Date.UTC(1930, 4, 10));
+
+console.log(d.getFullYear()); // 1930
+console.log(d.getMonth()); // 4 -> 5월
+console.log(d.getDate()); // 10
+console.log(d.getDay()); // 6 - 토요일
+console.log(d.getHours()); // 9
+console.log(d.getMinutes()); // 0
+console.log(d.getSeconds()); // 0
+console.log(d.getMilliseconds()); // 0
+
+// UTC 기준 메서드
+console.log(d.getUTCFullYear()); // 1930
+console.log(d.getUTCDate()); // 10
+console.log(d.getUTCMonth()); // 4
+```
+
+## 9) 날짜 비교
+어느 쪽이 더 앞인가 하는 날짜 비교는 JS에 내장된 비교 연산자를 통해 할 수 있다. Date 인스턴스는 날짜를 숫자로 저장하므로, 숫자에 쓸 수 있는 비교 연산자를 그대로 쓰면 된다.
+
+```javascript
+const d1 = new Date(Date.UTC(1930, 4, 10));
+const d2 = new Date(Date.UTC(2019, 4, 10));
+
+console.log(d1>d2); // false
+console.log(d1<d2); // true
+```
+
+## 10) 날짜 연산
+
+```javascript
+const d1 = new Date(Date.UTC(1930, 4, 10));
+const d2 = new Date(Date.UTC(2019, 4, 10));
+
+const msDiff = d2-d1;
+const daysDiff = msDiff/1000/60/60/24;
+
+console.log(msDiff); // 2808604800000 ms
+console.log(daysDiff); // 32507 days
+```
+
+날짜는 숫자이므로 날짜에서 날짜를 빼면 몇 밀리초가 지났는지 알 수 있다.
+
+Array.prototype.sort를 사용하여 날짜를 정렬할 수도 있다.
+
+Moment.js에는 날짜를 빼거나 더하는 데 유용한 메서드도 많이 들어 있고 또한 메서드를 체인으로 연결할 수도 있다.
+
+## 11) 사용자가 알기 쉬운 상대적 날짜
+```javascript
+const moment = require('moment-timezone')
+
+console.log(moment().subtract(10, 'seconds').fromNow()); // a few seconds ago
+console.log(moment().subtract(5, 'minutes').fromNow()); // 5 minutes ago
+console.log(moment().subtract(45, 'minutes').fromNow()); // an hour ago
+console.log(moment().subtract(5, 'hours').fromNow()); // 5 hours ago
+console.log(moment().subtract(22, 'hours').fromNow()); // a day ago
+console.log(moment().subtract(100, 'days').fromNow()); // 3 months ago
+console.log(moment().subtract(345, 'days').fromNow()); // a year ago
+```
+
+Moment.js 에서는 적당한 시간 단위가 지나면 다른 단위를 써서 나타낸다. 정확한 숫자보다는 이렇게 어림한 숫자가 더 친숙하게 느껴질 수 있다.
+
+날짜를 사용하는데에 앞서 다음 내용을 기억해야한다.
+```
+- JS의 날짜는 1970년 1월 1일 UTC로부터 몇 밀리초가 지났는지 나타내는 숫자이다.
+- 날짜를 생성할 때는 타임존에 유의해라.
+- 날짜 형식을 자유롭게 바꿀 수 있어야 한다면 Moment.js를 사용해라.
+```
+
+# Chapter 16. Math
+JS에는 정수 전용 클래스가 없다. JS의 숫자는 모두 IEEE 754 64비트 부동소숫점 숫자이다. 복잡한 숫자나 아주 큰 숫자를 다뤄야 한다거나, 전문적인 수식 구조나 알고리즘이 필요하다면 [Math.js](http://mathjs.org/)를 권한다. 일반적인 상황에서는 JS의 Math객체를 이용한다.
+
+# Chapter 17. 정규표현식
+정규표현식(regular expression)은 정교한 문자열 매칭 기능을 제공한다. 이메일 주소나 URL, 전화번호처럼 보이는 문자열을 찾거나 교체를 한다면 정규표현식에 익숙해져야 한다.
+
+[정규식 101](https://regex101.com/javascript)에서 연습하자.
+
+# Chapter 18. 브라우저의 자바스크립트
+JS 언어 자체는 똑같지만, 브라우저에서 사용할 때 특별히 알아야 할 사항과 API가 있다.
+
+# 1) ES5와 ES6
+서버에서 ES6 기능 중 무엇이 지원되는지 확실히 알 수 있고 JS 엔진을 선택할 수도 있다. 그러나 웹에서는 그렇지 않다. 사용자의 환경을 컨트롤하지 않는 한 당분간은 ES5를 사용해야 한다. 트랜스컴파일을 통해 ES6를 ES5로 바꿔야 한다.
+
+# 2) 문서 객체 모델
+DOM(Document Object Model)은 HTML 문서의 구조를 나타내는 표기법인 동시에 브라우저가 HTML 문서를 조작하는 핵심이기도 하다.
+
+<img src = "images/image 004.gif">
+
+DOM은 트리 구조로 표현한다. DOM 트리는 노드(node)로 구성된다. 루트 노드를 제외하면 모든 노드에 부모가 있으며, 자식 노드는 있어도 되고 없어도 된다. 루트 노드는 문서(document)이며 자식노드는 <html> 요소 하나 뿐이다. <html> 요소에는 자식으로 <head> 요소와 <body> 요소가 있다.
+
+DOM 트리의 모든 노드는 Node 클래스의 인스턴스이다. Node 객체에는 트리 구조를 나타내는 parentNode와 childNodes 프로퍼티, 자신에 대한 프로퍼티인 nodeName과 nodeType 프로퍼티가 있다.
+
+하지만 모든 노드가 HTML 요소는 아니다. 예를 들면 문단 태그 <p>는 HTML 요소지만, 그 문단에 포함된 텍스트는 텍스트 노드이다. 노드와 요소 용어를 섞어 써서 문제가 되는 경우는 거의 없지만, 정확히 말하면 둘은 다른 개념이다.
