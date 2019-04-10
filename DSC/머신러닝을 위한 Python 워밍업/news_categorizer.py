@@ -47,17 +47,19 @@ def get_corpus_dict(text):
         corpus_dict[v] = i
     return corpus_dict
 
-
+# 문서별로 Bag of words vector 생성
 def get_count_vector(text, corpus):
     text = [sentence.split() for sentence in text]
+    # get_cleaned_text(word)를 통해 전처리
     word_number_list = [[corpus[get_cleaned_text(word)] for word in words] for words in text]
-    X_vector = [[0 for _ in range(len(corpus))] for x in range(len(text))]
+    X_vector = [[0 for _ in range(len(corpus))] for _ in range(len(text))]
 
     for i, text in enumerate(word_number_list):
         for word_number in text:
             X_vector[i][word_number] += 1
     return X_vector
 
+# 비교하기, consine distance 활용
 import math
 def get_cosine_similarity(v1,v2):
     "compute cosine similarity of v1 to v2: (v1 dot v2)/{||v1||*||v2||)"
@@ -69,6 +71,7 @@ def get_cosine_similarity(v1,v2):
         sumxy += x*y
     return sumxy/math.sqrt(sumxx*sumyy)
 
+# 비교결과 정리하기
 def get_similarity_score(X_vector, source):
     source_vector = X_vector[source]
     similarity_list = []
@@ -81,6 +84,7 @@ def get_similarity_score(X_vector, source):
 def get_top_n_similarity_news(similarity_score, n):
     import operator
     x = {i:v for i, v in enumerate(similarity_score)}
+    # 가장 유사한 값 순으로 정렬
     sorted_x = sorted(x.items(), key=operator.itemgetter(1))
 
     return list(reversed(sorted_x))[1:n+1]
@@ -113,4 +117,5 @@ if __name__ == "__main__":
         similarity_news = get_top_n_similarity_news(similarity_score, 10)
         accuracy_score = get_accuracy(similarity_news, y_class, source_number)
         result.append(accuracy_score)
+    print(similarity_news)
     print(sum(result) / 80)
