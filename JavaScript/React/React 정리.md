@@ -46,3 +46,521 @@ npm start
 
 일반적으로 가상 DOM은 변경의 탐지 및 관리에 필요한 복잡한 작업을 최대한 숨기고, 개발자가 특별한 추상화 계층에 집중하는 데  도움을 준다.
 
+### 1.3.1 DOM
+
+DOM 또는 문서 객체 모델은 JS 프로그램이 다양한 종류의 문서(HTML, XML 또는 SVG 등)를 다루기 위한 프로그래밍 인터페이스다. 이 인터페이스는 표준 명세를 바탕으로 구현된다. 즉, 이 인터페이스가 제공해야 할 표준 기능과 그 동작은 공개 작업 그룹(public working group)이 정의한다는 뜻이다.
+
+DOM은 XML 문서의 계층 구조를 반영한 트리 구조(tree structure)다.
+
+HTML 문서 내의 무언가와 관련된 정보에 접근하고 갱신하거나 저장하는 JS 메서드를 사용한다면 거의 확실히 DOM 또는 그와 관련된 API들을 사용하는 것이다.
+
+리액트를 이용해 애플리케이션을 개발하면 DOM을 직접 조작할 경우가 별로 없다. 리액트가 웬만한 작업을 대신 해주기 때문이다.
+
+### 1.3.2 가상 DOM
+
+대형 웹 애플리케이션을 개발하다 보면 직접 DOM을 조작하기가 매우 어려운 경우가 있다. 이런 어려움은 변경 사항을 탐지하려 할 때 드러난다. 일반적으로 데이터가 변경되면 이 변경 사항을 반영하기 위해 UI를 갱신해야 한다.
+
+브라우저가 DOM 요소(element)에 액세스하고 이를 갱신하거나 새로 생성하기 위해서는 지정된 요소를 구조화된 트리 구조로부터 조회해야 한다. 이후 레이아웃, 크기 및 변경을 위한 기타 여러 동작을 수행해야 하며, 이러한 작업은 복잡한 계산이 요구된다.
+
+가상 DOM은 이런 제약을 처리하기 위해 DOM의 갱신을 최적으로 수행한다. 리액트의 가상 DOM은 단지 '충분히 빠르게' 하기 위한 것이다. 성능도 장점이지만 간결함이 그보다 더 우선하는 요소이기에 가상 DOM은 복잡한 상태 관리 로직에서 벗어나 애플리케이션에서 더 중요한 부분에 집중하도록 도와주는 요소의 일부일 뿐이다.
+
+### 1.3.3 갱신과 변경 비교
+
+그래픽 카드가 필요한 최소한의 변경만 처리하듯이 가상 DOM이 그 역할을 한다. 리액트는 메모리에 가상 DOM을 생성하고 관리하여 가상 DOM의 변경 사항을 브라우저 DOM에 반영한다. 이 동작은 메모리의 DOM에서 발생한 변경 사항이 실제 DOM의 변경을 유발한다고 판단되는 경우에만 수행된다. 이러한 방식은 개발자들의 상태 추적이 훨씬 간편해진다는 장점을 가져다준다.
+
+## 1.4 컴포넌트: 리액트의 기본 단위
+
+컴포넌트는 리액트의 가장 기본적인 단위다.
+
+### 1.4.1 컴포넌트의 정의
+
+컴포넌트를 멘탈 및 시각화 도구로 사용하는 것은 훨씬 더 나은 방법인 동시에 더욱 직관적인 애플리케이션의 디자인과 사용법을 정의할 수 있다.
+
+컴포넌트는 우리가 정의하는 어떤 형태로든 구현할 수 있다. 설령, 그것이 컴포넌트로서 적합한 형태가 아닐지라도 말이다. 
+
+### 1.4.2 리액트의 컴포넌트: 캡술화와 재사용
+
+리액트의 컴포넌트는 캡슐화되어 있으며, 재사용 및 재구성을 할 수 있다. 덕분에 간결한 컴포넌트를 조합해서 애플리케이션을 개발할 수 있다. 컴포넌트를 만들 때는 반드시 한 번은 재사용할 컴포넌트를 만들도록 해야한다.
+
+리액트 기반의 컴포넌트를 정의할 때는 컴포넌트 디자인에서 그 구조와 일관성에 대해 고려하는 것이 중요하다.
+
+다른 라이브러리에 의존하는 컴포넌트라 하더라도 잘 디자인된 리액트 컴포넌트는 애플리케이션의 다른 영역과 충분히 잘 어울릴 수 있다.  컴포넌트 간의 경계는 기능의 분할과 잘 정의된 애플리케이션 구조를 확보할 수 있다는 것을 의미하지만, 독립적인 컴포넌트는 재사용성과 이동성을 의미한다.
+
+컴포넌트는 상호작용, 즉 여러 컴포넌트를 '조합(compose)'해서 새로운 형태의 '합성(composite)' 컴포넌트를 만들 수도 있다. 컴포넌트의 조합은 리액트의 가장 강력한 장점 중 하나다.
+
+컴포넌트 안에 있는 '생명주기 메서드'는 예측이 가능하며, 컴포넌트가 다른 생명주기 시점(마운팅, 갱신, 언마운팅 등)으로 이동할 때 활용할 수 있도록 잘 정의되어 있다.
+
+# Chapter 2 첫 번째 컴포넌트
+
+## 2.1 리액트의 컴포넌트에 대해 알아보기
+
+컴포넌트는 리액트로 작성된 클라이언트 측 애플리케이션을 구성하는 기본 단위이다. 컴퓨넌트를 기반으로 사용자 인터페이스를 구성하고 이를 바탕으로 구조를 잡아야한다. 
+
+이후 애플리케이션이 필요로 하는 데이터에 대해 이해한 후 이 데이터를 어떻게 컴포넌트로 만들 수 있는지 생각해본다.
+
+### 2.1.1 애플리케이션 데이터를 살펴보자
+
+디자인 시안 외에 API가 애플리케이션에 어떤 데이터를 제공해 주는지 알아야한다. 디자인 시안을 보면 API로부터 어떤 데이터가 전달될 것인지 어렴풋이 짐작할 수 있다. 이처럼 애플리케이션 데이터의 형태를 아는 것은 UI 개발 시작에 앞서 계획을 수립하는 데 있어 매우 중요한 부분이다.
+
+참고로 **API**(Application Programming Interface)는 프로그램이나 플랫폼과 상호작용을 하기 위해 정해진 것을 외부에 노출하는 방법이며, 쉬운 사용을 위해 대부분 인터넷을 통해 제공된다. 서버로부터 제공되는 데이터는 **REST 형식의 JSON API**가 많이 사용된다. JSON을 통해 데이터가 어디에 어떻게 사용될 것인지 살펴볼 수 있다.
+
+### 2.1.2 다중 컴포넌트: 컴포넌트의 조합과 부모-자식 관계
+
+DOM 요소들과 마찬가지로, 리액트의 컴포넌트들은 중첩(nested)할 수 있으며, 다른 컴포넌트를 포함할 수 있다. 물론 다른 컴포넌트와 같은 계층에 컴포넌트를 배치할 수 있다. 컴포넌트들은 여러 가지 '짐스러운' 것을 가지고 있지 않기 때문에 매우 유연하게 조합이 가능(composible)하다.
+
+컴포넌트가 컴포넌트를 포함하고 있다면 이 컴포넌트는 **부모 컴포넌트**가 되며, 반대로 다른 컴포넌트 내에 포함된 컴포넌트는 **자식 컴포넌트**가 된다. 컴포넌트에 있어서는 오로지 부모와 자식 관계만이 중요하다.
+
+### 2.1.3 컴포넌트 간의 관계 확립
+
+컴포넌트의 계층 구조를 정의하면 다음과 같다. 
+
+- 인터페이스의 어느 부분이 컴포넌트가 될 것이며, 어디에 배치할 것인지에 대해 계획을 세워야 한다.
+- 컴포넌트의 관계는 시간이 지나면서 달라질 수 있으므로 처음부터 너무 완벽해지려는 욕심을 부리지 않는다.
+- 컴포넌트를 적절하게 그룹화시킨다. 서로 관련된 기능을 제공하는 것들로 구성해야 한다. 컴포넌트를 애플리케이션 내에 자유롭게 배치하기 어렵다면 계층 구조를 너무 견고하게 정의했기 때문일 수도 있다.
+- 인터페이스의 어떤 요소가 여러 번 반복되어 나타난다면 이런 요소들은 컴포넌트로 정의한다.
+
+## 2.2 리액트 컴포넌트 개발하기
+
+```javascript
+// index.js
+const node = document.getElementById("root");
+
+// index.html
+<div id="root"></div>
+```
+
+우선, ID 값이 root인 DOM 요소를 추가하고 React-dom 라이브러리를 사용하는 약간의 기본 코드를 작성한다.
+
+컴포넌트는 요소를 그룹화하는 방법이며 기능, 마크업, 스타일 그리고 기타 UI에 필요한 다른 요소들을 하나로 묶어 그룹화한다.
+
+### 2.2.1 리액트 요소 생성하기
+
+***React.createElement***
+
+**리액트 요소**란 경량이고 상태가 없으며 내부 상태의 변경이 불가능한 요소이다. 두 가지 타입이 있는데 **ReactDOMElement**는 DOM 요소를 가상으로 표현한 객체이고 **ReactComponentElement**는 리액트 컴포넌트를 표현하는 함수나 클래스에 대한 참조를 의미한다.
+
+요소(element)란 우리가 화면에서 보고자 하는 것들에 대해 리액트에게 설명해 주는 서술자(descriptor)며, 리액트의 중심에 있는 개념이다. 대부분의 컴포넌트는 리액트 요소의 컬렉션이 될 것이다.
+
+UI를 구성하는 가장 기본적인 요소이기 때문에 UI의 각 영역에 '경계(boundary)'를 생성하기 때문에 기능과 마크업, 스타일 등을 함께 그룹화할 수 있다.
+
+DOM 요소와 리액트 요소 사이의 유사성은 멘탈 모델을 지원하기 위한 것이며, 일반적인 DOM 요소들과 마찬가지로 트리 구조의 요소들로 구성된 익숙한 멘탈 모델을 다루게 된다.
+
+다른 한편으로, 리액트 요소는 DOM 요소의 청사진(blueprint)처럼 리액트가 사용하는 기본적인 지시문의 집합으로 이해할 수 있다.  즉, 리액트가 요소를 생성하고 관리할 때 사용하는 간소화된 버전의 청사진이라고 할 수 있다.
+
+```javascript
+React.createElement(
+  String/ReactClass type,
+  [object props],
+  [children...]
+) -> ReactElement
+```
+
+React.createElement 함수는 문자열이나 (React.Component 타입을 상속한) 컴포넌트, prop 객체, 그리고 자식 컴포넌트들을 인수로 전달받아 리액트 요소를 리턴한다.
+
+- type : 생성할 HTML 요소의 태그 이름을 문자열로 전달하거나 리액트 클래스를 전달한다. '리액트가 생성할 타입'을 지정한다.
+
+- props : 속성(properties)의 줄임말이며 ReactDOMElement인 경우 HTML 요소에 지정될 특성(attributes)을 지정하거나 컴포넌트 클래스 인스턴스에 사용할 속성들을 지정한다.
+- childern : 컴포넌트들을 전달하면 순서대로 해당 컴포넌트를 중첩하거나 다른 리액트 요소를 중첩할 수 있게 해준다.
+
+### 2.2.2 컴포넌트의 렌더링
+
+리액트는 개발자가 만든 리액트 요소를 이용해 가상 DOM을 만들고, React-dom 라이브러리는 이 가상 DOM을 활용해 실제 브라우저 DOM을 관리한다. 리액트는 실제로 어떤 동작을 수행하기 위해 리액트 요소들로부터 가상 DOM을 위한 트리 구조를 만들어 내야 한다.
+
+React.createElement 함수 호출에 전달된 `children...` 매개변수들을 재귀적으로 평가해서 그 결과를 부모 요소에 전달한다.
+
+***ReactDOM.render***
+
+실제로 브라우저에서 뭔가를 보기 위해서는 react-dom을 이용해야 한다. 즉, 컴포넌트를 생성하고 관리하기 위해서는 리액트의 render 메서드를 호출해서 컴포넌트와 컴포넌트 요소(앞서 선언한 변수에 저장해 둔 DOM 요소)를 렌더링해야 한다.
+
+```javascript
+ReactDOM.render(
+  ReactElement element,
+  DOMElement container,
+  [function callback]
+) -> ReactComponent
+```
+
+React DOM은 ReactElement 타입의 요소와 DOM 요소를 필요로 한다. DOM 요소(div)는 이미 만들었지만, 리액트 요소는 아직 만들지 않았다.
+
+### 2.2.4 리액트 클래스 생성하기
+
+함수를 기반으로 생성한 컴포넌트는 리액트 요소와 유사하지만, 더 많은 기능을 제공한다. 컴포넌트는 React.Component 기반 클래스를 확장하거나 함수를 이용해서 생성한다.
+
+리액트 클래스를 생성하는 방법은 다음과 같다.
+
+```javascript
+class MyReactClassComponent extends Component {
+    render() {}
+}
+```
+
+React.Component 추상 기반 클래스를 상속하는 JS 클래스를 선언하면 된다. 이 기반 클래스를 상속하는 클래스는 대부분 하나의 리액트 요소 또는 리액트 요소의 배열을 리턴하는 render 메서드를 정의한다.
+
+리액트 클래스를 이용해서 컴포넌트를 생성하면 props 객체에 접근할 수 있다. 이 객체는 컴포넌트에 전달할 수 있는 데이터이며, 해당 컴포넌트의 자식 컴포넌테에도 전달할 수 있다. props는 컴포넌트 내부에서 수정해서는 안 되지만, 데이터를 갱신하는 방법이 있다.
+
+props 객체가 사용되는 형태는 Jedi처럼 임의의 HTML 요소에 'name'이라는 특성을 정의해서 `<Jedi name="Obi Wan"/>`같은 태그를 만들어 내는 것과 비슷하다.
+
+this는 컴포넌트의 인스턴스를 가리킨다.
+
+메서드를 개발자가 .bind 함수를 이용해 직접 바인딩해 주어야 한다.
+
+### 2.2.5 render 메서드
+
+화면에 뭔가를 출력하는 컴포넌트라면 반드시 render 메서드를 정의한다. render 메서드는 반드시 단 하나의 리액트 요소를 리턴해야 한다. (버전 16부터는 여러 개도 가능)
+
+리액트 요소들은 중첩할 수 있지만, 최상위에는 단 하나의 노드만이 존재하는 것과 같다. 하지만 리액트 클래스의 render 메서드는 내부 데이터(컴포넌트 내부에 저장된 상태)뿐만 아니라 컴포넌트 메서드와 React.Component 추상 기반 클래스로부터 상속된 추가 메서드에도 접근이 가능하다.
+
+이것이 가능한 이유는 컴포넌트에 대한 '보조 인스턴스(backing instance)'를 생성하기 때문이고 이런 컴포넌트를 **상태가 있는** 컴포넌트라고 부른다.
+
+리액트는 (청사진이 아닌) 리액트 클래스의 인스턴스에 대한 특별한 데이터 객체인 보조 인스턴스를 생성하고 변경사항을 계속 추적한다. 인스턴스에 저장된 데이터는 특정 API 메서드를 통해 컴포넌트의 render 메서드에서 접근이 가능하다. 즉, 사용자가 애플리케이션을 이용하면서 변경되는 부분을 데이터에 반영하고 저장할 수 있다는 뜻이다.
+
+### 2.2.6 PropTypes를 이용한 속성의 유효성 검사
+
+사용하고자 하는 속성에 대한 유효성 검사를 수행할 방법을 제공해서 버그를 예방하고, 컴포넌트가 사용할 데이터의 종류에 대한 계획을 세워야한다. 이러한 유효성 검사는 React 네임스페이스 내에 정의된 유효성 검사 도구(validators)인 PropTypes 객체를 이용하면 된다. 버전 15.5 이후로 prop-types 패키지를 별도로 설치해야한다.
+
+PropTypes는 다른 개발자가 올바른 값을 제공하지 않으면 제대로 동작하지 않기 때문에 반드시 만족하는 조건(contract)을 지정하는 방법이다.
+
+PropTypes를 사용하려면 React.Component 클래스에 propTypes 속성을 추가해야 한다.
+
+PropTypes는 개발 모드에서만 타입을 평가하기 때문에 실제 운영 환경에서 실행중인 PropTypes를 동작하는 추가적인 오버헤드가 발생하지 않는다.
+
+*예제 2.5*
+
+``` javascript
+// React, React DOM, 그리고 prop-types 라이브러리를 불러온다.
+import React, { Component } from "react";
+import { render } from "react-dom";
+import PropTypes from "prop-types";
+
+const node = document.getElementById("root");
+
+// Post 컴포넌트로 사용할 리액트 클래스를 생성, propTypes 속성과 render 메서드를 정의한다.
+class Post extends Component {
+  render() {
+    return React.createElement(
+      "div",
+      {
+        className: "post"
+      },
+      React.createElement(
+        "h2",
+        {
+          className: "postAuthor",
+          id: this.props.id
+        },
+        // this는 리액트 클래스가 아닌 현재 컴포넌트 인스턴스를 참조
+        this.props.user,
+        React.createElement(
+          "span",
+          {
+            // DOM 요소에 CSS클래스 이름을 지정할 때 className을 이용
+            className: "postBody"
+          },
+          this.props.content
+        ),
+        // 자식 컴포넌트를 렌더링할 수 있도록 추가, 중첩된 데이터의 배출구 같은 역할
+        this.props.children
+      )
+    );
+  }
+}
+
+// 속성은 반드시 필요한 값일수도, 선택적인 값일 수도 있으며, 
+// 타입을 명시해야 하고 특정한 '형태'여야 할 수도 있다.
+Post.propTypes = {
+  user: PropTypes.string.isRequired,
+  content: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired
+};
+
+// Comment 컴포넌트 생성
+class Comment extends Component {
+  render() {
+    console.log("yo");
+    return React.createElement(
+      "div",
+      {
+        className: "comment"
+      },
+      React.createElement(
+        "h2",
+        {
+          className: "commentAuthor"
+        },
+        this.props.user,
+        React.createElement(
+          "span",
+          {
+            className: "commentContent"
+          },
+          this.props.content
+        )
+      )
+    );
+  }
+}
+// propTypes 속성 선언
+Comment.propTypes = {
+  id: PropTypes.number.isRequired,
+  content: PropTypes.string.isRequired,
+  user: PropTypes.string.isRequired
+};
+
+// Post 리액트 클래스와 필요한 속성들을 전달하면 React-dom 라이브러리가 이 컴포넌트를 렌더링한다.
+const App = React.createElement(
+  Post,
+  {
+    id: 1,
+    content: " said: This is a post!",
+    user: "mark"
+  },
+  // Post 컴포넌트에 Comment 컴포넌트를 중첩한다.
+  React.createElement(Comment, {
+    id: 2,
+    user: "bob",
+    content: " commented: wow! how cool!"
+  }) // Comment에 this.props.children가 추가되어있지 않아 중첩이 불가능하다.
+);
+
+render(App, node);
+```
+
+## 2.3 컴포넌트의 수명과 시간
+
+리액트 클래스는 React.Component 클래스의 서브 클래스이며, React.createdElement 메서드에 전달할 수 있다. 리액트 클래스로 생성한 컴포넌트는 데이터를 저장하기 위한 지원 인스턴스를 가지고 있으며, 단 하나의 리액트 요소를 리턴하는 render 메서드를 정의해야한다.
+
+리액트는 리액트 요소를 이용해 메모리상에 가상 DOM을 생성한 후 실제 DOM을 관리하고 갱신한다.
+
+리액트는 컴포넌트에 어떤 기능이든 추가할 수 있는 자유도와 유연성을 제공한다. 개발자가 필요에 따라 직접 메서드를 추가할 수도 있다.
+
+### 2.3.1 리액트의 상태
+
+컴포넌트에 저장할 수 있는 상태(데이터, state)를 제공한다. 이 상태는 지원 인스턴스를 통해 관리한다. 상태는 어느 특정 시점의 어떤 것에 대한 정보라고 생각한다.
+
+상태의 종류는 크게 **변경 가능한(mutable) 상태**와 **변경 불가능한(immutable) 상태**로 구분할 수 있다. 어떤 상태가 처음 생성된 이후에 변경할 수 있다면 가변 상태이고, 그렇지 않다면 불변 상태이다.
+
+React.Component 클래스를 확장한 컴포넌트는 가변(state) 또는 불변 상태(props)를 모두 관리 할 수 있지만, 함수를 이용해 생성한 컴포넌트(상태가 없는 함수 컴포넌트)는 불변 상태만을 관리할 수 있다.
+
+this.props 속성은 컴포넌트 내에서 변경할 수 없지만 전달하는 방법은 있다. 두 속성을 이용하는 방법은 함수에 전달되거나 함수 내에서 사용되는 데이터를 이용하는 방법과 거의 같다. 사실 state, props는 동적 혹은 정적 데이터를 UI에서 활용하는(사용자 정보의 표시, 이벤트 핸들러, 데이터 전달하기 등) 가장 기본적인 방법이다.
+
+### 2.3.2 기본 상태 설정하기
+
+사용자의 폼 요소와 상호작용을 계속 추적하려면 기본 상태를 제공하고 이후 시간의 흐름에 따라 상태를 변경해야 한다. 컴포넌트의 기본 상태는 컴포넌트의 생성자를 이용해 지정할 수 있다.
+
+*this.setState*
+
+```javascript
+setState(
+  function(prevState,props) -> nextState,
+  callback
+) -> void
+```
+
+this.state 속성의 값은 직접 덮어쓸 수 없기에 this.setState 메서드를 호출한다. 상태의 갱신을 수행하는 함수를 매개변수로 전달 받으며 리턴 값은 없다.
+
+this.setState 메서드는 최신의 상태로 병합될 객체를 리턴하는 갱신 함수를 매개변수로 전달 받는다. 효율성을 극대화하기 위해 리액트가 상태를 일괄적으로 변경한다. 즉, 상태를 갱신하기 위해 setState 메서드를 호출하면 그 결과가 곧바로 적용되지는 않는다.
+
+클릭이나 키 입력 등 브라우저가 지원하는 이벤트들에 의해 갱신이 이루어진다. 리액트의 이벤트 핸들러는 (addEventListener 함수를 사용하는 방법과 달리) 리액트 요소나 컴포넌트 자체에 설정된다. 이렇게 설정된 이벤트가 전달하는 데이터를 이용해 컴포넌트의 상태를 갱신할 수도 있다.
+
+리액트에서는 데이터가 위에서 아래로(top-down) 흐른다. 즉, 부모 컴포넌트에서 발생한 입력이 자식 요소들로 전달된다. 부모 컴포넌트에 메서드를 정의하고 이 메서드를 자식 컴포넌트에 속성으로 전달해 주는 것이다.
+
+```javascript
+// 기본 선언 생략
+
+// CommentBox 컴포넌트에 사용할 모의 데이터 정의
+const data = {
+  post: {
+    id: 123,
+    content:
+      "What we hope ever to do with ease, we must first learn to do with diligence. — Samuel Johnson",
+    user: "Mark Thomas"
+  },
+  comments: [
+    {
+      id: 0, 
+      user: "David",
+      content: "such. win."
+    },
+    {
+      id: 1,
+      user: "Haley",
+      content: "Love it."
+    },
+    {
+      id: 2,
+      user: "Peter",
+      content: "Who was Samuel Johnson?"
+    },
+    {
+      id: 3,
+      user: "Mitchell",
+      content: "@Peter get off Letters and do your homework"
+    },
+    {
+      id: 4,
+      user: "Peter",
+      content: "@mitchell ok :P"
+    }
+  ]
+};
+
+// Post, Comment 컴포넌트 선언 생략
+
+class CreateComment extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      content: "",
+      user: ""
+    };
+    // 클래스로 생성한 컴포넌트는 메서드를 자동으로 바인딩을 하지 않기 때문에
+    // 생성자 내에서 직접 바인딩함.
+    this.handleUserChange = this.handleUserChange.bind(this);
+    this.handleTextChange = this.handleTextChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  // 작성자 필드의 값이 변경된 경우를 처리하기 위한 이벤트 핸들러를 대입
+  // input 요소에 입력된 값은 event.target.value 속성을 통해 가져와 this.setState 메서드에 전달해서 컴포넌트 상태를 갱신
+  handleUserChange(event) {
+    const val = event.target.value;
+    this.setState(() => ({
+      user: val
+    }));
+  }
+  handleTextChange(event) {
+    const val = event.target.value;
+    this.setState({
+      content: val
+    });
+  }
+  // 폼 제출 이벤트를 처리하기 위한 이벤트 핸들러
+  handleSubmit(event) {
+    event.preventDefault();
+    // 부모가 속성으로 전달한 onCommentSubmit 함수를 호출 할 때 폼에서 읽어온 데이터를 전달한 후,
+    // 사용자가 폼 제출 동작이 올바르게 수행되었음을 알 수 있도록 폼을 초기화 한다.
+    this.props.onCommentSubmit({
+      user: this.state.user.trim(),
+      content: this.state.content.trim()
+    });
+	// 폼을 제출할 때 입력 필드를 초기화
+    this.setState(() => ({
+      user: "",
+      content: ""
+    }));
+  }
+  render() {
+    return React.createElement(
+      "form",
+      {
+        className: "createComment",
+        // onSubmit 이벤트에 설정한 메서드를 바인딩하는 것을 잊으면 안된다.
+        // 바인딩을 해 주지 않으면 이벤트와 메서드가 올바르게 연결되지 않는다.
+        onSubmit: this.handleSubmit
+      },
+      React.createElement("input", {
+        type: "text",
+        placeholder: "Your name",
+        value: this.state.user,
+        onChange: this.handleUserChange
+      }),
+      React.createElement("input", {
+        type: "text",
+        placeholder: "Thoughts?",
+        value: this.state.content,
+        onChange: this.handleTextChange
+      }),
+      React.createElement("input", {
+        type: "submit",
+        value: "Post"
+      })
+    );
+  }
+}
+CreateComment.propTypes = {
+  onCommentSubmit: PropTypes.func.isRequired,
+  content: PropTypes.string
+};
+
+class CommentBox extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      // comments 데이터를 CommentBox 컴포넌트의 최상위 수준 데이터로 전달한다.
+      comments: this.props.comments
+    };
+    this.handleCommentSubmit = this.handleCommentSubmit.bind(this);
+  }
+  handleCommentSubmit(comment) {
+    // 상태는 절대 직접 갱신하지 않는다. 대신 복사본을 생성한다.
+    const comments = this.state.comments;
+    comment.id = Date.now();
+    const newComments = comments.concat([comment]);
+    this.setState({
+      comments: newComments
+    });
+  }
+  render() {
+    return React.createElement(
+      "div",
+      {
+        className: "commentBox"
+      },
+      React.createElement(Post, {
+        // 앞과 마찬가지로 Post 데이터에 접근하기 위한 데이터 변수들을 최상위 수준 데이터로 전달한다.
+        id: this.props.post.id,
+        content: this.props.post.content,
+        user: this.props.post.user
+      }),
+      // map 메서드를 이용해 this.state.comments 배열에 저장된 각 댓글에 대응하는
+      // 리액트 요소를 생성해 리턴한다.
+      this.state.comments.map(function(comment) {
+        return React.createElement(Comment, {
+          key: comment.id,
+          id: comment.id,
+          content: comment.content,
+          user: comment.user
+        });
+      }),
+      React.createElement(CreateComment, {
+        // CreateComment 컴포넌트에 부모 컴포넌트의 handleCommentSubmit 메서드를 전달한다.
+        onCommentSubmit: this.handleCommentSubmit
+      })
+    );
+  }
+}
+
+CommentBox.propTypes = {
+  post: PropTypes.object,
+  comments: PropTypes.arrayOf(PropTypes.object)
+};
+
+// CommentBox 컴포넌트에 모의 데이터를 속성으로 전달한다.
+render(
+  React.createElement(CommentBox, {
+    comments: data.comments,
+    post: data.post
+  }),
+  node
+);
+```
+
+리액트 요소의 새로운 배열을 리턴하려면 .map() 함수를 이용하면 된다. 반면 .forEach() 함수는 사용할 수 없는데 그 이유는 이 메서드가 배열을 리턴하지 않으므로 React.createElement() 메서드가 사용할 객체를 얻을 수 없기 때문이다. 하지만 forEach 함수를 이용해 배열을 만들어 그 배열을 전달할 수 있다.
+
+## 2.4 JSX와의 첫 만남
+
+### 2.4.1 JSX를 이용한 컴포넌트의 생성
+
+JSX는 XML과 유사하며, XML을 오로지 코드 변환 도구로만 사용하는 JS의 확장 기능이다. ECMAScript 명세에는 전혀 적용되어 있지 않다.
+
+### 2.4.2 JSX의 장점, 그리고 HTML과의 차이점
+
+JSX가 리액트 컴포넌트를 다루는 부분에 있어 가져오는 장점은 다음과 같다.
+
+- HTML과의 유사성과 쉬운 문법 : HTML과 유사하기 때문에 컴포넌트의 구조를 익숙한 방법으로 선언할 수 있어 훨씬 쉬우며 가독성도 월등히 좋다.
+- 선언적이면서 캡슐화된 사용법 : 관련된 메서드들과 뷰를 함께 코드에 포함하면 특정기능을 그룹화할 수 있다. 컴포넌트를 더욱 쉽게 이해할 수 있으며, 이 컴포넌트가 시스템 내에서 어떻게 동작하는지 완전히 이해할 수 있다.
+
+HTML이나 XML과 같은 문법이나 규칙을 따르지 않는다.
+
+- HTML 태그와 리액트 컴포넌트의 차이 : React.createClass 메서드를 이용해 생성했던 사용자 정의 리액트 컴포넌트는 대문자를 표기하는 것이 규칙이다.
+- 특성 표현식(Attribute expressions) : 특성 값으로 JS 표현식을 사용하는 경우, `<Comment a={this.props.b}/>` 처럼 중괄호로 표현한다.
+- 불리언 특성 : 특성 값을 `</Planactive/>`, `<Input checked/>`와 같이 생략하면 JSX는 이 값들을 true로 간주한다. false 값을 전달하려면 `attribute={false}`와 같이 특성 표현식을 사용해야 한다.
