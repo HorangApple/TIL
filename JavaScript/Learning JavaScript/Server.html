@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="serverInfo">
+      Server is running on <span data-replace="platform">???</span> with Node
+      <span data-replace="nodeVersion">???</span>. It has been up for
+      <span data-replace="uptime">???</span> seconds.
+    </div>
+    <script>
+      function refreshServerInfo() {
+        // Ajax 호출
+        const req = new XMLHttpRequest();
+        // Ajax 호출이 성공했을 때 발생할 load 이벤트에 대한 이벤트 리스너
+        req.addEventListener("load", function() {
+          console.log(this.responseText);
+        });
+        req.open("GET", "http://localhost:7070", true);
+        req.send();
+
+        // 서버로부터 받은 JSON 데이터를 HTML에 삽입
+        req.addEventListener("load", function() {
+        const data = JSON.parse(this.responseText);
+        const serverInfo = document.querySelector(".serverInfo");
+        Object.keys(data).forEach(p => {
+          const replacements = serverInfo.querySelectorAll(
+            `[data-replace="${p}"]`
+          );
+          for (let r of replacements) {
+            r.textContent = data[p];
+          }
+        });
+      });
+      }
+      // 200밀리초마다 서버에서 정보를 새로 받음
+      setInterval(refreshServerInfo,200);
+    </script>
+  </body>
+</html>

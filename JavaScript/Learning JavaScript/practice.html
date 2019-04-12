@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <button>Click Me!</button>
+    </div>
+    <script>
+        function logEvent(handlerName, type, cancel, stop, stopImmediate) {
+            return function(event) {
+                if(cancel) event.preventDefault(); // 이벤트 취소
+                if(stop) event.stopPropagation(); // 이벤트를 현재 요소에서 끝내고 더는 전달되지 않게 막는다.
+                if(stopImmediate) event.stopImmediatePropagation(); // 다른 이벤트 핸들러, 현재 요소에 연결된 이벤트 핸들러도 동작하지 않게 막는다.
+                console.log(`${type}: ${handlerName}`+
+                    (event.defaultPrevented ? ' (canceled)' : ''));
+            }
+        }
+
+        function addEventLogger(elt, type, action) {
+            const capture = type ==='capture';
+            elt.addEventListener('click',
+                logEvent(elt.tagName, type, action === 'cancel',
+                action === 'stop', action === 'stop!'), capture);
+        }
+        const body = document.querySelector('body');
+        const div = document.querySelector('div');
+        const button = document.querySelector('button');
+        addEventLogger(body, 'capture','stop!');
+        addEventLogger(body, 'bubble');
+        addEventLogger(div,'capture');
+        addEventLogger(div,'bubble');
+        addEventLogger(button,'capture');
+        addEventLogger(button,'bubble');
+    </script>
+</body>
+</html>
