@@ -5,6 +5,7 @@
 *.sqlite3
 *.pdf
 DSC/머신러닝을 위한 Python 워밍업/news_data
+JavaScript/React/letters-social
 # Logs
 logs
 *.log
