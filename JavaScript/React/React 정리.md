@@ -707,7 +707,7 @@ defaultProps라는 정적 속성을 추가하면 컴포넌트의 속성에 대�
 - 마운팅: 컴포넌트가 DOM에 삽입되는 시점
   - componentWillMount(), componentDidMount()
 - 갱신: 컴포넌트가 상태나 속성으로 전달된 새 데이터에 의해 갱신되는 시점
-  - componentWillReceiveProps(nextProps), shouldComponentUpdate(nextProps, nextState), componentWillUpdate(nextProps, nextState), componentDidUpdate(prevProps,prevState)
+  - componentWillReceiveProps(nextProps), shouldComponentUpdate(nextProps, nextState), componentWillUpdate(nextProps, nextState), componentDidUpdate(prevProps, prevState)
 - 언마운팅: 컴포넌트가 DOM에서 제거되는 시점
   - componentWillUnmount()
 
@@ -727,23 +727,44 @@ defaultProps라는 정적 속성을 추가하면 컴포넌트의 속성에 대�
 
 마운팅 메서드를 이용하면 컴포넌트의 수명이 시작되는 시점과 끝나는 시점을 '가로챌' 수 있으며, 오직 한 번만 호출된다. 마운팅이 완료되면 비로소 컴포넌트가 동작할 '준비'가 되며, 이 시점에서 HTTP 호출이나 쿠키를 읽는 작업 등을 수행할 수 있다. 또한, 이 시점부터는 'ref'라 부르는 참조를 이용해 DOM 요소에도 접근할 수 있다.
 
-- componentWillMount
+- componentWillMount()
 
   > 컴포넌트가 마운트 되기 전에 상태를 결정하거나 다른 동작을 수행할 기회를 제공한다. 이 메서드 내에서 상태를 변경한다고 해도 렌더링을 다시 수행하지 않지만, 다른 메서드에서 상태를 갱신하면 렌더링 과정이 다시 실행된다.
 
-- componentDidMount
+- componentDidMount()
 
   > 컴포넌트 참조(ref)에 접근할 수 있다. 이 메서드에서는 컴포넌트의 상태와 속성에 접근할 수 있음은 물론 컴포넌트 갱신도 가능하다. 즉, 네트워크 요청의 응답으로 전달받은 데이터를 이용해 컴포넌트 상태를 갱신하는 작업 등을 수행하기에 적절한 시점이며 DOM을 조작하는 jQuery나 다른 서드파티 라이브러리를 호출하기에도 적절한 시점이다.
 
 render 같은 다른 메서드 내에서 핸들러나 함수를 실행하면 리액트의 동작에 대해 예측이 불가능한 결과를 볼 수 있다.
 
+모든 자식 컴포넌트들은 부모 컴포넌트의 마운팅이 완료되기 전에 생성되어야 한다.
+
 ### 4.2.5 갱신 메서드
 컴포넌트가 마운트되어 DOM에 위치하게 되면 컴포넌트는 자신의 상태를 갱신할 수 있다. this.setState 메서드를 이용하면 얕은 병합 기법을 이용해 데이터를 컴포넌트의 상태에 반영할 수 있지만, 실제 갱신 과정에서는 이보다 더 많은 일이 일어난다.
 
-- shouldComponentUpdate
+- componentWillReceiveProps(nextProps)
+- shouldComponentUpdate(nextProps, nextState)
 
-  > 특별히 명시하지 않으면 true를 리턴하지만 false를 리턴하면 다음에 다시 상태가 변경될 때까지 render() 메서드를 실행하지 않는다. 즉, 불필요하게 갱신되는 상황을 방지할 수 있다. componentWillUpdate와 componentDidUpdate 메서드는 호출되지 않는다.
+  > 특별히 명시하지 않으면 true를 리턴하지만 false를 리턴하면 다음에 다시 상태가 변경될 때까지 render() 메서드를 실행하지 않는다. 즉, 불필요하게 갱신되는 상황을 방지할 수 있다. componentWillUpdate와 componentDidUpdate 메서드는 호출되지 않는다. 앱의 성능을 튜닝하고자 할 때 사용한다.
 
-- componentWillUpdate
-- componentDidUpdate
+- componentWillUpdate(nextProps, nextState)
+- componentDidUpdate(prevProps, prevState)
+
+shouldComponentUpdate는 어떤 이유로든 리액트가 제공하는 메서드들로 충분하지 않은 경우에만 사용해야 한다. 
+
+### 4.2.6 언마운팅 메서드
+
+- componentWillUnmount()
+
+애플리케이션 전체를 리액트로 작성했다면 라우터(router)는 사용자가 페이지 사이를 이동하는 과정에서 불필요한 컴포넌트를 제거한다. 컴포넌트가 제거될 때 필요한 정리하는 작업은 componentWillUnmount 메서드에서 수행한다.
+
+### 4.2.7 에러의 처리
+
+- componentDidCatch(error, errorInfo)
+
+  > JS의 try...catch 구문의 동작과 유사하게 사용할 수 있다.
+
+오류 경계(error boundaries)라는 개념을 도입하여 만일 컴포넌트의 생성자, render 메서드 혹은 생명주기 메서드 내에서 처리되지 않은 예외(uncaught exception)가 발생하면 리액트는 컴포넌트와 그 자식 컴포넌트들을 DOM으로부터 언마운트 한다. 이 방법은 에러를 해당 컴포넌트 내에 격리함으로써 앱의 나머지 부분들이 계속 원활히 동작하도록 할 수 있다는 장점이 있다.
+
+# Chapter 5. 폼 다루기
 
