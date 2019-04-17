@@ -1,6 +1,6 @@
-# Django
-
 [TOC]
+
+# 1. 시작하기
 
 static web을 사용하다가 부족함에 dynamic web을 사용하게 되었다. flask는 경량형 프레임워크이기때문에 한계가 있기 때문에 Django를 사용한다.
 
@@ -12,11 +12,13 @@ urls를 받아 해당하는 View가 받는다. 들어오는 모든 요청은 Vie
 
 <img src="images/image 001.png"/>
 
-우선 View와 Template을 구현해보자. 
+
+## 1.1 프로젝트 생성 및 환경 설정
+
+윈도우 환경에서 하기위해서는 PyCharm을 통해 Django 프로젝트를 생성한다.
 
 
-
-### 프로젝트 생성 및 환경 설정
+리눅스 환경에서 작업을 하면 다음과 같은 과정에 따라 프로젝트를 생성한다.
 
 1. 프로젝트 진행할 폴더 생성 [TEST]
 2. 해당 폴더로 이동 (cd TEST)
@@ -33,7 +35,6 @@ urls를 받아 해당하는 View가 받는다. 들어오는 모든 요청은 Vie
 cf. 3.6.7같이 버전을 나타내는 것을 'semver'라고 한다.
 
 
-
 ```bash
 $ mkdir TEST
 $ cd TEST
@@ -47,7 +48,7 @@ $ django-admin startproject test .
 
 
 
-### pyenv - python 버전 관리 툴
+## 1.2 pyenv - python 버전 관리 툴
 
 먼저 pyenv를 설치한다. 현업에서는 다양한 python 버전을 고려해야하기 때문에 이를 위한 python 버전관리 툴인 pyenv를 설치해야한다. 현업에서는 항상 python이 최신 버전을 사용하는 것이 아니라 다양한 버전이 사용되기 때문에 f-string의 사용가능 여부 등의 버전마다의 특징을 알고 있어야 한다.
 
@@ -76,7 +77,7 @@ $ pyenv local intro-venv
 
 
 
-### Django 설치 및 설정
+## 1.3 Django 설치 및 설정
 
 3.6.7 버전이기 때문에 pip를 이용하여 django를 설치한다. 참고로 가상환경에서 작동하기 때문에 여러 폴더마다 가상환경을 진입해서 작업하게 된다면 Django도 처음부터 다시 깔아야 한다.
 
@@ -93,8 +94,6 @@ $ django-admin startproject intro .
 <img src="images/image 002.png"/>
 
 이제 `intro`라는 프로젝트 폴더와 python 파일들이 생성된 것을 확인할 수 있다.
-
-
 
 
 설정을 위해 `setting.py`를 열어본다
@@ -128,9 +127,9 @@ USE_TZ = True
 
 
 
-### app 생성
+## 1.4 app 생성
 
-이제는 app을 만들어보자.
+프로젝트 생성이 끝났다면 이제 app을 만들어보자.
 
 ```bash
 $ python manage.py startapp pages
@@ -312,8 +311,8 @@ html에 python 변수를 사용하거나 특별한 기능을 사용하게 만드
 cf. 랜덤 이쁜 이미지 : https://picsum.photos/
 
 
-
-### urls 분리
+# 2. urls
+## 2.1 urls 분리
 
 `intro/urls.py`의 `path`가 많아지면 관리하기가 힘드니 새로운 문지기를 추가해보자.
 
@@ -349,13 +348,96 @@ urlpatterns = [
 
 이렇게 되면 만약 index 페이지로 가고 싶다면 주소가 `/index`가 아닌  `/home/index`로 접속해야 한다. 물론 `'home/'`부분을 `''`로 만들면 원래 주소대로 사용해도 된다.
 
+## 2.2 urls 별명 짓기
+
+기존에 `'<int:id>/'`처럼 사용한 것을 별도의 별명을 지어 작성한다. 이를 위에서는 아래의 예시와 같이 작성해야한다.
+
+*urls.py*
+
+```python
+from django.urls import path
+from . import views
+app_name='articles' # url별명에 대한 namespace 생성
+urlpatterns = [
+    path('',views.index,name='index'),
+    path('new/',views.new,name='new'),
+    path('create/',views.create,name='create'),
+    path('<int:id>/',views.detail,name='detail'),
+    path('<int:id>/edit/',views.edit,name='edit'),
+    path('<int:id>/delete/',views.delete,name='delete'),
+    path('<int:id>/update/',views.update,name='update'),
+]
+```
+
+`app_name`을 선언하여 url별명에 대한 namespace를 생성한다. 이후 `path`마다 요소로 `name` 값을 넣어 별명을 지정한다.
 
 
-### Model
+# templates
+
+## .1 templates 폴더
+
+해당 app 폴더 안에 'templates' 폴더를 만들어서 사용한다. `templates`폴더에 있는 html파일들을 한 단계 이상의 하위 폴더 안에 넣어야 한다. 그래야 다른 app의 html과 이름이 겹쳐서 오류가 발생하는 것을 막을 수 있다.
+
+만약 공통으로 사용할 template을 프로젝트 최상위 루트에 templates 폴더를 만들어서 사용하고 싶다면 settings.py에 다음과 같이 경로를 설정해야 한다.
+
+*settings.py*
+
+```python
+TEMPLATES = [
+    {
+        #...
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+		#...
+    },
+]
+```
+
+## .2 html 작성
+
+*index.html*
+
+```html
+{% extends 'articles/base.html' %}
+
+{% block body %}
+<div class="jumbotron text-center">
+  <h1 class="display-4">게시판</h1>
+  <hr class="my-4">
+  <a class="btn btn-primary btn-lg float-right" href="{% url 'articles:new' %}" role="button">글쓰기</a>
+</div>
+<div class="list-group">
+{% for i in data %}
+<div>
+    <a href="{% url 'articles:detail' i.id %}"class="list-group-item list-group-item-action">{{i.id}}  {{i.title}}</a>
+</div>
+
+{% endfor %}
+</div>
+{% endblock %}
+```
+
+위와 같이 html에서 사용할 때는 `"{% url 'articles:new' %}"`처럼 불러올 수 있다. 만약 id값과 같이 전달받아야하는 값이 있다면 `"{% url 'articles:detail' i.id %}"`처럼 뒤에 한 칸 띄우고 값을 이어서 적으면 된다.
+
+`views.py`의 `render`안에 사용할 때는 html 파일을 불러오기위해서 일반적인 파일 경로로 작성해야한다. 반면 `redirect`를 사용할 때는 웹 주소를 넣는 것이므로 이 때는 `'articles:detail'`형식으로 작성하면 된다.
+
+## .3 django template 문법
+
+https://docs.djangoproject.com/en/2.1/ref/templates/builtins/
+
+flask에서 사용했던 jinja template과는 비슷하면서도 다르기 때문에 공식문서를 보며 해결한다.
+
+예시로 시간을 다뤄보자.
+
+`models.py`에서 `DateField`로 저장된 값은 html에서 django template로 불러올 때 default로 `mmm. dd, yyyy`형식으로 되어 html의 input의 value에 값을 넣어도 반영이 되지 않는다. 이럴 때는 django template만의 formatting을 이용하여 바꿔야 한다.
+
+```html
+<input type="date" class="form-control" max="2019-12-31" name="birthday" value="{{ student.birthday|date:"Y-m-d"  }}"/>
+```
+
+# 4. Model & DB
+## 4.1 Model 생성
 
 Model을 다뤄보기위해 새로운 프로젝트로 시작한다. `ORM`으로 프로젝트를 생성하였고 `orm`으로 app을 생성하였다.
-
-
 
 *articles/models.py*
 
@@ -373,7 +455,6 @@ class Article(models.Model):
     def __str__(self):
         return f"<{self.title}: {self.content}>"
 ```
-
 
 
 ```bash
@@ -503,7 +584,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 
 
-### Model 등록 및 추가 설정
+## 4.2 Model 등록 및 추가 설정
 
 *articles/admin.py*
 
@@ -582,70 +663,25 @@ admin.site.register(Article,ArticleAdmin)
 
 직접 만든 css를 추가하고 싶다면 `href`에 `static/css/style.css`로 추가한 상태로 진행해야한다. flask같은 경우 `static/css/style.css`를 추가하면 된다.
 
-
-
-### urls 별명 짓기
-
-기존에 `'<int:id>/'`처럼 사용한 것을 별도의 별명을 지어 작성한다. 이를 위에서는 아래의 예시와 같이 작성해야한다.
-
-*urls.py*
-
-```python
-from django.urls import path
-from . import views
-app_name='articles' # url별명에 대한 namespace 생성
-urlpatterns = [
-    path('',views.index,name='index'),
-    path('new/',views.new,name='new'),
-    path('create/',views.create,name='create'),
-    path('<int:id>/',views.detail,name='detail'),
-    path('<int:id>/edit/',views.edit,name='edit'),
-    path('<int:id>/delete/',views.delete,name='delete'),
-    path('<int:id>/update/',views.update,name='update'),
-]
-```
-
-`app_name`을 선언하여 url별명에 대한 namespace를 생성한다. 이후 `path`마다 요소로 `name` 값을 넣어 별명을 지정한다.
-
-*index.html*
-
-```html
-{% extends 'articles/base.html' %}
-
-{% block body %}
-<div class="jumbotron text-center">
-  <h1 class="display-4">게시판</h1>
-  <hr class="my-4">
-  <a class="btn btn-primary btn-lg float-right" href="{% url 'articles:new' %}" role="button">글쓰기</a>
-</div>
-<div class="list-group">
-{% for i in data %}
-<div>
-    <a href="{% url 'articles:detail' i.id %}"class="list-group-item list-group-item-action">{{i.id}}  {{i.title}}</a>
-</div>
-
-{% endfor %}
-</div>
-{% endblock %}
-```
-
-위와 같이 html에서 사용할 때는 `"{% url 'articles:new' %}"`처럼 불러올 수 있다. 만약 id값과 같이 전달받아야하는 값이 있다면 `"{% url 'articles:detail' i.id %}"`처럼 뒤에 한 칸 띄우고 값을 이어서 적으면 된다.
-
-`views.py`의 `render`안에 사용할 때는 html 파일을 불러오기위해서 일반적인 파일 경로로 작성해야한다. 반면 `redirect`를 사용할 때는 웹 주소를 넣는 것이므로 이 때는 `'articles:detail'`형식으로 작성하면 된다.
-
-
-
-### 여러 app이 있는 경우
-
-`templates`폴더에 있는 html파일들을 한 단계 이상의 하위 폴더 안에 넣어야 한다. 그래야 다른 app의 html과 이름이 겹쳐서 오류가 발생하는 것을 막을 수 있다.
-
 migration&migrate는 폴더 위치에 상관없이 `manage.py`로 선언하면 자동으로 DB가 생성된다.
 
 
 
-### 데이터베이스의 관계(테이블 간의 관계)
+## 4.3 데이터베이스의 관계(테이블 간의 관계)
 
 1:1를 예시로 개인-주민등록증, 남편-부인을 들 수 있고 1:N (has many, belongs to)는 게시글-댓글, 학급-학생 등을 예시로 들 수 있다. M:N은 수강신청(학생-수업)을 예시로 들 수 있다. 물론 아예 관계가 없는 경우도 있다.
+
+보다 편리하게 CLI을 이용하기 위해 django의 extension의 ipython을 설치한다.
+
+```bash
+$ pip install django_extensions ipython
+```
+
+이후 `settings.py`에 가서 `INSTALLED_APPS`에 `'django_extensions'`를 추가시킨다. 그러면 `python manage.py shell`를 사용할 때 jupyter notebook 같은 인터페이스로 변경된다.
+
+`python manage.py shell_plus`를 입력하면 내가 갖고 있는 모든 환경이 import 되어 shell이 구동된다.
+
+### 1:N 관계
 
 구현하려는 게시글과 댓글은 1:N 관계를 갖고 있기 때문에 테이블로 구현을 한다면  N의 테이블에 1에 대한 정보(primary key)를 담고 있어야한다. 즉, foreign key를 갖고 있어야 한다.
 
@@ -669,7 +705,7 @@ class Comment(models.Model):
     article=models.ForeignKey(Article, on_delete=models.CASCADE, related_name="comments")
 ```
 
-
+임의의 데이터를 넣고 shell_plus에서 다뤄보자
 
 ```bash
 In [4]: Articles.objects.all()  
@@ -717,7 +753,7 @@ id 값을 넣는 방법은 두 가지가 있다. 하나는 객체를 찾아와 �
 
 만약 `models.py`의 ForeignKey의 옵션으로 `related_name`를 추가시켰다면 `ForeignKey의 이름_id` 아닌 `related_name`로 정의된 이름으로 사용해도 된다.
 
-```python
+```bash
 In [2]: Articles.objects.first().comments                                               
 Out[2]: <django.db.models.fields.related_descriptors.create_reverse_many_to_one_manager.<locals>.RelatedManager at 0x7f8e5414b6d8>
 
@@ -740,23 +776,136 @@ Articles.objects.get(pk=Comment.objects.first().article_id)
 Comment.objects.filter(article_id=Articles.objects.first().id)   
 ```
 
+### N:M DB
+1:N과 다르게 두 테이블을 N:M 관계를 나타내기 위한 별도의 테이블을 만들어야 한다. 다음과 같이 두 테이블을 ForeignKey로 받은 테이블을 만든다.
 
+*models.py*
 
-### django_extensions, ipython
+```python
+from django.db import models
 
-앞으로 django 설치할 때 같이 설치하는 것이 좋다.
-
-```bash
-$ pip install django_extensions ipython
+# Create your models here.
+class Student(models.Model):
+    name = models.CharField(max_length=20)
+    
+    def __str__(self):
+      return self.name
+    
+class Lecture(models.Model):
+    name = models.CharField(max_length=40)
+    
+    def __str__(self):
+      return self.name
+  
+class Enrollment(models.Model):
+    # 저장되는 것은 객체가 저장됨
+    student = models.ForeignKey(Student,on_delete=models.CASCADE)
+    lecture = models.ForeignKey(Lecture,on_delete=models.CASCADE)
+    
+    def __str__(self):
+      return "{}가 {}을(를) 수강 중입니다.".format(self.student.name,self.lecture.name)
 ```
 
-이후 `settings.py`에 가서 `INSTALLED_APPS`에 `'django_extensions'`를 추가시킨다. 그러면 `python manage.py shell`를 사용할 때 jupyter notebook 같은 인터페이스로 변경된다.
+예시를 위해 shell_plus로 아래처럼 데이터를 넣었다.
 
-`python manage.py shell_plus`를 입력하면 내가 갖고 있는 모든 환경이 import 되어 shell이 구동된다.
+```bash
+>>> jm = Student.objects.get(name="김종민")                                               
+>>> jm
+<Student: 김종민>
+>>> algo = Lecture.objects.get(name="알고리즘")
+>>> Enrollment.objects.create(student_id=1, lecture_id=1)
+<Enrollment: 김종민가 알고리즘을(를) 수강 중입니다.>
+>>> Enrollment.objects.create(student_id=1, lecture_id=2)
+<Enrollment: 김종민가 자료구조을(를) 수강 중입니다.
+>>> Enrollment.objects.all()
+<QuerySet [<Enrollment: 김종민가 알고리즘을(를) 수강 중입니다.>, <Enrollment: 김종민가 자료구 조을(를) 수강 중입니다.>]>
 
+# 수강한 과목 전체 조회
+>>> jm.enrollment_set.all()
+<QuerySet [<Enrollment: 김종민가 알고리즘을(를) 수강 중입니다.>, <Enrollment: 김종민가 자료구 조을(를) 수강 중입니다.>]>
+```
+위와 같이 직접 별도의 테이블을 만들어도 되지만 Django를 이용하면 따로 테이블을 만들 필요가 없다.
 
+*model.py*
 
-### form의 POST 전달
+```python
+#...
+from faker import Faker
+
+fake = Faker('ko_kr')
+
+class Client(models.Model):
+    name = models.CharField(max_length=746)
+    
+    @classmethod
+    def dummy(cls, n):
+        for i in range(n):
+          # Clinent.objects.create()와 동일
+          # faker 패키지 설치 후 작성
+          cls.objects.create(name=fake.name())
+    
+    def __str__(self):
+        return self.name
+    
+class Resort(models.Model):
+    name = models.CharField(max_length=746)
+    # Client를 가리킴, ManyToManyField는 어디에다 만들어도 상관이 없다.
+    clients = models.ManyToManyField(Client, related_name = "resorts")
+    
+    def __str__(self):
+        return self.name
+```
+
+models.ManyToManyField을 사용하고 migrate하면 알아서 table을 3개 만들어준다. models.ManyToManyField은 어느 테이블에 넣었는지 상관 없다.
+
+다음은 더미 데이터를 넣고 다뤄본다.
+
+```bash
+>>> Client.dummy(23)
+>>> Client.objects.all()
+<QuerySet [<Client: 이민수>, <Client: 김예준>, <Client: 이영미>, <Client: 차도윤>, <Client: 안지훈>, <Client: 김지영>, <Client: 김현주>, <Client: 전정희>, <Client: 박준호>, <Client: 이민석>, <Client: 이보람>, <Client: 우승현>, <Client: 김경희>, <Client: 서민서>, <Client: 강정희>, <Client: 강은영>, <Client: 문순옥>, <Client: 김윤서>, <Client: 장성진>, <Client: 김은정>, '...(remaining elements truncated)...']>
+>>> Resort.objects.create(name="보라보라 보라카이")
+<Resort: 보라보라 보라카이>
+>>> Resort.objects.create(name="현대 블룸비스타")
+<Resort: 현대 블룸비스타>
+>>> Resort.objects.create(name="한화 콘도 양평")
+<Resort: 한화 콘도 양평>
+>>> bora = Resort.objects.first()
+>>> bora
+<Resort: 보라보라 보라카이>
+
+>>> bora.clients
+<django.db.models.fields.related_descriptors.create_forward_many_to_many_manager.<locals>.ManyRelatedManager object at 0x7fc28cc99fd0>
+
+>>> bora.clients.all()
+<QuerySet []>
+
+# 더미데이터 추가
+>>> for client in Client.objects.all():
+...     bora.clients.add(client)
+... 
+>>> bora.clients.all()
+<QuerySet [<Client: 이민수>, <Client: 김예준>, <Client: 이영미>, <Client: 차도윤>, <Client: 안지훈>, <Client: 김지영>, <Client: 김현주>, <Client: 전정희>, <Client: 박준호>, <Client: 이민석>, <Client: 이보람>, <Client: 우승현>, <Client: 김경희>, <Client: 서민서>, <Client: 강정희>, <Client: 강은영>, <Client: 문순옥>, <Client: 김윤서>, <Client: 장성진>, <Client: 김은정>, '...(remaining elements truncated)...']>
+
+# related_name 추가 전
+>>> one = Client.objects.last()
+>>> one.resort_set.all()
+<QuerySet [<Resort: 보라보라 보라카이>]>
+
+# related_name 추가 후
+>>> one.resorts.all()
+<QuerySet [<Resort: 보라보라 보라카이>]>
+>>> one.resorts.add(Resort.objects.last())
+>>> one.resorts.all()
+<QuerySet [<Resort: 보라보라 보라카이>, <Resort: 한화 콘도 양평>]>
+```
+
+어느 테이블 상관없이 1:N을 다루었을 때처럼 `.'테이블의 소문자이름_set'`을 통해 다른 테이블에 접근할 수 있다.
+
+DB에 column을 새로 추가시키려면 default 문제로 `db.sqlite3`와 `XXXX_initial.py`를 삭제하고 다시 만드는 것이 쉽다. 테이블을 추가로 만들어서 삭제하지 않게 할 수 있으나 성능이 떨어진다.
+
+# 4. form
+## 4.1 form의 POST 전달
 
 html 태그의 `form`의 `action`에 `method="POST"` 를 설정하면 다음과 같은 오류가 뜬다.
 
@@ -779,27 +928,134 @@ CSRF(Cross-site Request Forgery)는 사용자가 요청하는 정보를 가로�
 ...
 ```
 
-
-
 <img src="images/image 011.png">
 
 그러나 위처럼 주석처리 된 value가 토큰이기 때문에 응답 받은 코드에서 빼내서 토큰을 위변조할 수 있다.
 
+## 4.2 Django의 forms 사용
+별도의 `form.py`를 만들어 Django의 forms을 활용해본다.
 
+```python
+from django import forms
+from .models import Post,Comment
 
-### django template 문법
+class PostModelForm(forms.ModelForm):
+    # field 설정
+    content = forms.CharField(
+        label="content",
+        widget=forms.Textarea(attrs={
+        'rows' : 5,
+        'cols' : 50,
+        'placeholder' : '지금 뭘 하고 계신가요?',
+    }))
+    
+    class Meta:
+        # 정보를 저장할 model 설정
+        model = Post
+        # '__all__'은 모델이 갖고있는 모든 것을 가져옴
+        # input을 만들 칼럼 값을 list로 만들어 넣어줌.
+        fields = ['content','image']
+        
+class CommentForm(forms.ModelForm):
+    
+    class Meta:
+        model = Comment
+        fields = ['content']
+```
+이렇게 만든 form class를 템플릿에 다음과 같이 적용한다.
 
-https://docs.djangoproject.com/en/2.1/ref/templates/builtins/
-
-flask에서 사용했던 jinja template과는 비슷하면서도 다르기 때문에 공식문서를 보며 해결한다.
-
-`models.py`에서 `DateField`로 저장된 값은 html에서 django template로 불러올 때 default로 `mmm. dd, yyyy`형식으로 되어 html의 input의 value에 값을 넣어도 반영이 되지 않는다. 이럴 때는 django template만의 formatting을 이용하여 바꿔야 한다.
-
-```html
-<input type="date" class="form-control" max="2019-12-31" name="birthday" value="{{ student.birthday|date:"Y-m-d"  }}"/>
+*views.py*
+```python
+#...
+def create(request):
+    # 만약, POST 요청이 오면
+    if request.method == 'POST':
+        # 글을 작성하기.
+        form = PostModelForm(request.POST,request.FILES)
+        if form.is_valid():
+            # 검증 후 user 정보를 얻는다.
+            post = form.save(commit=False)
+            post.user=request.user
+            post.save()
+            return redirect('posts:list')
+        
+    # GET 요청이 오면
+    else:
+        # post를 작성하는 폼을 가져와 template에서 보여줌.
+        form = PostModelForm()
+        context = {
+            'form': form
+        }
+        return render(request,'post/create.html', context)
 ```
 
+*create.html*
+```html
+{% extends 'base.html' %}
 
+{% load bootstrap4 %}
+
+{% block body %}
+<h1>새로운 Post 작성하기</h1>
+<!--파일을 넘길 땐 enctype 값을 넣어야한다.-->
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  {% bootstrap_form form %}
+  {% buttons %}
+    <button type="submit" class="btn btn-primary">업로드</button>
+  {% endbuttons %}
+</form>
+{% endblock %}
+```
+
+## 4.3 로그인 관련 폼
+Django에서 따로 라이브러리로 제공하기 때문에 별도로 form.py를 만들 필요가 없다.
+
+```python
+# 회원가입 폼과 로그인 폼
+from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
+  # 폼을 보낼 때
+  form = UserCreationForm()
+  form = AuthenticationForm()
+  # 요청을 받아올 때
+  form = UserCreationForm(request.POST)
+  form = AuthenticationForm(request, request.POST)
+
+# login 실행
+from django.contrib.auth import login as auth_login
+  # 로그인 할 때
+  auth_login(request,form.get_user())
+
+# logout 실행
+from django.contrib.auth import logout as auth_logout
+  # 로그아웃 할 때
+  auth_logout(request)
+
+# 사용자 model
+from django.contrib.auth import get_user_model
+  # 해당 정보에 대한 객체를 가져올 때
+  profile = get_object_or_404(get_user_model(),username=username)
+```
+
+## 4.4 파일 업로드
+
+*settings.py*
+```python
+# ...
+# 접미사
+MEDIA_URL = '/media/'
+
+# 실제 경로
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+```
+
+*(app이 아닌 최상위 루트의) urls.py*
+```python
+# ...
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+```
+
+템플릿에서는 form 태그의 속성에 `enctype="multipart/form-data"`을 추가시킨다. 파일은 설정한 'media'폴더에 저장이 되며 이렇게 저장된 이미지를 템플릿에서 활용하려면 `"{{ post.image.url }}"`처럼 `.url`를 붙여 사용한다.
 
 # crud 연습
 
@@ -852,8 +1108,6 @@ def pastlife(request):
     return render(request,'pl.html',contents)
 ```
 
-
-
 *pastlife/models.py*
 
 ```python
@@ -870,8 +1124,6 @@ class Job(models.Model):
         return f"<{self.name}: {self.job}>"
 ```
 
-
-
 *bonbon/urls.py*
 
 ```python
@@ -886,8 +1138,6 @@ urlpatterns = [
     path('articles/',include('articles.urls')) # url 전달
 ]
 ```
-
-
 
 *pastlife/templates/pastlife/index.html*
 
