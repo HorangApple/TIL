@@ -2,32 +2,50 @@ import React from "react";
 import ReactDOM from "react-dom";
 import classNames from "classnames/bind";
 
-class ClickCounterButton extends React.Component {
-  render() {
-    return <button
-    onClick={this.props.handler}
-    className="btn btn-danger">
-    Increase Volume (Current volume is {this.props.counter})
-    </button>
-  }
-}
-
-class App extends React.Component {
+class Menu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      counter: 0
+      menus: []
     };
-    this.handleClick=this.handleClick.bind(this)
   }
-  handleClick(e) {
-    console.log(this.state.counter)
-    this.setState({ counter: ++this.state.counter });
+  componentDidMount() {
+    fetch("http://localhost:3000/menus.json")
+      .then(response => response.json())
+      .then(menus => this.setState( {menus:menus} ));
   }
   render() {
     return (
-    <ClickCounterButton handler={this.handleClick} counter={this.state.counter} />
-    )
+      <div>
+      {console.log(this.state)}
+        {this.state.menus.map((v, i) => {
+          return (
+            <div key={i}>
+              <Link label={v} />
+            </div>
+          );
+        })}
+      </div>
+    );
   }
 }
-ReactDOM.render(<App />, document.querySelector("#root"));
+
+class Link extends React.Component {
+  render() {
+    const url =
+      "/" +
+      this.props.label
+        .toLowerCase()
+        .trim()
+        .replace(" ", "-");
+    return (
+      <div>
+        <a href={url}>{this.props.label}</a>
+      </div>
+    );
+  }
+}
+ReactDOM.render(
+  React.createElement(Menu, null),
+  document.querySelector("#root")
+);
