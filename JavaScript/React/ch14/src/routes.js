@@ -1,3 +1,4 @@
+// 라우터
 const React = require('react')
 const {
     Router,
@@ -15,6 +16,7 @@ module.exports = (
             // Movie 컴포넌트가 최상위 페이지와 /movies 페이지에서 모두 렌더링 됨
             <IndexRoute component={Movies} />
             <Route path="movies" component={Movies}>
+                // 매개변수는 ':' 를 붙인다.
                 <Route path=":id" component={Movie}/>
             </Route>
         </Route>
