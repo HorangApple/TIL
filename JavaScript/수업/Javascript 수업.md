@@ -30,7 +30,9 @@ JS는 원시자료형을 빼고 모든 것이 객체다.
 | update   | O         | O      | O     |
 | scope    | 함수 단위 | 블록 단위 |블록 단위|
 
+function keyword로 선언한 함수의 this : 실행하는 시점의 객체
 
+Arrow function으로 선언한 함수의 this : 선언하는 시점의 객체
 
 # Node.js
 
@@ -74,5 +76,37 @@ const parsedData = JSON.parse(JSONData);
 console.log(parsedData)
 // object
 // { cofffee: 'Americano', iceCream: 'Red Velvet' }
+```
+
+
+
+# AJAX (Asynchronous Javascript and XML)
+
+비동기적인 웹 애플리케이션의 제작을 위해 아래와 같은 조합을 이용하는 웹 개발 기법
+
+`XHR(XMLHttpRequest)`는 브라우저마다 bulit-in  되어있는 객체이며 fetch는 ES6 이후에 나온 `ajax `함수이다.
+
+*[XMLHttpRequest](https://developer.mozilla.org/ko/docs/XMLHttpRequest)*
+
+```javascript
+// XMLHttpRequest는 브라우저 상에서만 동작한다.
+const XHR = new XMLHttpRequest(); // class 인스턴스 생성시 new를 사용
+const URL = "https://koreanjson.com/posts/1";
+
+// 요청을 초기화
+XHR.open("GET", URL);
+// 요청을 보냄
+XHR.send();
+// 요청이 끝났을 때 함수 실행
+XHR.addEventListener('load', (event) => {
+    const rawData=event.target.response; // JSON 형식을 받는다.
+}) 
+```
+
+
+
+```javascript
+JSON.parse(객체) // JSON으로 변환
+JSON.stringify(객체) // JSON을 보내기 위해 string으로 변환
 ```
 
