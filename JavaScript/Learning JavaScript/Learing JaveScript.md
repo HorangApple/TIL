@@ -312,6 +312,7 @@ gulp.task('default',function() {
 ## 1) 변수, 상수 선언
 
 ```javascript
+a = 12; // 전역 변수로 선언
 let currentTempC = 22;
 let targetTempC; // let targetTempC=undefined;와 동일
 let targetTempC, room1 = "conference_room_a", room2 = "lobby"; // 변수 3개 선언
@@ -1176,7 +1177,9 @@ options = options || {};
 
 ## 1) 반환 값
 
-함수 바디 안에 return 키워드를 사용하면 함수를 즉시 종료하고 값을 반환함. 그 값이 함수 호출의 값이다.
+함수 바디 안에 return 키워드를 사용하면 함수를 즉시 종료하고 값을 반환함. 그 값이 함수 호출의 값이다. 
+
+JS의 함수는 **일급 객체**(First class object)이므로 함수에 함수를 인수로 넘길 수 있다. 덕분에 고차 함수를 구현할 수 있다. 
 
 ## 2) 호출과 참조
 
@@ -4038,6 +4041,18 @@ JS에는 정수 전용 클래스가 없다. JS의 숫자는 모두 IEEE 754 64�
 
 # Chapter 18. 브라우저의 자바스크립트
 JS 언어 자체는 똑같지만, 브라우저에서 사용할 때 특별히 알아야 할 사항과 API가 있다.
+
+클라이언트 측 JS는 ECMAScript가 규정한 코어 언어와 웹 브라우저의 API로 구성되어 있는데 후자는 다음과 같다.
+
+- Window 인터페이스 : JS로 브라우저 또는 창을 조작하는 기능 제공
+- DOM : JS로 HTML 문서의 요소를 제어하는 기능 제공
+- XMLHttpRequest : 서버와 비동기로 통신하는 기능 제공
+
+서버 측 JS 실행환경은 다음과 같다.
+
+- Node.js : 구글이 개발한 JS 실행환경
+- Rhino : 오픈 소스로 개발되어 현재는 Mozilla가 관리하고 있는 JS 실행 환경
+- Aptana Jaxer : Aptana 사가 개발하고 현재는 오픈 소스로 개발되고 있는 JS 실행 환경
 
 ## 1) ES5와 ES6
 서버에서 ES6 기능 중 무엇이 지원되는지 확실히 알 수 있고 JS 엔진을 선택할 수도 있다. 그러나 웹에서는 그렇지 않다. 사용자의 환경을 컨트롤하지 않는 한 당분간은 ES5를 사용해야 한다. 트랜스컴파일을 통해 ES6를 ES5로 바꿔야 한다.
