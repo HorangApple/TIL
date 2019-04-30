@@ -29,8 +29,7 @@ urls를 받아 해당하는 `View`가 받는다. 들어오는 모든 요청은 `
    - `pip install django`
 
 5. Django 프로젝트 test 생성
-
-- `django-admin stargproject text .`
+    - `django-admin stargproject text .`
 
 cf. 3.6.7같이 버전을 나타내는 것을 'semver'라고 한다.
 
