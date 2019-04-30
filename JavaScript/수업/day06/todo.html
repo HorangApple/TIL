@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <span v-html="header"></span>
+    <h2>{{subheader}}</h2>
+    <h2>{{subheader}}</h2>
+    <ul>
+      <li v-for="t in todo">{{t}}</li>
+    </ul>
+    <p v-if="checked">{{todo}}</p>
+    <ol>
+      <li v-for="t in user">{{t}}</li>
+    </ol>
+    <!-- form 생성 -->
+    <input v-model="subheader">
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+      let app = new Vue({
+        el:"#app",
+        data: {
+          header:'<h1>TodoApp</h1>',
+          subheader:'This is todo app',
+          todo:[
+            '동사무소가기','입대확인증','재입대하기'
+          ],
+          user: {
+            name: "시바",
+            gunPil: true,
+            major:"전자공학",
+          },
+          checked: true,
+          // json 서버에서 받아와 출력한다.
+          posts: fetch('/posts')
+        }
+      })
+    </script>
+    
+</body>
+</html>

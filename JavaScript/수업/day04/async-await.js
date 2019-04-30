@@ -1,3 +1,4 @@
+// 브라우저 콘솔에서 실행
 const orderCoffee = (order) => new Promise((resolve,reject) =>{
     let coffee;
     // 커피를 만드는데 1초
