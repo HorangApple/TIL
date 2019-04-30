@@ -6,9 +6,9 @@ static web을 사용하다가 부족함에 dynamic web을 사용하게 되었다
 
 프레임워크를 활용하여 웹서비스를 만드는 것은 마치 프렌차이즈를 이용해서 카페를 차리는 것과 같다. 기본적인 구조나 필요한 코드들은 프레임워크가 제공하니 좋은 웹 서비스를 만드는 것에 집중하면 된다.
 
-Django의 기본 구조는 Model, Template, View로 데이터를 관리하는 Model, 사용자가 보는 화면인 Template, 중간 관리자인 View를 의미한다. 특히 View는 MVC 구조에서 Controller에 가까운 역할을 한다.
+Django의 기본 구조는 데이터를 관리하는 `Model`, 사용자가 보는 화면인 `Template`, 중간 관리자인 `View`를 의미한다. 특히 `View`는 MVC 구조에서 Controller에 가까운 역할을 한다.
 
-urls를 받아 해당하는 View가 받는다. 들어오는 모든 요청은 View가 관리하며 요청에 대한 수행을 Model에게 넘어가 수행한다. Model에게 받은 정보를 View가 받아 Template으로 넘겨 사용자가 원하는 정보를 담고 있는 html 파일을 보여준다.
+urls를 받아 해당하는 `View`가 받는다. 들어오는 모든 요청은 `View`가 관리하며 요청에 대한 수행을 `Model`에게 넘어가 수행한다. `Model`에게 받은 정보를 `View`가 받아 `Templates`으로 넘겨 사용자가 원하는 정보를 담고 있는 html 파일을 보여준다.
 
 <img src="images/image 001.png"/>
 
