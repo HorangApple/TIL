@@ -38,3 +38,12 @@ Vue와 같은 frontend-framework가 선언된 객체를 받아 알아서 렌더�
 Vue에서 권고하는 HTTP 통신 라이브러리는 액시오스(Axios)이다. 이것은 Promise 기반의 HTTP 통신 라이브러리이다.
 
 Vue는 MVVM (Model, View, View Model) 패턴으로 되어 있다.
+
+html 태그에 넣어 사용하는 directive 가 있다.
+
+```html
+v-html
+v-for
+v-if
+v-once
+```

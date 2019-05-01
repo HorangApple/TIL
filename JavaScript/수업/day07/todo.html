@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ToDo App</title>
+</head>
+
+<body>
+  <div id="app">
+    <h1>{{header}}</h1>
+    <!-- v-once를 지정하면 해당 태그는 렌더링이 되지 않음 -->
+    <p v-once>data 안의 data : {{msg | capitalize}}</p>
+    <p>함수 실행의 결과 : {{hello()}}</p>
+    <img v-bind:src="imagesource" width="100" height="100">
+    <a v-bind:href="link">Vue.js</a>
+    <input v-model="userInput">
+    <button v-on:click="addInput">todo 추가</button>
+    <p>{{userInput}}</p>
+    <ul>
+      <li v-for="(todo, index) in todos">
+        <span>{{ index +1 }} : {{ todo }}</span>
+      </li>
+    </ul>
+    <p>{{todos}}</p>
+    <p>{{todos.reverse()}}</p>
+    <!-- 필터 사용 -->
+    <p>{{ todos|reverseJoin}}</p>
+    <!-- 함수식 ()로 작성하면 출력이 되지 않는다. 리턴 값이 바로 대입이 된다. -->
+    <p>{{ reverseMsg }}</p>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    // 변수로 선언하지 않아도 작동된다.
+    let app = new Vue({
+      el: '#app',
+      data: {
+        header: 'Todo App',
+        msg: 'hello',
+        userInput: '',
+        todos: ['수영 2km','기타 치기','달리기'], // 일종의 DB역할
+        imagesource:'https://kr.vuejs.org/images/logo.png',
+        link:'https://kr.vuejs.org'
+      },
+      // console.에서 app.$methods로 검색이 안되지만 함수 이름을 넣어 볼 수 있다.
+      methods: {
+        hello: function () {
+          // data의 변수를 사용하기 위해 this를 사용
+          // 데이터가 변경되면 렌더링이 전체적으로 다시 됨
+          // 함수 안에 this로 변수를 변경하면 input태그의 v-model로 값의 변경이 안됨
+          this.msg = "hi"
+          // 출력값이 바로 리턴됨
+          return this.msg
+        },
+        addInput: function () {
+          this.todos.push(this.userInput)
+          this.clearInput()
+        },
+        clearInput: function() {
+          this.userInput=""
+        }
+      },
+      filters: {
+        reverseJoin: function(val) {
+          return val.reverse().join(' / ')
+        },
+        capitalize: function(val){
+          if (!val) return ''
+          val = val.toString()
+          // charAt을 사용하는 것이 안전하다
+          return val.charAt(0).toUpperCase()+val.slice(1)
+        }
+      },
+      // api 사용할 때 이용
+      // method와 비슷하나 caching 방식이 다르다.
+      computed: {
+        // 글자 거꾸로 바꾸는 함수 만들기 귀찮으면 lodash를 쓰자
+        reverseMsg: function(){
+          return this.msg.split('').reverse().join('')
+        }
+      },
+      // 데이터가 변경되는 것을 지켜보고 변경시 할 일을 정의
+      watch: {
+        todos:{
+          // 필수값, 함수를 넣는다.
+          handler: function() {
+            console.log('todos 변경 됐어요.');
+          }
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
