@@ -47,3 +47,45 @@ v-for
 v-if
 v-once
 ```
+
+
+
+브라우저 콘솔창에서 localStorage에 접근할 수 있다. localStorage는 반영구적인 DB로 활용할 수 있다. cache로 저장되기 때문에 브라우저 설정으로 삭제하지 않는 한 정보를 계속 유지시킬 수 있다.
+
+sessionStorage는 같은 역할을 하지만 브라우저가 종료하면 (세션이 끝나면) 지워진다.
+
+과거에는 sessionStorage만 존재했기에 창을 끄면 로그인 정보가 다 날아갔는데 localStorage 덕분에 브라우저가 꺼져도 로그인이 유지된다.
+
+```
+>localStorage.setItem('students',["ab","bc","cd"])
+undefined
+>localStorage.getItem('students')
+"ab,bc,cd"
+>localStorage.getItem('students')[0]
+"a"
+>localStorage.setItem('people','["ab","bc","cd"]')
+undefined
+>localStorage.getItem('people')
+"["ab","bc","cd"]"
+>localStorage.getItem('people')[0]
+"["
+>let arr = localStorage.getItem('people')
+undefined
+>arr
+"["ab","bc","cd"]"
+>JSON.parse(arr)[0]
+"ab"
+
+>let person = JSON.stringify({name:'jong',job:'developer',address:'seoul'})
+undefined
+>person
+"{"name":"jong","job":"developer","address":"seoul"}"
+>localStorage.setItem("person",person)
+undefined
+>localStorage.person
+"{"name":"jong","job":"developer","address":"seoul"}"
+>JSON.parse(person)
+{name: "jong", job: "developer", address: "seoul"}
+```
+
+localStorage.clear() 를 하면 저장된 정보가 삭제된다.

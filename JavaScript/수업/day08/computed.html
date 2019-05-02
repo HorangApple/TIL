@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    <p>{{ number }}</p>
+    <button @click="increase">Up</button>
+    <p>{{ increase2 }}</p>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    /*
+    데이터 변동이 없는 상태에서 computed는 이전의 계산된 값을 캐시해 두었다가 함수 호출시 다시 쓰게 된다.
+    반면 methods는 사용될 때마다 함수의 계산을 다시 하게 된다.
+    만약 데이터가 자주 변동되지 않는다면, 비용적인 면에서는 computed가 좋다고 할 수 있고,
+    데이터가 수시로 업데이트 된다면 계속해서 캐시를 저장하는 computed보다는 methods가 더 좋을 수 있다.
+    */
+    new Vue({
+      el:"#app",
+      data:{
+        number:0
+      },
+      methods:{
+        increase: function(){
+          console.log("메소드 불렀음")
+          this.number++
+        }
+      },
+      computed:{
+        increase2: function(){
+          console.log("컴퓨티드 불렀음")
+          if(this.number>10){
+            return "10보다 커"
+          } else {
+            return "10보다 작어"
+          }
+        }
+      }  
+    })
+  </script>
+
+</body>
+
+</html>

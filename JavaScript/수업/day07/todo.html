@@ -15,9 +15,9 @@
     <p v-once>data 안의 data : {{msg | capitalize}}</p>
     <p>함수 실행의 결과 : {{hello()}}</p>
     <img v-bind:src="imagesource" width="100" height="100">
-    <a v-bind:href="link">Vue.js</a>
-    <input v-model="userInput">
-    <button v-on:click="addInput">todo 추가</button>
+    <a :href="link">Vue.js</a> <!---v-bind를 생략해도 작동된다.-->
+    <input @keyup.space.enter.esc="addInput" v-model="userInput">
+    <button @click="addInput">todo 추가</button>
     <p>{{userInput}}</p>
     <ul>
       <li v-for="(todo, index) in todos">
@@ -33,6 +33,19 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script>
+    const STORAGE_KEY = 'vue-app'
+
+    // ORM 같은 기능 구현, 미들웨어 생성
+    const todoStorage = {
+      fetch: function(){
+        const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        return data
+      },
+      save: function(todos){
+        localStorage.setItem(STORAGE_KEY,JSON.stringify(todos));
+      }
+    }
+
     // 변수로 선언하지 않아도 작동된다.
     let app = new Vue({
       el: '#app',
@@ -40,7 +53,7 @@
         header: 'Todo App',
         msg: 'hello',
         userInput: '',
-        todos: ['수영 2km','기타 치기','달리기'], // 일종의 DB역할
+        todos: todoStorage.fetch(), // 일종의 DB역할
         imagesource:'https://kr.vuejs.org/images/logo.png',
         link:'https://kr.vuejs.org'
       },
@@ -56,6 +69,7 @@
         },
         addInput: function () {
           this.todos.push(this.userInput)
+          todoStorage.save(this.todos)
           this.clearInput()
         },
         clearInput: function() {

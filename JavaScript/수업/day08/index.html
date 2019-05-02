@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <!-- Vue -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <!-- axios -->
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+  <div id="main">
+    <input type="radio" id="dog" v-model="picked" value="야옹">
+    <label for="dog">댕댕이</label>
+    <br />
+    <input type="radio" id="cat" v-model="picked" value="때껄룩">
+    <label for="cat">고양이</label>
+    <br />
+    <p>{{picked}}</p>
+    <img v-bind:src="image" alt="">
+  </div>
+  <script>
+
+    const dogAndCat = new Vue({
+      el: "#main",
+      data: {
+        picked: '',
+        image: '',
+        test: '',
+      },
+      watch: {
+        picked: function () {
+          if (this.picked === "야옹") {
+            this.getDogImage()
+          } else {
+            this.getCatImage()
+          }
+        }
+      },
+      methods: {
+        getDogImage() {
+          const URL = "https://dog.ceo/api/breeds/image/random"
+          const getImage = async () => {
+            const response = await axios.get(URL)
+            this.image = response.data.message
+          }
+          getImage()
+        },
+        getCatImage() {
+          const URL = "https://api.thecatapi.com/v1/images/search"
+          const getImage = async () => {
+            const response = await axios.get(URL)
+            this.image = response.data[0].url
+          }
+          getImage()
+        }
+      }
+
+    })
+  </script>
+</body>
+
+</html>
