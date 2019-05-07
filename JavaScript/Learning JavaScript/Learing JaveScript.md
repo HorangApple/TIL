@@ -713,7 +713,7 @@ while([condition]){
     [final-expression]
 }
 
-// 객체의 프로퍼티에 루프 실행
+// 객체의 프로퍼티(키 값 or idx 값)에 루프 실행
 for(variable in object)
     statement
 
