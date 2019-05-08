@@ -371,9 +371,9 @@ urlpatterns = [
 `app_name`을 선언하여 url별명에 대한 namespace를 생성한다. 이후 `path`마다 요소로 `name` 값을 넣어 별명을 지정한다.
 
 
-# templates
+# 3. templates
 
-## .1 templates 폴더
+## 3.1 templates 폴더
 
 해당 app 폴더 안에 'templates' 폴더를 만들어서 사용한다. `templates`폴더에 있는 html파일들을 한 단계 이상의 하위 폴더 안에 넣어야 한다. 그래야 다른 app의 html과 이름이 겹쳐서 오류가 발생하는 것을 막을 수 있다.
 
@@ -419,7 +419,7 @@ TEMPLATES = [
 
 `views.py`의 `render`안에 사용할 때는 html 파일을 불러오기위해서 일반적인 파일 경로로 작성해야한다. 반면 `redirect`를 사용할 때는 웹 주소를 넣는 것이므로 이 때는 `'articles:detail'`형식으로 작성하면 된다.
 
-## .3 django template 문법
+## 3.3 django template 문법
 
 https://docs.djangoproject.com/en/2.1/ref/templates/builtins/
 
