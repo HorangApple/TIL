@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div id="main">
+      <h1>Sticky Notes</h1>
+      <textarea v-model="content"></textarea>
+      <button @click="writeMemo">Write!</button>
+      <div id="memo-container">
+        <div class="memo" v-for="memo in memos">
+          <div class="memo-delete-button" @click="deleteMemo(memo.id)"></div>
+          {{ memo.content }}
+        </div>
+      </div>
+    </div>
+    <script>
+      const app = new Vue({
+        el: "#main",
+        data: {
+          url: "http://127.0.0.1:8000/api/v1/memos/",
+          content: "",
+          memos: []
+        },
+        methods: {
+          // 서버로 요청을 보내서 memo를 작성하고 응답받은 memo 데이터를 this.memos에 푸쉬
+          writeMemo: function() {
+            axios
+              .post(this.url, { content: this.content })
+              .then(function(response) {
+                this.content = "";
+                console.log(response);
+              });
+          },
+          getMemos: function() {
+            axios.get(this.url).then(response => {
+              this.memos = response.data;
+            });
+          },
+          deleteMemo: function(memo_id) {
+            axios // delete를 사용할 때는 {data: ... }로 감싸야한다.
+              // .delete(this.url, { data: { id: memo_id } })
+              .delete(this.url+memo_id)
+              .then(function(response) {
+                console.log(response);
+              });
+          }
+        },
+        // 서버로 요청을 보내서 memos를 불러온 뒤 this.memos에 할당
+        created: function() {
+          this.getMemos();
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Firebase Todo</title>
+  </head>
+  <body>
+    <div id="app">
+      <div>
+        <input v-model="newTodo" @keyup.enter="addTodo" />
+      </div>
+      <div>
+        <ul>
+          <li v-for="todo in current">{{ todo['.value'] }}</li>
+        </ul>
+      </div>
+    </div>
+    <!-- Vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
+    <!-- Vuefire -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vuefire/1.4.5/vuefire.min.js"></script>
+    <script>
+      // Initialize Firebase
+      // TODO: Replace with your project's customized code snippet
+      const config = {
+        apiKey: "AIzaSyAOc4P0n6Jy87ZlF9-gamRQoZUyZvyLdeg",
+        databaseURL: "https://dero-29540.firebaseio.com",
+        projectId: "dero-29540"
+      };
+
+      firebase.initializeApp(config);
+      const db = firebase.database();
+      const app = new Vue({
+        el: "#app",
+        data: {
+          newTodo: "",
+          // todos: []
+        },
+        methods: {
+          addTodo: function(input) {
+            //newTodo를 todos 추가
+            // this.todos.push(this.newTodo);
+            // firebaseRefs는 firebase에서 해주는 것
+            this.$firebaseRefs.todos.push(this.newTodo)
+            this.newTodo = "";
+          }
+        },
+        firebase: {
+          todos: db.ref('todos')
+        },
+        computed:{
+          current: function(){
+            console.log(this)
+            return this.todos
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
