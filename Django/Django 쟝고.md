@@ -391,7 +391,7 @@ TEMPLATES = [
 ]
 ```
 
-## .2 html 작성
+## 3.2 html 작성
 
 *index.html*
 
