@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <!-- 라우팅 영역 정의 -->
+      <router-view></router-view>
+    </div>
+    <!-- Vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- Vue-Router -->
+    <script src="https://unpkg.com/vue-router@2.0.0/dist/vue-router.js"></script>
+    <script>
+      const User = {
+        template: `
+        <div>
+          User Component
+          <router-view></router-view>
+        </div>
+        `
+      };
+      const Message1 = Vue.component("Message1-component", {
+        template: "<button v-on:click='showLog'>Message1</button>",
+        methods: {
+          showLog: function() {
+            console.log("Message1");
+          }
+        }
+      });
+
+      const Message2 = Vue.component("Message2-component", {
+        template: "<button v-on:click='showLog'>Message2</button>",
+        methods: {
+          showLog: function() {
+            console.log("Message2");
+          }
+        }
+      });
+
+      let routes = [
+        {
+          path: "/user",
+          component: User,
+          // 네스티드 라우팅 정의
+          children: [
+            // '/'는 떼고 path를 작성해야한다.
+            // /user/message1
+            { path: "message1", component: Message1 },
+            // /user/message2
+            { path: "message2", component: Message2 }
+          ]
+        }
+      ];
+
+      let router = new VueRouter({
+        routes
+      });
+
+      const app = new Vue({
+        router
+      }).$mount("#app");
+    </script>
+  </body>
+</html>
