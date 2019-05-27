@@ -8,32 +8,44 @@
   </head>
   <body>
     <div id="app">
-      <a v-if="flag">하와와</a>
-      <ul>
-        <li v-for="system in systems">{{system}}</li>
-      </ul>
-      <p v-show="flag">하와와</p>
-      <h5 v-bind:id="uid">디렉티브</h5>
-      <button v-on:click="popUp">팝업</button>
-      <p><input type="text" v-model="text"></p>
-      <p>{{text}}</p>
+      <p>
+        <!-- 링크 정의 -->
+        <router-link to="/Message1">Message1</router-link>
+        <router-link to="/Message2">Message2</router-link>
+      </p>
+      <!-- 라우팅 영역 정의 -->
+      <router-view></router-view>
     </div>
     <!-- Vue -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- Vue-Router -->
+    <script src="https://unpkg.com/vue-router@2.0.0/dist/vue-router.js"></script>
     <script>
-      const app = new Vue({
-        data:{
-          flag:true,
-          systems:['an','ro','id'],
-          uid:10,
-          text:""
-        },
-        methods:{
-          popUp:function(){
-            this.flag=!this.flag
-            return alert('호잇!');
+      
+      import Message1 from "./practice.js";
+      console.log(Message1)
+      const Message2 = Vue.component("Message2-component", {
+        template: "<button v-on:click='showLog'>Message2</button>",
+        methods: {
+          showLog: function() {
+            console.log("Message2");
           }
         }
+      });
+
+      let routes = [
+        // 뷰 라우팅
+        { path: "/Message1", component: Message1 },
+        { path: "/Message2", component: Message2 }
+      ];
+
+      let router = new VueRouter({
+        mode: "history", // 라우터 URL의 해시 값(#)을 없앤다.
+        routes
+      });
+
+      const app = new Vue({
+        router
       }).$mount("#app");
     </script>
   </body>

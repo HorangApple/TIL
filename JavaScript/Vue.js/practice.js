@@ -1,16 +1,10 @@
-// 지역 컴포넌트 내용
-let cmp = {
-  template: '<div>{{message}}</div>',
-  props:['propsData']
-}
-
-// 인스턴스도 컴포넌트이다.
-new Vue({
-  el: "#app",
-  data:{
-    "message":"data from Parent Component"
-  },
-  components:{
-    'child-component': cmp
+export const Message1 = Vue.component("Message1-component", {
+  template: `
+  <button v-on:click='showLog'>Message1</button>
+  `,
+  methods: {
+    showLog: function() {
+      console.log("Message1");
+    }
   }
 });
