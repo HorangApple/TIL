@@ -2805,7 +2805,7 @@ console.log(it.next());
 
 next에서 마지막을 반환했다 해서 끝난 것은 아니다. 더 진행할 것이 없으면 value는 undefined가 되지만, next는 계속 호출할 수 있다. 일단 이터레이터가 끝까지 진행하면 뒤로 돌아가서 다른 데이터를 제공할 수 없다.
 
-배열의 요소를 나열하는 것이 목적이라면 for 루프나 for...of 루프를 쓸 수 있다. for 루프는 인덱스를 사용하지만 for...of 루프는 이터레이터라서 인덱스 없이 사용 가능하다.
+배열의 요소를 나열`하는 것이 목적이라면 for 루프나 for...of 루프를 쓸 수 있다. for 루프는 인덱스를 사용하지만 for...of 루프는 이터레이터라서 인덱스 없이 사용 가능하다.
 
 이터레이터는 모두 독립적이라 새 이터레이터를 만들 때마다 처음에서 시작한다. 그리고 각각 다른 요소를 가리키는 이터레이터 여러 개를 동시에 사용할 수도 있다.
 
@@ -2887,15 +2887,16 @@ console.log(it.next());
 console.log(it.next());
 console.log(it.next());
 
+// { value: 'red', done: false }
+// { value: 'orange', done: false }
+// { value: 'yellow', done: false }
+
 // 제너레이터는 이터레이터를 반환하므로 
 // for...of를 사용할 수 있다.
 for(let color of rainbow()){
     console.log(color);
 }
 
-// { value: 'red', done: false }
-// { value: 'orange', done: false }
-// { value: 'yellow', done: false }
 // red
 // orange
 // yellow
@@ -2966,7 +2967,7 @@ for(let l of abc()){
 # Chapter 13 함수와 추상적 사고
 
 ## 1) 서브루틴으로서의 함수
-서브루틴(subroutine)은 아주 오래 된 개념이며 복잡한 코드를 간단하게 만드는 기초적인 수단이다. 프로시저(procedure), 루틴(routine), 서브프로그램(subprogram), 매크로(macro) 등 다양한 이름으로 불린다.
+함수, 다른 말로 서브루틴(subroutine)은 아주 오래 된 개념이며 복잡한 코드를 간단하게 만드는 기초적인 수단이다. 프로시저(procedure), 루틴(routine), 서브프로그램(subprogram), 매크로(macro) 등 다양한 이름으로 불린다.
 
 서브루틴은 대개 어떤 알고리즘을 나타내는 형태이다.
 
@@ -2974,7 +2975,7 @@ for(let l of abc()){
 `return`을 사용해서 값을 반환할 수 있다.
 
 ## 3) 함수로서의 함수
-입력은 모두 어떤 결과와 관계되어 있다. 함수의 수학적인 정의에 충실한 함수를 순수한 함수(pure function)이라고 부른다. 입력이 같으면 결과도 반드시 같다는 점과 부수 효과(side effect)가 없다는 특징, 즉 프로그램의 상태가 바뀌어서는 안된다는 특징을 갖고 있다. 
+입력은 모두 어떤 결과와 관계되어 있다. 함수의 수학적인 정의에 충실한 함수를 **순수한 함수**(pure function)이라고 부른다. **입력이 같으면 결과도 반드시 같다는 점**과 **부수 효과(side effect)가 없다는 특징**, 즉 프로그램의 상태가 바뀌어서는 안된다는 특징을 갖고 있다. 
 
 ```javascript
 const colors = ['red','orange','yellow','green',
@@ -3005,11 +3006,11 @@ const rainbowIterator = getRainbowIterator();
 setInterval(function(){
     // 브라우저 코드 사용
     document.querySelector('.rainbow')
-        .style['background-color'] = rainbowIterator.next().value;
+        .style['background-color'] = rainbowIterator.next();
 },500);
 ```
 
-next()는 함수가 아니라 멤서드라는 점에 주목할 필요가 있다. 메서드는 자신이 속한 객체라는 컨텍스트 안에서 동작하므로 메서드의 동작은 그 객체에 의해 좌우된다. 프로그램의 다른 부분에서 getRainbowIterator를 호출하더라도 독립적인 이터레이터가 생성되므로 다른 이터레이터를 간섭하지 않는다.
+next()는 함수가 아니라 메서드라는 점에 주목할 필요가 있다. 메서드는 자신이 속한 객체라는 컨텍스트 안에서 동작하므로 메서드의 동작은 그 객체에 의해 좌우된다. 프로그램의 다른 부분에서 getRainbowIterator를 호출하더라도 독립적인 이터레이터가 생성되므로 다른 이터레이터를 간섭하지 않는다.
 
 ## 4) 그래서?
 함수를 서브루틴이라는 관점에서 보면 반복을 없애는 점에서 장점이 있다. 자주 사용하는 동작을 하나로 묶을 수 있다는 점에 매우 분명한 장점이 있다.
