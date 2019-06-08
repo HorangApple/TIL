@@ -436,7 +436,7 @@ class CreateComment extends Component {
     });
   }
   // 폼 제출 이벤트를 처리하기 위한 이벤트 핸들러
-  handleSubmit(event) {
+  handleSubmit = (event) => {
     event.preventDefault();
     // 부모가 속성으로 전달한 onCommentSubmit 함수를 호출 할 때 폼에서 읽어온 데이터를 전달한 후,
     // 사용자가 폼 제출 동작이 올바르게 수행되었음을 알 수 있도록 폼을 초기화 한다.
@@ -484,15 +484,15 @@ CreateComment.propTypes = {
 };
 
 class CommentBox extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+  // babel의 transform-class-properties 문법을 사용하여 
+  // constructor 내 this.state를 선언할 필요 없음.
+  state = {
       // comments 데이터를 CommentBox 컴포넌트의 최상위 수준 데이터로 전달한다.
       comments: this.props.comments
-    };
-    this.handleCommentSubmit = this.handleCommentSubmit.bind(this);
-  }
-  handleCommentSubmit(comment) {
+  };
+  // babel의 transform-class-properties 문법을 사용하여 
+  // constructor 내 bind를 할 필요 없이 화살표 함수로 구현할 수 있음
+  handleCommentSubmit = (comment) => {
     // 상태는 절대 직접 갱신하지 않는다. 대신 복사본을 생성한다.
     const comments = this.state.comments;
     comment.id = Date.now();
@@ -711,7 +711,7 @@ defaultProps라는 정적 속성을 추가하면 컴포넌트의 속성에 대�
 - 마운팅: 컴포넌트가 DOM에 삽입되는 시점
   - componentWillMount(), componentDidMount()
 - 갱신: 컴포넌트가 상태나 속성으로 전달된 새 데이터에 의해 갱신되는 시점
-  - componentWillReceiveProps(nextProps), shouldComponentUpdate(nextProps, nextState), componentWillUpdate(nextProps, nextState), componentDidUpdate(prevProps, prevState)
+  - ~~componentWillReceiveProps(nextProps)~~, shouldComponentUpdate(nextProps, nextState), ~~componentWillUpdate(nextProps, nextState)~~, componentDidUpdate(prevProps, prevState, snapshot), getDerivedStateFromProps(nextProps, nextState), getSnapshotBeforeUpdate(prevProps, prevState)
 - 언마운팅: 컴포넌트가 DOM에서 제거되는 시점
   - componentWillUnmount()
 
@@ -746,13 +746,25 @@ render 같은 다른 메서드 내에서 핸들러나 함수를 실행하면 리
 ### 4.2.5 갱신 메서드
 컴포넌트가 마운트되어 DOM에 위치하게 되면 컴포넌트는 자신의 상태를 갱신할 수 있다. this.setState 메서드를 이용하면 얕은 병합 기법을 이용해 데이터를 컴포넌트의 상태에 반영할 수 있지만, 실제 갱신 과정에서는 이보다 더 많은 일이 일어난다.
 
-- componentWillReceiveProps(nextProps)
+- ~~componentWillReceiveProps(nextProps)~~ *v16.3 이후 제거*
+
+- getDerivedStateFromProps(nextProps, nextState) *v16.3 이후 추가*
+
+  > props로 받아 온 값을 state에 동기화시키는 용도로 사용, 컴포넌트를 마운트하거나 props를 변경할 때 호출
+
 - shouldComponentUpdate(nextProps, nextState)
 
   > 특별히 명시하지 않으면 true를 리턴하지만 false를 리턴하면 다음에 다시 상태가 변경될 때까지 render() 메서드를 실행하지 않는다. 즉, 불필요하게 갱신되는 상황을 방지할 수 있다. componentWillUpdate와 componentDidUpdate 메서드는 호출되지 않는다. 앱의 성능을 튜닝하고자 할 때 사용한다.
 
-- componentWillUpdate(nextProps, nextState)
-- componentDidUpdate(prevProps, prevState)
+- ~~componentWillUpdate(nextProps, nextState)~~ *v16.3 이후 제거*
+
+- getSnapshotBeforeUpdate(prevProps, prevState) *v16.3 이후 추가*
+
+  > render 메서드를 호출한 후 DOM에 변화를 반영하기 바로 직전에 호출하는 메서드
+
+- componentDidUpdate(prevProps, prevState, snapshot)
+
+  > 리렌더링이 완료한 후 실행한다. 업데이트가 끝난 직후이므로, DOM 관련 처리를 해도 무방하며 getSnapshotBeforeUpdate에서 반환한 값이 있다면 snapshot 값을 전달 받을 수 있다.
 
 shouldComponentUpdate는 어떤 이유로든 리액트가 제공하는 메서드들로 충분하지 않은 경우에만 사용해야 한다. 
 
@@ -760,7 +772,7 @@ shouldComponentUpdate는 어떤 이유로든 리액트가 제공하는 메서드
 
 - componentWillUnmount()
 
-애플리케이션 전체를 리액트로 작성했다면 라우터(router)는 사용자가 페이지 사이를 이동하는 과정에서 불필요한 컴포넌트를 제거한다. 컴포넌트가 제거될 때 필요한 정리하는 작업은 componentWillUnmount 메서드에서 수행한다.
+  > 애플리케이션 전체를 리액트로 작성했다면 라우터(router)는 사용자가 페이지 사이를 이동하는 과정에서 불필요한 컴포넌트를 제거한다. 컴포넌트가 제거될 때 필요한 정리하는 작업은 componentWillUnmount 메서드에서 수행한다.
 
 ### 4.2.7 에러의 처리
 
@@ -771,4 +783,80 @@ shouldComponentUpdate는 어떤 이유로든 리액트가 제공하는 메서드
 오류 경계(error boundaries)라는 개념을 도입하여 만일 컴포넌트의 생성자, render 메서드 혹은 생명주기 메서드 내에서 처리되지 않은 예외(uncaught exception)가 발생하면 리액트는 컴포넌트와 그 자식 컴포넌트들을 DOM으로부터 언마운트 한다. 이 방법은 에러를 해당 컴포넌트 내에 격리함으로써 앱의 나머지 부분들이 계속 원활히 동작하도록 할 수 있다는 장점이 있다.
 
 # Chapter 5. 폼 다루기
+
+
+
+# Redux
+
+리덕스는 리액트에서 많이 사용되는 상태 관리 라이브러리이다.  기존 방식으로는 여러 컴포넌트를 거쳐 상태를 전달할 수 있는데 컴포넌트의 갯수가 많아지면 비효율적이 되기에 이 때는 Redux를 사용하는 것이 좋다. 
+
+상태 변화를 일으킬 때 참조하는 객체인 **액션**을 상태를 보관하는 객체인 **스토어**에 전달(**디스패치**)한다. 스토어 내부에 있는 **리듀서**를 통해 전달 받은 액션에 맞춰 스토어의 상태를 변경시킨다. 이때 변경이 발생하면 스토어와 연결(**구독**)된 컴포넌트 내의 특정 함수를 실행하도록 한다. 
+
+## 액션
+
+*액션 생성 함수*
+
+```javascript
+const INCREMENT = 'INCREMENT';
+const DECREMENT = 'DECREMENT';
+
+const increment = (diff) => ({
+    type: INCREMENT,
+    diff: diff
+});
+
+const decrement = (diff) => ({
+    type: DECREMENT,
+    diff: diff
+});
+```
+
+## 리듀서
+
+리듀서의 첫 번째 파라미터는 현재 상태고, 두 번째 파라미터는 액션 객체이다.  state를 직접 수정하면 안되기에 중첩하는 방식으로 값을 변경한다. 
+
+*reducer*
+
+```javascript
+// 초기 상태 설정
+const initalState = {
+    number: 1,
+    foo: 'bar',
+    baz: 'qux'
+};
+
+// 리듀서
+function counter(state = initialState, action) {
+    switch(action.type) {
+        case INCREMENT:
+            return {
+                ...state,
+                number:state.number + action.diff
+            };
+        case DECREMENT:
+            return {
+                ...state,
+                number:state.number - action.diff
+            };
+        default:
+            return state;
+    }
+}
+
+export default counter;
+```
+
+## 스토어
+
+*store*
+
+```javascript
+import counter from 파일 경로;
+
+//...
+// import {createStore} from 'redux'; 또는
+const {createStore} = Redux;
+
+const store = createStore(counter)
+```
 
