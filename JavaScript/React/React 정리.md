@@ -4,9 +4,9 @@
 
 ## 1.1 리액트 시작하기
 
-리액트는 강력한 멘탈 모델과 더불어 선언적이면서도 컴포넌트 주도적인 방법으로 사용자 인터페이스를 개발하기 위한 다양한 기능을 제공한다. 
+리액트는 강력한 멘탈 모델과 더불어 선언적이면서도 컴포넌트 주도적인 방법으로 사용자 인터페이스를 개발하기 위한 다양한 기능을 제공한다.
 
-리액트의 멘탈 모델은 함수적(functional) 개념과 객체지향(object-oriented)을 결합하고 있으며, 컴포넌트를 UI 개발의 주요 단위로 보고 있다. 
+리액트의 멘탈 모델은 함수적(functional) 개념과 객체지향(object-oriented)을 결합하고 있으며, 컴포넌트를 UI 개발의 주요 단위로 보고 있다.
 
 리액트의 렌더링(rendering) 시스템은 이 컴포넌트들을 관리하여 애플리케이션의 뷰(view)와 동기화한다. 컴포넌트는 날짜 선택, 머리글 영역, 탐색 메뉴 영역 등의 사용자 인터페이스를 구현하는 데 사용하기도 하지만, 클라이언트 측 라우팅(routing), 데이터 형식화(data formatting), 스타일과 같은 클라이언트 측 애플리케이션의 다른 부분들을 관장하기도 한다.
 
@@ -37,8 +37,8 @@ npm start
 - 유연한 만큼 특정 영역의 문제를 독자적으로 해결해야한다.
 - 프레임워크에 대한 결속이 약해 낮은 비용으로 마이그레이션(migration)이 가능하다.
 - 페이스북이 주도한 개발 도구이기 때문에 페이스북 앱의 UI 요구사항과 상당히 다른 앱을 개발한다면 리액트를 활용하는 데 어려움을 겪을 수 있다.
-- 컴포넌트 내의 데이터가 변경되었을 때 이를 처리하여 UI를 갱신하는 시스템으로 개발자가 생명주기 메서드(lifecycle method)라고 부르는 특정한 메서드를 이용해 감지한 변경 사항들을 실행하는 방식이다.  이러한 시스템이 모듈화되어 대부분의 작업을 추상화한다. 즉, 리액트가 정해 준 방식대로 UI를 개발해야 한다는 뜻이다. 리액트와 호환되는 방식으로 도구를 사용해야한다.
-- 기반 시스템의 일부를 확인할 수 없고 리액트가 동작하는 방식으로 앱을 개발해야 한다.  이러한 점이 애플리케이션 스택의 이부분에 영향을 미친다.
+- 컴포넌트 내의 데이터가 변경되었을 때 이를 처리하여 UI를 갱신하는 시스템으로 개발자가 생명주기 메서드(lifecycle method)라고 부르는 특정한 메서드를 이용해 감지한 변경 사항들을 실행하는 방식이다. 이러한 시스템이 모듈화되어 대부분의 작업을 추상화한다. 즉, 리액트가 정해 준 방식대로 UI를 개발해야 한다는 뜻이다. 리액트와 호환되는 방식으로 도구를 사용해야한다.
+- 기반 시스템의 일부를 확인할 수 없고 리액트가 동작하는 방식으로 앱을 개발해야 한다. 이러한 점이 애플리케이션 스택의 이부분에 영향을 미친다.
 
 ## 1.3 가상 DOM
 
@@ -46,7 +46,7 @@ npm start
 
 이 과정을 처리하는 주요 기법이 가상 DOM이다. 리액트의 가상 DOM은 브라우저에 존재하는 문서 객체 모델(Document Object Model)을 흉내 내거나 반영하는 데이터 구조 또는 데이터 구조의 모음(collection)이다.
 
-일반적으로 가상 DOM은 변경의 탐지 및 관리에 필요한 복잡한 작업을 최대한 숨기고, 개발자가 특별한 추상화 계층에 집중하는 데  도움을 준다.
+일반적으로 가상 DOM은 변경의 탐지 및 관리에 필요한 복잡한 작업을 최대한 숨기고, 개발자가 특별한 추상화 계층에 집중하는 데 도움을 준다.
 
 ### 1.3.1 DOM
 
@@ -78,7 +78,7 @@ HTML 문서 내의 무언가와 관련된 정보에 접근하고 갱신하거나
 
 컴포넌트를 멘탈 및 시각화 도구로 사용하는 것은 훨씬 더 나은 방법인 동시에 더욱 직관적인 애플리케이션의 디자인과 사용법을 정의할 수 있다.
 
-컴포넌트는 우리가 정의하는 어떤 형태로든 구현할 수 있다. 설령, 그것이 컴포넌트로서 적합한 형태가 아닐지라도 말이다. 
+컴포넌트는 우리가 정의하는 어떤 형태로든 구현할 수 있다. 설령, 그것이 컴포넌트로서 적합한 형태가 아닐지라도 말이다.
 
 ### 1.4.2 리액트의 컴포넌트: 캡술화와 재사용
 
@@ -86,7 +86,7 @@ HTML 문서 내의 무언가와 관련된 정보에 접근하고 갱신하거나
 
 리액트 기반의 컴포넌트를 정의할 때는 컴포넌트 디자인에서 그 구조와 일관성에 대해 고려하는 것이 중요하다.
 
-다른 라이브러리에 의존하는 컴포넌트라 하더라도 잘 디자인된 리액트 컴포넌트는 애플리케이션의 다른 영역과 충분히 잘 어울릴 수 있다.  컴포넌트 간의 경계는 기능의 분할과 잘 정의된 애플리케이션 구조를 확보할 수 있다는 것을 의미하지만, 독립적인 컴포넌트는 재사용성과 이동성을 의미한다.
+다른 라이브러리에 의존하는 컴포넌트라 하더라도 잘 디자인된 리액트 컴포넌트는 애플리케이션의 다른 영역과 충분히 잘 어울릴 수 있다. 컴포넌트 간의 경계는 기능의 분할과 잘 정의된 애플리케이션 구조를 확보할 수 있다는 것을 의미하지만, 독립적인 컴포넌트는 재사용성과 이동성을 의미한다.
 
 컴포넌트는 상호작용, 즉 여러 컴포넌트를 '조합(compose)'해서 새로운 형태의 '합성(composite)' 컴포넌트를 만들 수도 있다. 컴포넌트의 조합은 리액트의 가장 강력한 장점 중 하나다.
 
@@ -96,7 +96,7 @@ HTML 문서 내의 무언가와 관련된 정보에 접근하고 갱신하거나
 
 ## 2.1 리액트의 컴포넌트에 대해 알아보기
 
-컴포넌트는 리액트로 작성된 클라이언트 측 애플리케이션을 구성하는 기본 단위이다. 컴퓨넌트를 기반으로 사용자 인터페이스를 구성하고 이를 바탕으로 구조를 잡아야한다. 
+컴포넌트는 리액트로 작성된 클라이언트 측 애플리케이션을 구성하는 기본 단위이다. 컴퓨넌트를 기반으로 사용자 인터페이스를 구성하고 이를 바탕으로 구조를 잡아야한다.
 
 이후 애플리케이션이 필요로 하는 데이터에 대해 이해한 후 이 데이터를 어떻게 컴포넌트로 만들 수 있는지 생각해본다.
 
@@ -114,7 +114,7 @@ DOM 요소들과 마찬가지로, 리액트의 컴포넌트들은 중첩(nested)
 
 ### 2.1.3 컴포넌트 간의 관계 확립
 
-컴포넌트의 계층 구조를 정의하면 다음과 같다. 
+컴포넌트의 계층 구조를 정의하면 다음과 같다.
 
 - 인터페이스의 어느 부분이 컴포넌트가 될 것이며, 어디에 배치할 것인지에 대해 계획을 세워야 한다.
 - 컴포넌트의 관계는 시간이 지나면서 달라질 수 있으므로 처음부터 너무 완벽해지려는 욕심을 부리지 않는다.
@@ -128,7 +128,7 @@ DOM 요소들과 마찬가지로, 리액트의 컴포넌트들은 중첩(nested)
 const node = document.getElementById("root");
 
 // index.html
-<div id="root"></div>
+<div id="root" />;
 ```
 
 우선, ID 값이 root인 DOM 요소를 추가하고 React-dom 라이브러리를 사용하는 약간의 기본 코드를 작성한다.
@@ -137,7 +137,7 @@ const node = document.getElementById("root");
 
 ### 2.2.1 리액트 요소 생성하기
 
-***React.createElement***
+**_React.createElement_**
 
 **리액트 요소**란 경량이고 상태가 없으며 내부 상태의 변경이 불가능한 요소이다. 두 가지 타입이 있는데 **ReactDOMElement**는 DOM 요소를 가상으로 표현한 객체이고 **ReactComponentElement**는 리액트 컴포넌트를 표현하는 함수나 클래스에 대한 참조를 의미한다.
 
@@ -147,7 +147,7 @@ UI를 구성하는 가장 기본적인 요소이기 때문에 UI의 각 영역�
 
 DOM 요소와 리액트 요소 사이의 유사성은 멘탈 모델을 지원하기 위한 것이며, 일반적인 DOM 요소들과 마찬가지로 트리 구조의 요소들로 구성된 익숙한 멘탈 모델을 다루게 된다.
 
-다른 한편으로, 리액트 요소는 DOM 요소의 청사진(blueprint)처럼 리액트가 사용하는 기본적인 지시문의 집합으로 이해할 수 있다.  즉, 리액트가 요소를 생성하고 관리할 때 사용하는 간소화된 버전의 청사진이라고 할 수 있다.
+다른 한편으로, 리액트 요소는 DOM 요소의 청사진(blueprint)처럼 리액트가 사용하는 기본적인 지시문의 집합으로 이해할 수 있다. 즉, 리액트가 요소를 생성하고 관리할 때 사용하는 간소화된 버전의 청사진이라고 할 수 있다.
 
 ```javascript
 React.createElement(
@@ -170,7 +170,7 @@ React.createElement 함수는 문자열이나 (React.Component 타입을 상속�
 
 React.createElement 함수 호출에 전달된 `children...` 매개변수들을 재귀적으로 평가해서 그 결과를 부모 요소에 전달한다.
 
-***ReactDOM.render***
+**_ReactDOM.render_**
 
 실제로 브라우저에서 뭔가를 보기 위해서는 react-dom을 이용해야 한다. 즉, 컴포넌트를 생성하고 관리하기 위해서는 리액트의 render 메서드를 호출해서 컴포넌트와 컴포넌트 요소(앞서 선언한 변수에 저장해 둔 DOM 요소)를 렌더링해야 한다.
 
@@ -192,7 +192,7 @@ React DOM은 ReactElement 타입의 요소와 DOM 요소를 필요로 한다. DO
 
 ```javascript
 class MyReactClassComponent extends Component {
-    render() {}
+  render() {}
 }
 ```
 
@@ -226,9 +226,9 @@ PropTypes를 사용하려면 React.Component 클래스에 propTypes 속성을 �
 
 PropTypes는 개발 모드에서만 타입을 평가하기 때문에 실제 운영 환경에서 실행중인 PropTypes를 동작하는 추가적인 오버헤드가 발생하지 않는다.
 
-*예제 2.5*
+_예제 2.5_
 
-``` javascript
+```javascript
 // React, React DOM, 그리고 prop-types 라이브러리를 불러온다.
 import React, { Component } from "react";
 import { render } from "react-dom";
@@ -267,7 +267,7 @@ class Post extends Component {
   }
 }
 
-// 속성은 반드시 필요한 값일수도, 선택적인 값일 수도 있으며, 
+// 속성은 반드시 필요한 값일수도, 선택적인 값일 수도 있으며,
 // 타입을 명시해야 하고 특정한 '형태'여야 할 수도 있다.
 Post.propTypes = {
   user: PropTypes.string.isRequired,
@@ -349,7 +349,7 @@ this.props 속성은 컴포넌트 내에서 변경할 수 없지만 전달하는
 
 사용자의 폼 요소와 상호작용을 계속 추적하려면 기본 상태를 제공하고 이후 시간의 흐름에 따라 상태를 변경해야 한다. 컴포넌트의 기본 상태는 컴포넌트의 생성자를 이용해 지정할 수 있다.
 
-*this.setState*
+_this.setState_
 
 ```javascript
 setState(
@@ -379,7 +379,7 @@ const data = {
   },
   comments: [
     {
-      id: 0, 
+      id: 0,
       user: "David",
       content: "such. win."
     },
@@ -436,7 +436,7 @@ class CreateComment extends Component {
     });
   }
   // 폼 제출 이벤트를 처리하기 위한 이벤트 핸들러
-  handleSubmit = (event) => {
+  handleSubmit = event => {
     event.preventDefault();
     // 부모가 속성으로 전달한 onCommentSubmit 함수를 호출 할 때 폼에서 읽어온 데이터를 전달한 후,
     // 사용자가 폼 제출 동작이 올바르게 수행되었음을 알 수 있도록 폼을 초기화 한다.
@@ -444,12 +444,12 @@ class CreateComment extends Component {
       user: this.state.user.trim(),
       content: this.state.content.trim()
     });
-	// 폼을 제출할 때 입력 필드를 초기화
+    // 폼을 제출할 때 입력 필드를 초기화
     this.setState(() => ({
       user: "",
       content: ""
     }));
-  }
+  };
   render() {
     return React.createElement(
       "form",
@@ -484,15 +484,15 @@ CreateComment.propTypes = {
 };
 
 class CommentBox extends Component {
-  // babel의 transform-class-properties 문법을 사용하여 
+  // babel의 transform-class-properties 문법을 사용하여
   // constructor 내 this.state를 선언할 필요 없음.
   state = {
-      // comments 데이터를 CommentBox 컴포넌트의 최상위 수준 데이터로 전달한다.
-      comments: this.props.comments
+    // comments 데이터를 CommentBox 컴포넌트의 최상위 수준 데이터로 전달한다.
+    comments: this.props.comments
   };
-  // babel의 transform-class-properties 문법을 사용하여 
+  // babel의 transform-class-properties 문법을 사용하여
   // constructor 내 bind를 할 필요 없이 화살표 함수로 구현할 수 있음
-  handleCommentSubmit = (comment) => {
+  handleCommentSubmit = comment => {
     // 상태는 절대 직접 갱신하지 않는다. 대신 복사본을 생성한다.
     const comments = this.state.comments;
     comment.id = Date.now();
@@ -500,7 +500,7 @@ class CommentBox extends Component {
     this.setState({
       comments: newComments
     });
-  }
+  };
   render() {
     return React.createElement(
       "div",
@@ -615,7 +615,7 @@ React.Component 클래스를 상속해 생성한 컴포넌트 상태는 this.sta
 
 상태를 불변 객체로 취급해야하는 중요한 이유는 setState 메서드가 this.state 객체를 곧바로 갱신하는 것이 아니라 상태 전환을 미결처리(pending)하기 때문이다. 그래서 setState 메서드를 호출한 후에 this.state에 접근하면 잠재적으로 기존의 값이 리턴될 가능성이 있다.
 
-*setState*
+_setState_
 
 ```javascript
 setState(
@@ -630,7 +630,7 @@ updater(
 
 ```
 
-setState 메서드는 컴포넌트이 새로운 상태를 설정하기 위한 updater 함수와 선택적인 callback 함수를 매개변수로 정의하고 있다. 
+setState 메서드는 컴포넌트이 새로운 상태를 설정하기 위한 updater 함수와 선택적인 callback 함수를 매개변수로 정의하고 있다.
 
 버전 16 이전에는 첫 번째 인수로 함수 대신 객체를 전달해야 했지만 16 버전부터는 setState 메서드를 호출하면 리액트는 상태의 변경을 예약하는 반면, 메서드 자체는 동기식(synchronous)으로 동작하는 것처럼 보인다. 즉, 필요할 때 시스템(리액트)이 갱신 작업의 수행을 예약할 뿐, 실제 갱신이 이루어지는 시점은 보장되지 않는다.
 
@@ -639,15 +639,17 @@ setState 메서드는 컴포넌트이 새로운 상태를 설정하기 위한 up
 이 메서드는 updater 함수가 리턴한 객체를 얕은 복사(shallow copy)기법을 이용해 최상위 속성만을 현재의 상태에 병합한다. 또한 어떤 이유로든 이 과정의 완료 시점을 알아야 한다면 선택 매개변수인 callback 함수를 지정하면 된다.
 
 ### 3.2.2 리액트의 불변 상태: Props
+
 리액트에서 불변 데이터를 전달하기 위한 가장 기본적인 방법은 속성(props)을 이용하는 것이다. 모든 컴포넌트가 속성을 수신할 수 있으며, 이 속성을 constructor, render 메서드 및 생명주기 메서드에서 활용할 수 있다.
 
 리액트의 props API는 그 자체로 반-불변적(semi-immutable)이다. JS에 내장된 Object.freeze 메서드를 이용해서 특정 객체에 새로운 속성을 추가하거나 이미 존재하는 속서을 제거하는 작업을 수행하지 못하도록 한다. 또한, 객체에 이미 존재하는 속성(객체의 열거성(enumerability), 구성 용이성(configurability), 쓰기 가능성(writability) 등)의 변경과 프로토타입의 변경 역시 허용하지 않는다. 이 특징은 props 객체의 가변성을 제거하기엔 충분하지만 기술적으로 완전한 불변 객체를 구현하지 못한다.
 
-컴포넌트의 상태는 개별 컴포넌트가 따로 관리하는 반면, 속성은 보통 부모 컴포넌트가 전달한다. 대부분 JSX의 특성 문법을 이용해 전달하지만, React.createElement 메서드를 사용한다면 이 메서드를 통해 자식 컴포넌트에 직접 속성을 전달할 수도 있다. 
+컴포넌트의 상태는 개별 컴포넌트가 따로 관리하는 반면, 속성은 보통 부모 컴포넌트가 전달한다. 대부분 JSX의 특성 문법을 이용해 전달하지만, React.createElement 메서드를 사용한다면 이 메서드를 통해 자식 컴포넌트에 직접 속성을 전달할 수도 있다.
 
 일단 속성을 컴포넌트에 전달하면, 그 컴포넌트 내에서 속성값을 절대로 변경해서는 안된다. 속성의 변경을 시도하면 Uncaught TypeError가 발생한다. 이 규칙은 단방향 데이터 흐름의 일부이며 이는 갱신된 데이터는 부모 컴포넌트로부터 자식 컴포넌트로만 전달된다는 것을 의미한다.
 
 ### 3.2.3 속성 다루기: PropTypes와 기본 속성
+
 PropTypes API는 컴포넌트가 어떤 종류의 속성을 필요로 하는지를 명시하는 타입 확인 기능을 제공한다. 컴포넌트에서 PropTypes API를 사용하려면 클래스에 PropTypes라는 정적 속성을 추가해야 한다.
 
 컴포넌트의 클래스에 추가한 정적 속성의 이름은 소문자로 시작하는 반면, prop-types 라이브러리가 제공하는 객체의 이름은 대문자로 시작(PropTypes)한다는 점을 알 수 있다.
@@ -657,6 +659,7 @@ PropTypes API는 컴포넌트가 어떤 종류의 속성을 필요로 하는지�
 defaultProps라는 정적 속성을 추가하면 컴포넌트의 속성에 대한 기본값을 정의할 수 있다. 기본 속성을 이용하면 속성을 제공하지 않아도 정상 작동한다.
 
 ### 3.2.4 상태가 없는 함수형 컴포넌트
+
 오로지 속성만을 사용하는, 상태가 없는 함수형 컴포넌트(stateless functional component)를 지원한다.
 
 이 컴포넌트는 명명된 함수(named functions) 또는 변수에 대입한 익명 함수 표현식(anonymous function expression)을 이용해 생성한다. 속성만을 이용해 입력된 값에 따라 같은 값을 출력하기 때문에 기본적으로 순수(pure) 함수라고 할 수 있다.
@@ -666,7 +669,8 @@ defaultProps라는 정적 속성을 추가하면 컴포넌트의 속성에 대�
 지원 인스턴스를 가지고 있는 부모 컴포넌트와 조합하여 사용할 때 특히 그 진가를 발휘한다. 상태를 가진 하나의 부모 컴포넌트를 만들고 나머지 자식 컴포넌트들은 최대한 가볍게 구현할 수 있다. 이런 패턴은 리덕스를 이용해 작성할 수 있는데 컴포넌트는 최소한으로 구현하고 단 한 곳(store, 상태 저장소)에서 상태를 집중적으로 관리한다.
 
 ## 3.3 컴포넌트 간의 통신
-컴포넌트가 자식 컴포넌트를 소유할 수도 있고 한 컴포넌트가 어느 특정한 역할을 수행할 수도 있다. 
+
+컴포넌트가 자식 컴포넌트를 소유할 수도 있고 한 컴포넌트가 어느 특정한 역할을 수행할 수도 있다.
 
 통상적으로 생명주기가 긴 객체에 상태를 저장하고 이 상태를 애플리케이션의 여러 부분이 서로 공유하는 방식을 사용한다. 반면에 리액트는 다른 컴포넌트와 통신하기 위해서는 속성을 전달해야 하며, 속성을 전달할 때는 다음의 두 가지 사항을 염두해 두어야 한다.
 
@@ -674,7 +678,8 @@ defaultProps라는 정적 속성을 추가하면 컴포넌트의 속성에 대�
 - 필요한 데이터는 자식 컴포넌트에 전달한다.
 
 ## 3.4 단방향 데이터 흐름
-데이터 바인딩은 애플리케이션 UI와 다른 데이터 사이의 연결을 수립하는 과정이다. 실제로 이 과정은 라이브러리나 프레임워크가 모델(예를 들면 사용자) 같은 앱 데이터를 사용자 인터페이스에 연결하고 계속해서 동기화하는 과정이다. 둘이 동기화 하기 때문에 서로 결합(bind)하는 것이다. 이러한 과정을 프로젝션(projection)이라 할 수 있다. 데이터 바인딩은 데이터의 흐름, 즉 데이터가 애플리케이션의 각기 다른 영역으로 전달되는 방법으로 생각하면 된다. 
+
+데이터 바인딩은 애플리케이션 UI와 다른 데이터 사이의 연결을 수립하는 과정이다. 실제로 이 과정은 라이브러리나 프레임워크가 모델(예를 들면 사용자) 같은 앱 데이터를 사용자 인터페이스에 연결하고 계속해서 동기화하는 과정이다. 둘이 동기화 하기 때문에 서로 결합(bind)하는 것이다. 이러한 과정을 프로젝션(projection)이라 할 수 있다. 데이터 바인딩은 데이터의 흐름, 즉 데이터가 애플리케이션의 각기 다른 영역으로 전달되는 방법으로 생각하면 된다.
 
 리액트에서는 데이터의 흐름이 단방향이기 때문에 컴포넌트에 데이터를 전달할 수는 있지만, 속성을 전달하지 않고 다른 컴포넌트의 상태나 속성을 갱신할 수 없다. 또한, 부모 컴포넌트의 데이터를 수정할 수도 없다.
 
@@ -685,10 +690,13 @@ defaultProps라는 정적 속성을 추가하면 컴포넌트의 속성에 대�
 컴포넌트가 계층 구조를 가진다는 점과 더불어 속성과 상태가 컴포넌트 내에서 관리되므로 대부분의 경우 애플리케이션 내에서 데이터가 어떻게 이동하는지를 예측하기가 매우 수월하다.
 
 # Chapter 4. 리액트의 렌더링과 생명주기 메서드
+
 먼저 렌더링 과정은 리액트가 데이터를 사용자 인터페이스에 반영하는 과정이며, 생명주기 메서드를 이용해 컴포넌트와 상호작용하는 방법이다.
 
 ## 4.2 렌더링 과정과 생명주기 메서드
+
 ### 4.2.1 생명주기 메서드의 소개
+
 어떤 경우에는 이벤트 없이도 자동으로 작업을 수행해야하는데 그 지점이 생명주기 메서드이다. 생명주기 메서드는 클래스 기반 리액트 컴포넌트에 추가된 특별한 메서드로 컴포넌트의 생명주기 내의 특정 시점에 실행된다. 생명주기를 가진 컴포넌트는 컴포넌트가 동작을 시작하는 시점, 동작 중인 시점, 그리고 완료되는 시점인 수명을 표현하게 된다.
 
 - 마운팅(mounting) : 한번만 실행
@@ -698,6 +706,7 @@ defaultProps라는 정적 속성을 추가하면 컴포넌트의 속성에 대�
 렌더링은 리액트가 사용자 인터페이스를 만들고 관리하는 과정에서 수행하는 작업으로 애플리케이션을 화면에 그려내는 작업이다. 생명주기 메서드를 이용하면 이 과정을 가로챌 수 있다.
 
 ### 4.2.2 생명주기 메서드의 종류
+
 생명주기 메서드는 크게 두 가지가 있다.
 
 - Will 메서드: 어떤 작업이 실행되기 직전에 호출된다.
@@ -713,12 +722,14 @@ defaultProps라는 정적 속성을 추가하면 컴포넌트의 속성에 대�
 - 갱신: 컴포넌트가 상태나 속성으로 전달된 새 데이터에 의해 갱신되는 시점
   - ~~componentWillReceiveProps(nextProps)~~, shouldComponentUpdate(nextProps, nextState), ~~componentWillUpdate(nextProps, nextState)~~, componentDidUpdate(prevProps, prevState, snapshot), getDerivedStateFromProps(nextProps, nextState), getSnapshotBeforeUpdate(prevProps, prevState)
 - 언마운팅: 컴포넌트가 DOM에서 제거되는 시점
+
   - componentWillUnmount()
 
 - 수집되지 않은 에러들
   - componentDidCatch(error, errorInfo)
 
 ### 4.2.3 초기 데이터
+
 컴포넌트의 초기 데이터를 제공하기 위한 것들은 다음 두 속성이다.
 
 - defaultProps: 컴포넌트의 기본 속성값을 제공하기 위한 정적인 속성이다. 부모 컴포넌트가 속성을 제공하지 않은 경우 this.props에 기본적으로 설정되며, 컴포넌트가 마운트 되기 전이어서 this.props나 this.state를 사용할 수 없을 때 호출한다. 정적 속성이므로 인스턴스가 아닌 클래스에서 접근한다.
@@ -727,7 +738,8 @@ defaultProps라는 정적 속성을 추가하면 컴포넌트의 속성에 대�
 최초 상태와 속성의 설정은 constructor 메서드에서 설정하며 이 또한 컴포넌트의 생명주기에 속한다.
 
 ### 4.2.4 컴포넌트의 마운팅
-마운팅은 리액트가 컴포넌트를 실제 DOM에 삽입하는 과정이다. 
+
+마운팅은 리액트가 컴포넌트를 실제 DOM에 삽입하는 과정이다.
 
 마운팅 메서드를 이용하면 컴포넌트의 수명이 시작되는 시점과 끝나는 시점을 '가로챌' 수 있으며, 오직 한 번만 호출된다. 마운팅이 완료되면 비로소 컴포넌트가 동작할 '준비'가 되며, 이 시점에서 HTTP 호출이나 쿠키를 읽는 작업 등을 수행할 수 있다. 또한, 이 시점부터는 'ref'라 부르는 참조를 이용해 DOM 요소에도 접근할 수 있다.
 
@@ -744,11 +756,12 @@ render 같은 다른 메서드 내에서 핸들러나 함수를 실행하면 리
 모든 자식 컴포넌트들은 부모 컴포넌트의 마운팅이 완료되기 전에 생성되어야 한다.
 
 ### 4.2.5 갱신 메서드
+
 컴포넌트가 마운트되어 DOM에 위치하게 되면 컴포넌트는 자신의 상태를 갱신할 수 있다. this.setState 메서드를 이용하면 얕은 병합 기법을 이용해 데이터를 컴포넌트의 상태에 반영할 수 있지만, 실제 갱신 과정에서는 이보다 더 많은 일이 일어난다.
 
-- ~~componentWillReceiveProps(nextProps)~~ *v16.3 이후 제거*
+- ~~componentWillReceiveProps(nextProps)~~ _v16.3 이후 제거_
 
-- getDerivedStateFromProps(nextProps, nextState) *v16.3 이후 추가*
+- getDerivedStateFromProps(nextProps, nextState) _v16.3 이후 추가_
 
   > props로 받아 온 값을 state에 동기화시키는 용도로 사용, 컴포넌트를 마운트하거나 props를 변경할 때 호출
 
@@ -756,9 +769,9 @@ render 같은 다른 메서드 내에서 핸들러나 함수를 실행하면 리
 
   > 특별히 명시하지 않으면 true를 리턴하지만 false를 리턴하면 다음에 다시 상태가 변경될 때까지 render() 메서드를 실행하지 않는다. 즉, 불필요하게 갱신되는 상황을 방지할 수 있다. componentWillUpdate와 componentDidUpdate 메서드는 호출되지 않는다. 앱의 성능을 튜닝하고자 할 때 사용한다.
 
-- ~~componentWillUpdate(nextProps, nextState)~~ *v16.3 이후 제거*
+- ~~componentWillUpdate(nextProps, nextState)~~ _v16.3 이후 제거_
 
-- getSnapshotBeforeUpdate(prevProps, prevState) *v16.3 이후 추가*
+- getSnapshotBeforeUpdate(prevProps, prevState) _v16.3 이후 추가_
 
   > render 메서드를 호출한 후 DOM에 변화를 반영하기 바로 직전에 호출하는 메서드
 
@@ -766,7 +779,7 @@ render 같은 다른 메서드 내에서 핸들러나 함수를 실행하면 리
 
   > 리렌더링이 완료한 후 실행한다. 업데이트가 끝난 직후이므로, DOM 관련 처리를 해도 무방하며 getSnapshotBeforeUpdate에서 반환한 값이 있다면 snapshot 값을 전달 받을 수 있다.
 
-shouldComponentUpdate는 어떤 이유로든 리액트가 제공하는 메서드들로 충분하지 않은 경우에만 사용해야 한다. 
+shouldComponentUpdate는 어떤 이유로든 리액트가 제공하는 메서드들로 충분하지 않은 경우에만 사용해야 한다.
 
 ### 4.2.6 언마운팅 메서드
 
@@ -784,63 +797,197 @@ shouldComponentUpdate는 어떤 이유로든 리액트가 제공하는 메서드
 
 # Chapter 5. 폼 다루기
 
+## 5.1 React에서 폼을 다루기 위한 권장 방법
 
+1. render()에서 상태 값을 이용해 엘리먼트를 정의한다.
+2. onChange를 이용해서 폼 요소에 발생하는 변경 사항을 감지한다.
+3. 이벤트 핸들러에서 내부 상태를 갱신한다.
+4. 새로운 값이 상태에 저장되면 새로운 render()가 실행되어 뷰를 갱신한다.
+
+```javascript
+//...
+handleChange = (e) => {
+  this.setState({title: event.target.value})
+}
+render() {
+  return <input type = "text" name = "title" value = {this.state.title} onChange = {this.handleChange}
+}
+```
+
+### 5.1.1 React에서 폼과 이벤트 정의하기
+
+React DOM 이벤트와 함께, 폼 요소를 위한 다음 이벤트를 지원한다.
+
+- onChange: 폼의 입력 요소에 변경이 생기면 발생한다.
+- onInput: <textarea>, <input> 요소의 값이 변경될 때 발생한다. 그러나 onInput 이벤트의 네이티브 구현에 접근해야 하는 경우에만 사용을 권장한다.
+- onSubmit: 폼 제출 시 또는 Enter를 눌렀을 때 발생한다.
+- onKeyUp: Enter를 눌러 폼을 제출하는 기능을 구현할 때 사용한다. (Enter의 KeyCode 값은 13)
+
+cf. React의 onChange 이벤트는 모든 새로운 입력에 대해 발생하나 DOM의 onChange 이벤트는 요소가 포커스를 잃었을 때만 발생하고 이는 React의 onInput과 유사하다.
+
+```javascript
+// onSubmit을 이용한 방법
+handleSubmit = (e) => {
+  //...
+}
+
+render(){
+  return <form onSubmit = {this.handleSubmit}>
+    <input type="text" name="email"/>
+  </form>
+}
+
+// KeyUp을 이용한 방법
+handleKeyUp = (e) => {
+  if (e.keyCode == 13) return this.sendData()
+}
+
+render(){
+  return <form onKeyUp = {this.handleKeyUp}>
+    <input type="text" name="email"/>
+  </form>
+}
+```
+
+### 5.1.2 폼 요소 정의하기
+
+기본적으로 React는 속성을 변경할 수 없으나 폼 요소는 사용자가 폼 요소와 상호작용하면서 속성을 변경할 수 있다. 이러한 속성을 대화형 속성이라 한다.
+
+**대화형 속성(interactive properties)**
+
+- value: <input>, <textarea>, <select>에 적용된다.
+- checked: <input>에 type="checkbox" 또는 type="radio"인 경우 적용된다.
+- selected: <select>와 함께 <option>을 사용할 때 적용된다.
+
+## 7.2 폼을 다루는 다른 방법
+
+복잡한 사용자 입력과 조작이 많은 UI 요소를 만드는 경우가 아니라면 비제어 패턴을 사용하는 것을 고려해볼 만하다. 즉, value 속성을 설정하지 않는 것이다.
+
+비제어 컴포넌트는 뷰의 DOM 상태와 React의 내부 상태에 차이가 있을 수 있따는 점을 들어 비제어 컴포넌트를 권장하지 않는다. 그러나 서버에 전달할 간단한 폼을 만들 때는 비제어 컴포넌트가 좋다.
+
+일반적으로 비제어 컴포넌트를 사용하려면 폼에서 제출 이벤트를 정의해야 한다. 보통 버튼에 onClick 이벤트나 폼의 onSubmit 이벤트를 사용한다. 이벤트 핸들러를 추가한 뒤에는 두 가지 방법 중에 선택할 수 있다.
+
+- 제어 엘리먼트를 사용할 때처럼 변경을 감지하여 상태에 저장하지만, 상태를 value에 사용하지 않고 제출 시에만 사용하는 방식
+
+```javascript
+class Content extends React.Component {
+  state = { textbook: "" };
+
+  handleChange = e => {
+    console.log(e.target.value);
+    this.setState({ textbook: event.target.value });
+  };
+  render() {
+    return (
+      <div>
+        <input
+          type="text"
+          onChange={this.handleChange}
+          placeholder="Eloquent TypeScript: Myth or Reality"
+        />
+        <br />
+        <span>{this.state.textbook}</span>
+      </div>
+    );
+  }
+}
+```
+
+- 변경을 감지하지 않는 방식
+  
+> 변경을 감지하지 않으면 데이터는 DOM에 그대로 남는다 . 데이터를 JS 객체로 가져오려면 refs를 통해 참조로 값에 접근해야 한다. 참조를 사용하면 React 컴포넌트의 DOM 요소 또는 노드를 가져올 수 있다. 변경을 감지하지 않고 폼 요소의 값을 가져와야 할 때 유용하다. 참조를 사용하려면 다음 두 가지 작업이 필요하다.
+  
+  - render 메서드에서 반환하는 엘리먼트의 ref 속성에 문자열을 전달하는 경우 카멜 표기법으로 작성되어 있어야 한다.
+- 지정한 이름으로 다른 메서드에서 DOM 인스턴스를 접근한다.
+  
+  ```javascript
+  class Content extends React.Component {
+  prompt = "Please enter your email to win $4.";
+  
+    submit = e => {
+      let emailAddress = this.refs.emailAddress;
+      let comments = this.refs.comments;
+      console.log(ReactDOM.findDOMNode(emailAddress).value);
+      console.log(ReactDOM.findDOMNode(comments).value);
+  };
+  
+    render() {
+      return (
+        <div className="well">
+          <p>{this.prompt}</p>
+          <div className="from-group">
+            Email: <input ref="emailAddress" className="form-control" type="text"
+            placeholder="hi@azat.co" />
+          </div>
+          <div className="form-group">
+            Comments: <textarea ref="comments" className="form-control" placeholder="I like your website!"/>
+          </div>
+          <div className="form-group">
+            <a className="btn btn-primary" value="Submit" onClick={this.submit}>Submit</a>
+          </div>
+        </div>
+      );
+    }
+  }
+  ```
+
+##
 
 # Redux
 
-리덕스는 리액트에서 많이 사용되는 상태 관리 라이브러리이다.  기존 방식으로는 여러 컴포넌트를 거쳐 상태를 전달할 수 있는데 컴포넌트의 갯수가 많아지면 비효율적이 되기에 이 때는 Redux를 사용하는 것이 좋다. 
+리덕스는 리액트에서 많이 사용되는 상태 관리 라이브러리이다. 기존 방식으로는 여러 컴포넌트를 거쳐 상태를 전달할 수 있는데 컴포넌트의 갯수가 많아지면 비효율적이 되기에 이 때는 Redux를 사용하는 것이 좋다.
 
-상태 변화를 일으킬 때 참조하는 객체인 **액션**을 상태를 보관하는 객체인 **스토어**에 전달(**디스패치**)한다. 스토어 내부에 있는 **리듀서**를 통해 전달 받은 액션에 맞춰 스토어의 상태를 변경시킨다. 이때 변경이 발생하면 스토어와 연결(**구독**)된 컴포넌트 내의 특정 함수를 실행하도록 한다. 
+상태 변화를 일으킬 때 참조하는 객체인 **액션**을 상태를 보관하는 객체인 **스토어**에 전달(**디스패치**)한다. 스토어 내부에 있는 **리듀서**를 통해 전달 받은 액션에 맞춰 스토어의 상태를 변경시킨다. 이때 변경이 발생하면 스토어와 연결(**구독**)된 컴포넌트 내의 특정 함수를 실행하도록 한다.
 
 ## 액션
 
-*액션 생성 함수*
+_액션 생성 함수_
 
 ```javascript
-const INCREMENT = 'INCREMENT';
-const DECREMENT = 'DECREMENT';
+const INCREMENT = "INCREMENT";
+const DECREMENT = "DECREMENT";
 
-const increment = (diff) => ({
-    type: INCREMENT,
-    diff: diff
+const increment = diff => ({
+  type: INCREMENT,
+  diff: diff
 });
 
-const decrement = (diff) => ({
-    type: DECREMENT,
-    diff: diff
+const decrement = diff => ({
+  type: DECREMENT,
+  diff: diff
 });
 ```
 
 ## 리듀서
 
-리듀서의 첫 번째 파라미터는 현재 상태고, 두 번째 파라미터는 액션 객체이다.  state를 직접 수정하면 안되기에 중첩하는 방식으로 값을 변경한다. 
+리듀서의 첫 번째 파라미터는 현재 상태고, 두 번째 파라미터는 액션 객체이다. state를 직접 수정하면 안되기에 중첩하는 방식으로 값을 변경한다.
 
-*reducer*
+_reducer_
 
 ```javascript
 // 초기 상태 설정
 const initalState = {
-    number: 1,
-    foo: 'bar',
-    baz: 'qux'
+  number: 1,
+  foo: "bar",
+  baz: "qux"
 };
 
 // 리듀서
 function counter(state = initialState, action) {
-    switch(action.type) {
-        case INCREMENT:
-            return {
-                ...state,
-                number:state.number + action.diff
-            };
-        case DECREMENT:
-            return {
-                ...state,
-                number:state.number - action.diff
-            };
-        default:
-            return state;
-    }
+  switch (action.type) {
+    case INCREMENT:
+      return {
+        ...state,
+        number: state.number + action.diff
+      };
+    case DECREMENT:
+      return {
+        ...state,
+        number: state.number - action.diff
+      };
+    default:
+      return state;
+  }
 }
 
 export default counter;
@@ -848,7 +995,7 @@ export default counter;
 
 ## 스토어
 
-*store*
+_store_
 
 ```javascript
 import counter from 파일 경로;
@@ -859,4 +1006,3 @@ const {createStore} = Redux;
 
 const store = createStore(counter)
 ```
-
