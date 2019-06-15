@@ -1,4 +1,4 @@
-# chapter. 04 - 정규화
+# chapter 04. 정규화
 
 ## section 77. 이상(Anomaly)
 ### 1. 이상(Anomaly)의 개념

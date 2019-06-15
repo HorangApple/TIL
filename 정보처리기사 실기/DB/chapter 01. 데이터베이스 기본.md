@@ -1,4 +1,4 @@
-# chapter. 01 - DB 기본
+# chapter 01. DB 기본
 
 [TOC]
 

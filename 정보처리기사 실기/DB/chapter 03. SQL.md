@@ -1,4 +1,4 @@
-# chapter. 03 - SQL
+# chapter 03. SQL
 
 ## section 69. SQL - DDL
 

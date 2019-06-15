@@ -1,4 +1,4 @@
-# chapter. 02 - RDB와 관계 연산
+# chapter 02. RDB와 관계 연산
 
 [TOC]
 
