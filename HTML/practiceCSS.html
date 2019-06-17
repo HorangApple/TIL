@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      /* 동위선택자 */
+      h1 + h2 {
+        color: red;
+      }
+      h1 ~ h2 {
+        background-color: orange;
+      }
+      /* 반응선택자 */
+      h1:hover {
+        color:red;
+      }
+      h1:active{
+        color:blue;
+      }
+      /* 상태선택자 */
+      input:enabled{
+        background-color: white;
+      }
+      input:disabled{
+        background-color: gray;
+      }
+      input:focus{
+        background-color: orange;
+      }
+      /* 상태선택자+동위선택자 */
+      input[type=checkbox]:checked + div {
+        height:0px;
+      }
+      div{
+        overflow: hidden;
+        width:650px; height: 300px;
+
+        -ms-transition-duration:1s;
+        -webkit-transition-duration: 1s;
+        -moz-transition-duration: 1s;
+        transition-duration: 1s;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Header-1</h1>
+    <h2>Header-2</h2>
+    <h3>Header-2</h3>
+    <h2>Header-2</h2>
+    <h2>Header-2</h2>
+
+    <p>Enabled</p>
+    <input/>
+    <p>Disabled</p>
+    <input disabled="disabled" />
+
+    <input type="checkbox">
+    <div>
+      <h1>Lorem ipsum</h1>
+      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Qui vel, totam mollitia maxime error corrupti deserunt libero ipsam eos corporis assumenda sunt nam, consectetur animi doloremque nulla similique iure recusandae!</p>
+    </div>
+  </body>
+</html>

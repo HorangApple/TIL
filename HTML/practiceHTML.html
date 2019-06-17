@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- 페이지 내부이동 -->
+    <a href="#alpha">Move to alpha</a>
+    <a href="#beta">Move to beta</a>
+    <hr />
+    <h1 id="alpha">alpha</h1>
+    <p>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+      Lorem Ipsum has been the industry's standard dummy text ever since the
+      1500s, when an unknown printer took a galley of type and scrambled it to
+      make a type specimen book. It has survived not only five centuries, but
+      also the leap into electronic typesetting, remaining essentially
+      unchanged. It was popularised in the 1960s with the release of Letraset
+      sheets containing Lorem Ipsum passages, and more recently with desktop
+      publishing software like Aldus PageMaker including versions of Lorem
+      Ipsum.
+    </p>
+    <h1 id="beta">beta</h1>
+    <p>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+      Lorem Ipsum has been the industry's standard dummy text ever since the
+      1500s, when an unknown printer took a galley of type and scrambled it to
+      make a type specimen book. It has survived not only five centuries, but
+      also the leap into electronic typesetting, remaining essentially
+      unchanged. It was popularised in the 1960s with the release of Letraset
+      sheets containing Lorem Ipsum passages, and more recently with desktop
+      publishing software like Aldus PageMaker including versions of Lorem
+      Ipsum.
+    </p>
+    <hr />
+
+    <!-- 글자형태 -->
+    <p>Lorem Ipsum <b>is simply dummy</b></p>
+    <p>Lorem Ipsum <i>is simply dummy</i></p>
+    <p>Lorem Ipsum <small>is simply dummy</small></p>
+    <p>Lorem Ipsum <sub>is simply dummy</sub></p>
+    <p>Lorem Ipsum <sup>is simply dummy</sup></p>
+    <p>Lorem Ipsum <ins>is simply dummy</ins></p>
+    <p>Lorem Ipsum <del>is simply dummy</del></p>
+    <hr />
+
+    <!-- 루비 문자 -->
+    <ruby>
+      <span>대한민국</span>
+      <rp>(</rp>
+      <rt>화이팅</rt>
+      <rp>)</rp>
+    </ruby>
+    <hr />
+
+    <!-- 정의목록 -->
+    <dl>
+      <dt>HTML5</dt>
+      <dd>Milk</dd>
+      <dd>Animation</dd>
+    </dl>
+    <hr />
+
+    <!-- 테이블 -->
+    <table border="1">
+      <caption>
+        Table
+      </caption>
+      <colgroup>
+        <col span="1" style="background: red" />
+        <col style="background: blue" />
+      </colgroup>
+      <thead style="background: green">
+        <tr>
+          <th colspan="2">Header 1</th>
+          <th rowspan="2">Header 2</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Data 1</td>
+          <td rowspan="2">Data 1</td>
+        </tr>
+        <tr>
+          <td>Data 2</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>Footer 1</td>
+          <td>Footer 2</td>
+        </tr>
+      </tfoot>
+    </table>
+    <hr />
+
+    <!-- placehold.it -->
+    <img src="http://placehold.it/300x200" />
+    <img src="http://placehold.it/200x150" />
+    <img src="http://placehold.it/100x100" />
+    <hr />
+
+    <!-- 오디오 태그 -->
+    <audio src="kalimba.mp3" controls="controls"></audio>
+    <audio controls="controls">
+      <source src="kalimba.mp3" type="audio/mp3" />
+      <source src="kalimba.ogg" type="audio/ogg" />
+    </audio>
+    <hr />
+
+    <!-- 비디오 태그 -->
+    <video
+      poster="http://placehold.it/640x360"
+      width="640"
+      height="360"
+      controls="controls"
+    >
+      <source src="Wildlife.mp4" type="video/mp4" />
+      <source src="Wildlife.webm" type="video/webm" />
+    </video>
+    <!-- IE8은 video 태그가 동작하지 않아 video.js 플러그인을 사용해야한다. -->
+    <hr />
+
+    <!-- input 태그 -->
+    <form>
+      <input type="color" /><br />
+      <input type="date" /><br />
+      <input type="datetime" /><br />
+      <input type="datetime-local" /><br />
+      <input type="email" /><br />
+      <input type="month" /><br />
+      <input type="number" /><br />
+      <input type="range" /><br />
+      <input type="search" /><br />
+      <input type="tel" /><br />
+      <input type="time" /><br />
+      <input type="url" /><br />
+      <input type="week" /><br />
+    </form>
+    <hr />
+
+    <!-- select 태그 -->
+    <select multiple="multiple">
+      <option>김밥</option>
+      <option>떡볶이</option>
+      <option>순대</option>
+    </select>
+
+    <select>
+      <optgroup label="HTML5">
+        <option>Multimedia Tag</option>
+        <option>Connectivity</option>
+      </optgroup>
+      <optgroup label="CSS3">
+        <option>Animation</option>
+        <option>3D Transform</option>
+      </optgroup>
+    </select>
+    <!-- 이쁘지가 않아 보통 자바스크립트로 구현한다. -->
+    <hr />
+
+    <!-- fieldset 태그와 legend 태그 -->
+    <form>
+      <fieldset>
+        <legend>입력 양식</legend>
+        <table>
+          <tr>
+            <td><label for="name">이름</label></td>
+            <td><input type="text" id="name"></td>
+          </tr>
+          <tr>
+            <td><label for="mail">이메일</label></td>
+            <td><input type="email" id="mail"></td>
+          </tr>
+        </table>
+        <input type="submit">
+      </fieldset>
+    </form>
+    <hr/>
+
+  </body>
+</html>
