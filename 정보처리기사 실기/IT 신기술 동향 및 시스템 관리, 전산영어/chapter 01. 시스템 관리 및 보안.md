@@ -1,10 +1,12 @@
 # chapter 01. 시스템 관리 및 보안
 
+[TOC]
+
 ## section 100. 정보 보안 및 암호화 - A
-**보안의 정의**
+### 보안의 정의 
 > 컴퓨터 시스템 및 컴퓨터에 저장된 정보들을 일부분 또는 전체에 대하여 권하이 없는 외부의 불법적인 침입이나 변경, 파괴로부터 보호하는 것을 의미한다.
 
-**보안 요건**
+### 보안 요건 
 - 기밀성(Confidentiality)
 - 무결성(Integrity)
 - 가용성(Availability)
@@ -12,324 +14,324 @@
 - 부인 방지(Non Repudiation)
 - 접근 통제(Access Control)
 
-**보안 위협의 유형**
+### 보안 위협의 유형 
 - 가로막기(Interruption)
 - 가로채기(Interception)
 - 수정(Modification)
 - 위조(Fabrication)
 
-**인증(Authentication)**
+### 인증(Authentication)
 > 시스템이 단말 작동 개시(log-on) 정보를 확인하는 보안 절차이다. 접속해 오는 사용자가 등록된 사용자인지 확인하는 것과 송신자가 보낸 그대로의 것인지를 확인하는 것이 있다.
 
-**개인키 암호화(Private Key Encryption) 기법**
+### 개인키 암호화(Private Key Encryption) 기법 
 > 동일한 키로 데이터를 암호화하고 복호화한다.
 
 - 종류 : 전위 깁법, 대체 기법 등이 있으며, 대표적으로 DES(Data Encryption Standartd) 기법이 있다.
 - 장점 : 암호화/복호화 속도가 빠르며, 알고리즘이 단순하고, 파일의 크기가 공개키 암호 기법보다 작다.
 - 단점 : 사용자의 증가에 따라 관리해야 할 키의 수가 상대적으로 많아진다.
 
-**공개키 암호화(Public Key Encryption) 기법**
+### 공개키 암호화(Public Key Encryption) 기법 
 > 암호화할 때 사용하는 공개키(Public Key)는 DB 사용자에게 공개하고, 복호화할 때의 비밀키(Secret Key)는 관리자가 비밀리에 관리한다.
 
 - 비대칭 암호 기법이라고도 하며, 대표적으로는 RSA(Rivest Shamir Adleman) 기법이 있다.
 - 장점 : 키의 분배가 용이하고, 관리해야 할 키의 개수가 작다.
 - 단점 : 암호화/복호화 속도가 느리며, 알고리즘이 복잡하고, 개인키 암호화 기법보다 파일의 크기가 크다.
 
-**DES(Data Encryption Standard; 데이터 암호 표준)**
+### DES(Data Encryption Standard; 데이터 암호 표준)
 > 데이터 암호화 표준으로, 대표적인 비밀키 암호화 기법이다. 암호화 키와 복호화 키가 동일한 특징을 가지며, 3개의 키를 연속해 놓은 트리플 DES가 많이 사용된다.
 
-**순차적 암호화(OPE; Order Preserving Encryption)**
+### 순차적 암호화(OPE; Order Preserving Encryption)
 > 암호화된 수치 데이터들이 원본 수치 데이터와 동일한 순서로 정렬될 수 있도록 해주는 암호화 기술이다.
 
 - 검색 속도 저하를 극복할 수 있으나 순서 자체가 중요한 정보가 될 수 있어 안정성을 보완해 줄 기술 보안 장치와 함께 사용된다.
 
-**공개키 기반 구조(PKI; Public Key Infrastructure)**
+### 공개키 기반 구조(PKI; Public Key Infrastructure)
 > 공개키 암호 시스템을 안전하게 사용하고 관리하기 위한 정보 보호 표준 방식으로 ITU-T의 X.509 방식과 비 X.509 방식으로 구분되며, 전자는 인증서를 기반으로 상호 인증을 제공하였고 후자는 국가별, 지역별로 맞게 보완 개발되고 있다.
 
-**양자 암호키 분해(QKD; Quantum Key Distribution)**
+### 양자 암호키 분해(QKD; Quantum Key Distribution)
 > 양자 통신을 위해 비밀키를 분배하고 관리하는 기술로, 키 분배를 위해 얽힘(Entanglement) 상태 광자 또는 단일 광자를 이용하는 방법을 사용한다.
 
 ## section 101. 보안 관리
-**프라이버시 강화 기술(PET; Privacy Enhancing Technology)**
+### 프라이버시 강화 기술(PET; Privacy Enhancing Technology)
 > 개인정보를 보호하는 기술에서 사용자가 직접 개인정보를 통제하기 위한 기술까지 다양한 사용자 프라이버시 보호기술을 통칭힌다.
 
-**Digital Forensics**
+### Digital Forensics
 > 디지털 저장매체에 존재하는 디지털 정보를 수집하는 디지털 수사 과정을 말한다.
 
-**DRM(Digital Right Management, 디지털 저작권 관리)**
+### DRM(Digital Right Management, 디지털 저작권 관리)
 > 디지털 매체를 통해 유통되는 데이터의 저작권을 보호하기 위한 시스템이다.
 
-**ONS(Object Naming Service)**
+### ONS(Object Naming Service)
 > 사물에 관한 구체적인 정보가 저장되어 있는 서버의 위치를 알려주는 서비스이다. 제품의 다양한 정보는 RFID 태그에 내장되어 있는 제품의 고유 번호 표준인 EPC(Electronic Product Code)를 통해 저장된다.
 
-**침입 탐지 시스템(IDS; Intrusion Detection System)**
+### 침입 탐지 시스템(IDS; Intrusion Detection System)
 > 컴퓨터 시스템의 비정상적인 사용, 오용, 남용 등을 실시간으로 탐지하는 시스템이다. 모든 내,외부 정보의 흐름을 실시간으로 차단하기 위해 해커 침입 패턴에 대한 추적과 유해 정보 감시가 필요하다.
 
-**RFID(Radio Frequency IDentification, 전파 식별)**
+### RFID(Radio Frequency IDentification, 전파 식별)
 > 라디오 주파수 인식 기술로서, 저장 용량도 크고 직접 접촉을 하거나 가시대역 상에 스캐닝할 필요가 없고, 하나의 RF 판독기는 1초에 수백 개까지 RF 태그가 부착된 제품의 데이터를 읽어 들일 수 있다.
 
-**Copyright(저작권)**
+### Copyright(저작권)
 > 원저작물의 창작자가 저작물의 사용과 배포에 있어 일반적으로 제한된 시간 동안 배타적 권리를 인정하는 법적인 권리이다.
 
-**Copyleft**
+### Copyleft
 > Copyright와 다르게 지식이나 정보가 독점되어서는 안되며 누구나 지식이나 정보에 접근할 수 있도록 열려 있어야 한다는 주장이다.
 
-**데이터 유출 방지(DLP; Data Leakage/Loss Prevention)**
+### 데이터 유출 방지(DLP; Data Leakage/Loss Prevention)
 > 내부정보 유출 방지 솔루션이며 사내 직원이 사용하는 PC, 네트워크 상의 모든 정보를 검색하고 사용자의 행위를 탐지, 통제한다.
 
-**CC(Common Criteria, 공통 평가 기준)**
+### CC(Common Criteria, 공통 평가 기준)
 > 정보화 순기능 역할을 보장하기 위해 정보화 제품의 정보보호 기능과 이에 대한 사용 환경 등급을 정한 기준이다.
 
-**SSL(Secure Sockets Layer)**
+### SSL(Secure Sockets Layer)
 > TCP/IP 계층과 애플리케이션 계층(HTTP, TELNET, FTP 등) 사이에 위치하여 인증, 암호화, 무결성을 보장하는 업계 표준 프로토콜이다. 전송되는 데이터는 모두 암호화되어 전속하기 때문에 전송 도중 유출되어도 안전하다.
 
-**프록시 서버(Proxy Server)**
+### 프록시 서버(Proxy Server)
 > PC 사용자와 인터넷 사이에서 중개자 역할을 하는 서버로 크게 방화벽 기능과 캐시 기능을 수행한다.
 
-**HDCP(High-bandwidth Digital Content Protection, 고대역폭 디지털 콘텐츠 전송 보호)**
+### HDCP(High-bandwidth Digital Content Protection, 고대역폭 디지털 콘텐츠 전송 보호)
 > 디지털 비주얼 인터페이스(DVI) 송,수신간 고대역폭의 비디오 암호화 전송을 보호하기 위한 규격이다.
 
-**빅데이터(Big Data)**
+### 빅데이터(Big Data)
 > 기존 방식으로 처리하기 어려운 막대한 양의 정형 또는 비정형 데이터 집합이다.
 
-**CCL(Creative Commons License, 저작물 이용 약관)**
+### CCL(Creative Commons License, 저작물 이용 약관)
 > 저작권자가 자신의 저작물에 대한 이용방법 및 조건을 표기하는 저작물 이용 약관이다. 저작자표시, 비영리, 변경금지, 동일조건변경허락의 4가지로 분류된다.
 
-**개인정보 영향평가 제도(PIA; Privacy Impact Assessment)**
+### 개인정보 영향평가 제도(PIA; Privacy Impact Assessment)
 > 개인 정보를 활용하는 새로운 정보시스템 도입 및 기존 정보시스템의 중요한 변경 시 미칠 영향에 대해 미리 조사, 분석, 평가하는 제도이다. 개인정보보호법에 의하여 공공기관은 의무화되어 있다.
 
-**목표 복구 시점(RPO; Recovery Point Objective)**
+### 목표 복구 시점(RPO; Recovery Point Objective)
 > 재난 상황을 예방으로 필요한 데이터를 여러 백업 수단을 활용하여 복구할 수 있는 기준점을 말한다.
 
-**인터넷 제어 메시지 프로토콜(ICMP; Internet Control Message Protocol)**
+### 인터넷 제어 메시지 프로토콜(ICMP; Internet Control Message Protocol)
 > IP와 조합하여 통신 중에 발생하는 오류의 처리와 전송 경로의 변경 등을 위한 제어 메시지를 취급하는 프로토콜이다. ICMP는 OSI 기본 참조 모델의 네트워크층에 해당한다.
 
-**WEP(Wired Equivalent Privacy, 유선급 프라이버시)**
+### WEP(Wired Equivalent Privacy, 유선급 프라이버시)
 > 유선망의 보안 수준에 맞추어 유사한 보안 대책으로 데이터를 암호화한 것이다.
 
-**WAP(Wi-Fi Protected Access)**
+### WPA(Wi-Fi Protected Access)
 > 무선 랜(WLAN) 인증 및 암호화 관련 표준이다. 패킷 당 키할당 기능, 키 값 재설정 등 다양한 기능이 있기 때문에 해킹이 불가능하고 네트워크에 접근할 때 인증 절차를 요구한다.
 
-**IP 보안 프로토콜(IPSec; IP Security protocol)**
+### IP 보안 프로토콜(IPSec; IP Security protocol)
 > 안전한 인터넷 통신을 실현하기 위한 통신 규약이다. 사용자 측 단말기에 탑재할 수 있으며, 인터넷을 거쳐 특정 클라이언트와 서버만이 IPSec로 데이터를 주고 받을 수 있다.
 
-**OTP(One-Time Password, 일회용 패스워드)**
+### OTP(One-Time Password, 일회용 패스워드)
 > 로그인 할 때마다 그 세션에서만 사용할 수 있는 1회성 패스워드를 생성하는 보안 시스템이다.
 
-**SSO(Single Sign On)**
+### SSO(Single Sign On)
 > 한 번의 로그인으로 개인이 가입한 모든 사이트를 이용할 수 있게 해주는 시스템이다.
 
-**공인인증서(Certificate)**
+### 공인인증서(Certificate)
 > 전자 서명법에 의한 공인 인증 기관이 발행한 인증서이다.
 
-**생체 인식(Biometrics)**
+### 생체 인식(Biometrics)
 > 사람의 신체적, 행동적 특징을 자동화된 장치로 추출하고 분석하여 정확하게 개인의 신원을 확인하는 기술이다.
 
-**인터넷 개인식별번호(i-PIN, internet Personal Identification Number)**
+### 인터넷 개인식별번호(i-PIN, internet Personal Identification Number)
 > 인터넷에서 주민등록번호 대신 쓸 수 있도록 만든 사이버 주민등록번호이다.
 
-**BCP(Business Continuity Planning, 업무 연속성 계획)**
+### BCP(Business Continuity Planning, 업무 연속성 계획)
 > 재난 발생 시 비즈니스의 연속성을 유지하기 위한 계획이다. 데이터 백업과 같은 단순 복구뿐만 아니라 고객 서비스의 지속성 보장, 핵심 업무 기능을 지속하는 환경을 조성해 기업 가치를 극대화하는 것을 말한다. 컨설팅 -> 시스템 구축 -> 시스템 관리의 3단계로 이루어진다.
 
-**CRL(Certificate Revocation List, 인증서 폐기 목록)**
+### CRL(Certificate Revocation List, 인증서 폐기 목록)
 > 폐기된 인증서를 이용자들이 확인할 수 있도록 그 목록을 배포, 공표하기 위한 메커니즘이다.
 
-**EPC 클래스(EPC Class; Electronic Product Code Class)**
+### EPC 클래스(EPC Class; Electronic Product Code Class)
 > EPCglobal에서 정의하는 RFID 태그의 종류이다.
 
-**인증기관(Certification Authority)**
+### 인증기관(Certification Authority)
 > 인증 업무를 수행하는 제3자의 신뢰 기관이다. 보안기능을 제공하는 인증서에 대한 발급, 갱신, 폐지, 유효성 등의 검증 업무를 수행한다. 루트 인증기관으로 한국인터넷진흥원을, 하위 인증기관으로 금융결제원, 한국정보인증, 코스콤 등을, 인증서 발급 관련 등록업무 및 신분확인 업무를 담당하는 기관으로 등록대행기관(RA, 은행 등)을 두어 운영하고 있다.
 
-**SAM(Secure Application Module)**
+### SAM(Secure Application Module)
 > 카드 판독기 내부에 장착되어 카드와 단말기의 유효성을 인증하고 통신 데이터를 암호화하여 정보의 노출 방지 및 통신 메시지의 인증 및 검증을 하며, 또한 카드에서 이전된 전자적인 가치를 저장하기도 한다. 일반적으로 하드웨어 형태로 존재하지만 소프트웨어적인 형태로도 존재한다.
 
-**저작권라이선스 통합관리시스템(CLMS; Copyright License Management System)**
+### 저작권라이선스 통합관리시스템(CLMS; Copyright License Management System)
 > 정부가 디지털 저작물에 대한 체계적인 관리를 위해 추진하고 있는 시스템이다.
 
-**정부 개인식별번호(G-PIN; Goverment-Personal Identification Number)**
+### 정부 개인식별번호(G-PIN; Goverment-Personal Identification Number)
 > 정부가 추진하고 있는 주민등록번호 대체 수단이다.
 
-**키 페어(Key Pair)**
+### 키 페어(Key Pair)
 > 공개키 암호 알고리즘에 사용되는 개인키(Private Key)와 공개키(Public Key) 쌍을 말한다.
 
-**방화벽(Firewall)**
+### 방화벽(Firewall)
 > 기업이나 조직 내부의 네트워크와 인터넷 간에 전송되는 정보를 선별하여 수용, 거부, 수정하는 능력을 가진 보안 시스템이다.
 
-**소프트웨어 에스크로(임치)(Software Escrow)**
+### 소프트웨어 에스크로(임치)(Software Escrow)
 > 소프트웨어 개발자의 지식재산권을 보호하기 위해 소스 프로그램과 기술 정보 등을 제3의 기관에 보관하는 것이다.
 
-**마이핀(MY-PIN)**
+### 마이핀(MY-PIN)
 > 법적 근거 없는 주민번호 수집이 금지되면서 도입된 13자리의 무작위 번호이다. 온라인상에서 사용되는 아이핀과 달리 오프라인 상에서 주민번호를 대신하며, 개인 식별 정보가 전혀 포함되어 있지 않고, 유출될 경우 폐기가 가능하며, 연 5회 변경 가능에, 3년의 유효 기간을 갖는다.
 
-**자동 계정 생성 방지 기술(CAPTCHA)**
+### 자동 계정 생성 방지 기술(CAPTCHA)
 > 사람만이 풀 수 있는 문제를 제시해 봇(bot)을 차단하기 위해 만들어졌다.
 
-**지능형 사이버 위협 대응(CTI, Cyber Threat Intelligence)**
+### 지능형 사이버 위협 대응(CTI, Cyber Threat Intelligence)
 > 조직의 인프라와 지적 재산을 보호하기 위해 과거 조직 내부뿐만 아니라 외부의 다양한 정보들에 기초하여 각종 위협에 대응하는 방법을 말한다. 사이버 범죄, 사이버 행동주의(Cyber Activism), 지능형 지속 위협(APT)과 같은 영역의 동향과 기술적 발전을 연구하고 분석한다.
 
-**백업 방식**
+### 백업 방식
 - 전체 백업
 - 증분 백업(Incremental Backup) : 변경되거나 증가된 데이터만을 대상으로 백업을 수행하는 방식
     - 차별 증분(Differential Incremental) : 변화가 있는 데이터만 백업
     - 누적 증분(Cumulative Incremental) : 변경분을 누적하여 백업
 
-**트러스트존 기술(TrustZone technology)**
+### 트러스트존 기술(TrustZone technology)
 > ARM 사가 만든 일반 애플리케이션을 처리하는 일반 구역(normal world)과 보안이 필요한 애플리케이션을 처리하는 보안 구역(secure world)으로 분할하여 관리하는 하드웨어 기반의 보안 기술이다.
 
-**독싱(doxing)**
+### 독싱(doxing)
 > 'dropping docs', 즉 '문서를 떨어뜨리다'에서 파생된 용어로, 해킹하여 빼낸 정보를 온라인에 공개하는 행위를 의미한다.
 
-**독스웨어(doxware)**
+### 독스웨어(doxware)
 > 독싱과 랜섬웨어(ransomware)의 기능이 결합된 악성코드이다.
 
 ## section 102. 보안 위협의 구체적인 형태
 
-**Cyber Bullying(사이버 협박)**
+### Cyber Bullying(사이버 협박)
 > 개인이나 집단이 인터넷에서 상대에게 나타내는 적대 행위를 말한다.
 
-**DDoS(Distributed Denial of Service, 분산 서비스 거부 공격)**
+### DDoS(Distributed Denial of Service, 분산 서비스 거부 공격)
 > 여러 대의 장비를 이용하여 대량의 데이터를 한 곳의 서버에 집중적으로 전송함으로써, 특정 서버의 정상적인 기능을 방해하는 것을 말한다.
 
-**VoIP 보안 위협(VoIP Security Threat)**
+### VoIP 보안 위협(VoIP Security Threat)
 > 음성 패킷을 불법으로 수집 및 조합해 통화 내용을 재생하고 도청(Sniffing)하는 위협이다.
 
-**Ransomware(랜섬웨어)**
+### Ransomware(랜섬웨어)
 > 내부 문서나 파일 등을 임의로 암호화해 사용자가 열지 못하도록 만든 후 암호 해독용 프로그램의 전달을 조건으로 사용자에게 돈을 요구하기도 한다.
 
-**디지털 발자국(Digital Footprint)**
+### 디지털 발자국(Digital Footprint)
 > 사람들이 온라인 활동을 하면서 남긴 다양한 디지털 기록 또는 흔적을 말한다.
 
-**워터링 홀(Watering Hole)**
+### 워터링 홀(Watering Hole)
 > 표적으로 삼은 집단이 주로 방문하는 웹 사이트를 감염시켜, 피해 대상이 해당 사이트를 방문하는 것을 기다린다.
 
-**백도어(Back Door, Trap Door)**
+### 백도어(Back Door, Trap Door)
 > 시스템 보안이 제거된 비밀 통로이다. 프로그램 보수의 용이성을 위해 코드 중간 중간에 Trap Door라는 중단 부분을 설정하는데, 최종 단계에서 이 부분을 삭제하지 않고 남겨둬 컴퓨터 범죄에 악용되기도 한다.
 
-**Zero Day Attack(제로 데이 공격)**
+### Zero Day Attack(제로 데이 공격)
 > 보안 취약점이 공표되기도 전에 해당 취약점을 악용하여 이루어지는 보안 공격으로, 공격의 신속성을 의미한다.
 
-**SMURFING(스머핑)**
+### SMURFING(스머핑)
 > 엄청난 양의 데이터를 한 사이트에 집중적으로 보냄으로써 네트워크의 일부를 불능상태로 만드는 공격 방법이다.
 
-**Typosquatting(타이포스쿼팅)**
+### Typosquatting(타이포스쿼팅)
 > 유사한 유명 도메인을 미리 등록하는 것으로 URL 하이재킹(Hijacking)이라고도 한다.
 
-**Hacktivism(핵티비즘)**
+### Hacktivism(핵티비즘)
 > 자신과 노선을 달리하는 정부나 기업, 단체 등의 인터넷 웹 사이트를 해킹하는 일체의 활동을 말한다.
 
-**Tvishing(티비싱)**
+### Tvishing(티비싱)
 > 스마트TV에 대한 최고 접근 권한을 획득하는 해킹 기법이다.
 
-**APT(Advanced Persistent Threats, 지능형 지속 위협)**
+### APT(Advanced Persistent Threats, 지능형 지속 위협)
 > 조직적으로 특정 기업이나 조직 네트워크에 침투해 활동 거점을 마련한 뒤 때를 기다리면서 보안을 무력화시키고 정보를 수집한 다음 외부로 빼돌리는 형태의 공격을 말한다.
 
-**Pharming(파밍)**
+### Pharming(파밍)
 > 진짜 사이트로 오인하도록 유도하여 개인 정보를 훔치는 신종 인터넷 사기 수법이다. 아예 해당 사이트가 공식적으로 운영하고 있는 도메인 자체를 탈취한다.
 
-**Social Engineering(사회 공학)**
+### Social Engineering(사회 공학)
 > 인간 상호 작용의 깊은 신뢰를 바탕으로 사람들을 속여 정상 보안 절차를 깨트리기 위한 비기술적 시스템 침입 수단을 말한다.
 
-**Zeus**
+### Zeus
 > 사용자의 온라인 뱅킹 계정 정보를 탈취하기 위해 개발된 상용 멀웨어이다.
 
-**Botnet(봇넷)**
+### Botnet(봇넷)
 > 악성 프로그램에 감염되어 향후에 악의적인 의도로 사용될 수 있는 다수의 컴퓨터들이 네트워크로 연결된 형태를 말한다.
 
-**Zombie**
+### Zombie
 > 다른 프로그램이나 다른 사용자를 조종하도록 악성코드에 감염된 컴퓨터를 말한다.
 
-**Patent Troll(특허 괴물)**
+### Patent Troll(특허 괴물)
 > 특허권을 비롯한 지적 재산권을 통해 로열티 수입만으로 이익을 창출하는 특허 관리 전문 기업을 말한다.
 
-**악성 소프트웨어(Malware; Malicious Software)**
+### 악성 소프트웨어(Malware; Malicious Software)
 > 악의적인 목적을 위해 작성된 것으로 악성 코드 또는 악성 프로그램 등으로 불린다.
 
-**스턱스넷(Stuxnet)**
+### 스턱스넷(Stuxnet)
 > 독일 지멘스사의 원격 감시 제어 시스템(SCADA)의 제어 소프트웨어에 침투하여 시스템을 마비하게 할 목표로 제작된 악성코드이다.
 
-**공격용 툴킷(Attack Toolkit)**
+### 공격용 툴킷(Attack Toolkit)
 > 네트워크에 연결된 컴퓨터를 공격하기 위해 악성 코드 프로그램을 모아 놓은 것이다. 대표적으로 Zeus와 Spyeye 등이 있다.
 
-**Ping of Death**
+### Ping of Death
 > 인터넷 프로토콜 허용 범위(65,536 바이트) 이상의 큰 패킷을 고의로 전송하여 발생한 서비스 거부 공격이다.
 
-**Splogger(스플로거)**
+### Splogger(스플로거)
 > 스팸과 블로거의 합성어로 다른 사람의 콘텐츠를 무단으로 복사해 자신의 블로그에 게재하는 블로거 또는 광고성 블로거를 의미한다.
 
-**IP 스푸핑(IP Spoofing)**
+### IP 스푸핑(IP Spoofing)
 > 다른 시스템과의 신뢰 관계를 속여서 침입하는 크래킹 기술이다.
 
-**스니핑(Sniffing)**
+### 스니핑(Sniffing)
 > 네트워크의 중간에서 남의 패킷 정보를 도청하는 해킹 유형의 하나로 수동적 공격에 해당한다.
 
-**스위치 재밍(Switch Jamming)**
+### 스위치 재밍(Switch Jamming)
 > 위조된 MAC 주소를 네트워크 상으로 지속적으로 흘려보내 스위칭 허브의 주소 테이블 기능을 마비시키는 것이다.
 
-**스팸(Spam)**
+### 스팸(Spam)
 > 인터넷 상에서 다수의 수신인에게 무작위로 송신된 이메일 메시지를 의미한다.
 - 직접 스팸 : 스패머가 직접 자신이 이용하는 ISP의 메일 서버를 통해 보내는 것
 - 중계 스팸 : 스패머가 임의의 다른 메일 서버를 중계 서버로 이용해 마치 중계 서버의 사용자가 메일을 보내는 것처럼 위장하는 것
 
-**사이버 스토킹(Cyber Stalking)**
+### 사이버 스토킹(Cyber Stalking)
 > 정보통신망을 이용해 악의적인 의도로 지속적으로 공포감이나 불안감 등을 유발하는 행위이다.
 
-**피싱(Phishing)**
+### 피싱(Phishing)
 > 허위 웹 사이트를 내세워 사용자의 개인 신용 정보를 빼내는 수법을 의미한다.
 
-**반달리즘(Vandalism)**
+### 반달리즘(Vandalism)
 > 다수가 참여할 수 있도록 공개된 문서의 내용을 훼손하거나 엉뚱한 제목으로 변경하고 낙서하는 일을 말한다.
 
-**크래킹(Cracking)**
+### 크래킹(Cracking)
 > 타인의 시스템에 침입하여 정보를 파괴하거나 정보의 내용을 자신의 이익에 맞게 변경하는 행위를 말한다.
 
-**살라미(salami) 기법**
+### 살라미(salami) 기법
 > 많은 대상으로부터 눈치 채지 못할 만큼의 적은 금액이나 양을 빼내는 컴퓨터 사기 기법을 의미한다.
 
-**SQL injection(SQL 삽입)공격**
+### SQL injection(SQL 삽입)공격
 > 전문 스캐너 프로그램 혹은 봇넷 등을 이용해 웹사이트를 무차별적으로 공격하는 과정에서 취약한 사이트가 발견되면 DB 등의 데이터를 조작하는 일련의 공격 방식이다.
 
-**brute force attack(무작위 공격)**
+### brute force attack(무작위 공격)
 > 암호화된 문서의 암호키를 찾아내기 위해 적용 가능한 모든 값을 대입하여 공격하는 방법이다.
 
-**Qshing(큐싱)**
+### Qshing(큐싱)
 > QR코드(Quick Response Code)를 통해 악성 앱의 다운로드를 유도하거나 악성 프로그램을 설치하도록 하는 금융사기 기법이다.
 
-**다크 데이터**
+### 다크 데이터
 > 수집된 후 저장은 되어 있지만 분석에 활용되지 않는 다량의 데이터를 의미한다.
 
-**블록체인(Blockchain)**
+### 블록체인(Blockchain)
 > P2P 네트워크를 이용하여 온라인 금융 거래 정보를 온라인 네트워크 참여자(peer)의 디지털 장비에 분산 저장하는 기술을 의미한다.
 
-**스누핑(Snooping)**
+### 스누핑(Snooping)
 > 네트워크상에서 남의 정보를 염참하여 불법으로 가로채는 행위이다.
 
-**다이어 악성코드(Dyre Malware)**
+### 다이어 악성코드(Dyre Malware)
 > 트로이 목마의 한 종류로, 이메일의 첨부파일 형태로 유포되어 사용자가 첨부파일을 실행시키면 컴퓨터의 정보를 수집하고 보안 프로그램을 무력화하는 프로그램이 설치된다.
 
-**드롭퍼(Dropper)**
+### 드롭퍼(Dropper)
 > 트로이 목마나 웜, 바이러스가 숨겨진 형태를 일컫는 말이다.
 
-**메모리 해킹(Memory Hacking)**
+### 메모리 해킹(Memory Hacking)
 > 컴퓨터 메모리에 있는 데이터를 위,변조하는 해킹방법이다.
 
-**스미싱(Smishing)**
+### 스미싱(Smishing)
 > 문자 메시지를 보낸 후 메시지에 있는 인터넷 주소를 클릭하면 악성코드를 설치하여 개인 금융 정보를 빼내는 행위이다.
 
-**스파이웨어(Spyware)**
+### 스파이웨어(Spyware)
 > 동의 없이 사용자 정보를 수입하는 프로그램 또는 불편을 야기하거나 사생활을 침해할 수 있는 프로그램을 의미한다.
 
-**웜(Worm)**
+### 웜(Worm)
 > 네트워크를 통해 연속적으로 자신을 복제하여 시스템의 부하를 높임으로써 결국 시스템을 다운시키는 바이러스의 일종이다.
 
-**크래킹(Cracking)**
+### 크래킹(Cracking)
 > 침입하여 정보를 파괴하거나 정보의 내용을 자신의 이익에 맞게 변경하는 행위이다.
 
-**트로이 목마(Trojan Horse)**
+### 트로이 목마(Trojan Horse)
 > 프로그램 내에 숨어 있다가 해당 프로그램이 동작할 때 활성화되어 부작용을 일으키는 것으로, 자가 복제 능력은 없다.
 
-**해킹(Hacking)**
+### 해킹(Hacking)
 > 시스템에 불법적으로 접근, 침투하여 시스템과 데이터를 파괴하는 행위이다.
 
-**혹스(Hoax)**
+### 혹스(Hoax)
 > 실제로는 악성 코드로 행동하지 않으면서 겉으로는 악성 코드인 것처럼 가장하여 행동하는 소프트웨어이다.
 
