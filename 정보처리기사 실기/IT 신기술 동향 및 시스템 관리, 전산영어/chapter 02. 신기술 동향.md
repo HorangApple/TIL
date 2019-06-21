@@ -175,7 +175,7 @@
 ### 증강현실(Augmented Reality)
 > 실제 촬영한 화면에 가상의 정보를 부가하여 보여주는 기술로, 혼합현실(MR)이라고도 불린다.
 
-### CHAME(Canonical Name)
+### CNAME(Canonical Name)
 > 종종 여러 개의 도메인 이름을 동일한 하나의 IP 주소로 변환하여 사용하는 것을 말한다.
 
 ### HVC(High performance Video Coding, 고성능 영상 코딩)
@@ -513,7 +513,7 @@
 ### 서비스 지향 아키텍처(SOA; Service Oriented Architecture)
 > 기업의 소프트웨어 인프라인 정보 시스템을 공유와 재사용이 가능한 서비스 단위나 컴포넌트 중심으로 구축하는 정보 기술 아키텍처다. 기존 개념에 이벤트 기반 아키텍처(EDA; Event Driven Architecture)를 더해 비즈니스에서 발생하는 각각의 상황을 실시간으로 처리하는 개념인 SOA 2.0을 도입하고 있다.
 
-### 오픈케이블 으용 플랫폼(OCAP; Open Cable Application Platform)
+### 오픈케이블 응용 플랫폼(OCAP; Open Cable Application Platform)
 > 모든 종합 유선방송(CATV)에서 운용될 수 있도록 대화형 TV 서비스나 응용 프로그램을 설계할 수 있는 미들웨어 소프트웨어 계층이다.
 
 ### 원 세그(One Seg)
@@ -556,7 +556,7 @@
 > 기존의 식품 관련 서비스업을 빅 데이터, O2O 서비스, 블루투스, 비콘 등의 정보통신기술(ICT)과 결합한 것을 의미한다.
 
 ### SNG(Satellite News Gathering)
-> 현자엥서 촬영한 영상을 위성을 통해 방송사로 전송하는 방식을 말한다. 위성의 소출력 중계기를 이용하여 현장의 촬영 영상을 방송사로 보내는 통신 시스템으로 활용된다.
+> 현장에서 촬영한 영상을 위성을 통해 방송사로 전송하는 방식을 말한다. 위성의 소출력 중계기를 이용하여 현장의 촬영 영상을 방송사로 보내는 통신 시스템으로 활용된다.
 
 ### MNG(Mobile News Gathering)
 > 야외에서 촬영한 영상을 3G, LTE, WiBro, Wi-Fi 등 다양한 무선망 접속 장비를 이용해 전송하는 방식을 말한다. 주로 중계차가 들어가지 못하는 곳에서 사용된다.
