@@ -111,6 +111,7 @@ module.exports = function(webpackEnv) {
         loader: require.resolve(preProcessor),
         options: {
           sourceMap: isEnvProduction && shouldUseSourceMap,
+          includePaths:[paths.globalStyles]
         },
       });
     }
@@ -432,6 +433,7 @@ module.exports = function(webpackEnv) {
                 },
                 'sass-loader'
               ),
+              
               // Don't consider CSS imports dead code even if the
               // containing package claims to have no side effects.
               // Remove this when webpack adds a warning or an error for this.
@@ -451,6 +453,7 @@ module.exports = function(webpackEnv) {
                 },
                 'sass-loader'
               ),
+              
             },
             // "file" loader makes sure those assets get served by WebpackDevServer.
             // When you `import` an asset, you get its (virtual) filename.
