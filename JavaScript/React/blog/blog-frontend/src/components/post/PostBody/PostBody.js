@@ -1,22 +1,15 @@
 import React from 'react'
-import styles from './Pagination.scss';
+import styles from './PostBody.scss';
 import classNames from 'classnames/bind';
-import Button from 'components/common/Button';
 
 const cx = classNames.bind(styles);
 
-const Pagination = () => (
-  <div className = {cx('pagination')}>
-    <Button disabled>
-      이전 페이지
-    </Button>
-    <div className={cx('number')}>
-      페이지 1
+const PostBody = () => (
+  <div className={cx('post-body')}>
+    <div className={cx('paper')}>
+      내용
     </div>
-    <Button>
-      다음 페이지
-    </Button>
   </div>
 )
 
-export default Pagination;
+export default PostBody;
