@@ -53,6 +53,10 @@ class MarkdownRender extends Component {
     }
   }
 
+  componentDidMount(){
+    Prism.highlightAll();
+  }
+
   render() {
     const { html } = this.state;
     const markup = {
