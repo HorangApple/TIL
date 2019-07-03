@@ -116,3 +116,11 @@ exports.update = async (ctx) => {
   }
 };
 
+exports.checkLogin = (ctx, next) => {
+  if(!ctx.session.logged) {
+    ctx.status = 401;
+    return null;
+  }
+  return next();
+}
+
