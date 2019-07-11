@@ -1,9 +1,9 @@
 import React from 'react'
-import Box from 'components/Box'
+import Example from 'components/Example'
 
 const Root = ()=>(
   <div>
-    <Box></Box>
+    <Example></Example>
   </div>
 )
 
