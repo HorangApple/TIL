@@ -11,7 +11,7 @@ import firebase from 'firebase/app'
 Vue.use(Vuetify)
 
 const config = {
-// 키 값
+  // 키 값
 }
 
 firebase.initializeApp(config)
