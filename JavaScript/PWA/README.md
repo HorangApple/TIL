@@ -1,5 +1,67 @@
 # PWA
 
+- [PWA](#pwa)
+- [1. 프로그레시브 웹 앱이란?](#1-프로그레시브-웹-앱이란)
+  - [1.1 개요](#11-개요)
+  - [1.2 PWA 장점](#12-pwa-장점)
+  - [1.3 서비스 워커](#13-서비스-워커)
+- [2. 서비스 워커 적용하기](#2-서비스-워커-적용하기)
+  - [2.1 서비스 워커 만들기](#21-서비스-워커-만들기)
+  - [2.2 점진적 향상](#22-점진적-향상)
+  - [2.3 HTTPS와 서비스 워커](#23-https와-서비스-워커)
+  - [2.4 웹에서 콘텐츠 가져오기](#24-웹에서-콘텐츠-가져오기)
+    - [fetch(request[, options]);](#fetchrequest-options)
+  - [2.5 오프라인 요청 감지하기](#25-오프라인-요청-감지하기)
+    - [Content-Type을 붙이는 이유](#content-type을-붙이는-이유)
+  - [2.6 서비스 워커의 범위(Scope) 이해하기](#26-서비스-워커의-범위scope-이해하기)
+- [3. 캐시 스토리지 API](#3-캐시-스토리지-api)
+  - [3.1 CacheStorage](#31-cachestorage)
+  - [3.2 언제 캐시할지 결정하기](#32-언제-캐시할지-결정하기)
+  - [3.3 CacheStorage에 요청 저장하기](#33-cachestorage에-요청-저장하기)
+  - [3.4 CacheStorage로부터 요청 받아오기](#34-cachestorage로부터-요청-받아오기)
+    - [CacheStorage는 동일 근원 정책을 따른다.](#cachestorage는-동일-근원-정책을-따른다)
+    - [match(request[, options]);](#matchrequest-options)
+  - [3.5 샘플 앱에서 캐싱하기](#35-샘플-앱에서-캐싱하기)
+  - [3.6 각각의 요청에 올바른 응답 매칭하기](#36-각각의-요청에-올바른-응답-매칭하기)
+    - [ignoreSearch](#ignoresearch)
+  - [3.7 HTTP 캐싱과 HTTP 헤더](#37-http-캐싱과-http-헤더)
+- [4. 서비스 워커 생명주기와 캐시 관리](#4-서비스-워커-생명주기와-캐시-관리)
+  - [4.1 서비스 워커의 생명주기](#41-서비스-워커의-생명주기)
+  - [4.2 서비스 워커의 수명과 waitUntil의 중요성](#42-서비스-워커의-수명과-waituntil의-중요성)
+  - [4.3 서비스 워커 업데이트하기](#43-서비스-워커-업데이트하기)
+  - [4.4 캐시를 관리해야 하는 이유](#44-캐시를-관리해야-하는-이유)
+  - [4.5 캐시 관리 및 이전 캐시 제거](#45-캐시-관리-및-이전-캐시-제거)
+    - [Promise.all()](#promiseall)
+  - [4.6 캐싱된 response를 다시 사용하기](#46-캐싱된-response를-다시-사용하기)
+  - [4.7 올바른 헤더 캐싱을 제공하기 위한 서버 설정](#47-올바른-헤더-캐싱을-제공하기-위한-서버-설정)
+- [5. '오프라인 우선'을 받아들이기](#5-오프라인-우선을-받아들이기)
+  - [5.1 오프라인 우선이란?](#51-오프라인-우선이란)
+  - [5.2 일반적인 캐싱 패턴](#52-일반적인-캐싱-패턴)
+    - [Cache only (캐시만 사용)](#cache-only-캐시만-사용)
+    - [Cache. falling back to network (캐시, 실패하는 경우 네트워크)](#cache-falling-back-to-network-캐시-실패하는-경우-네트워크)
+    - [Network only (네트워크만 사용)](#network-only-네트워크만-사용)
+    - [Network, falling back to cache (네트워크, 실패하는 경우 캐시)](#network-falling-back-to-cache-네트워크-실패하는-경우-캐시)
+    - [Cache, then network (캐시 이후 네트워크)](#cache-then-network-캐시-이후-네트워크)
+    - [Generic fallback (기본 대체 리소스)](#generic-fallback-기본-대체-리소스)
+  - [5.3 믹스 앤 매치, 새 패턴 생성하기](#53-믹스-앤-매치-새-패턴-생성하기)
+    - [Cache on demand (요청에 따라 캐시)](#cache-on-demand-요청에-따라-캐시)
+    - [Cache, falling back to network with frequent updates (캐시, 이후 네트워크 사용해 캐시 업데이트)](#cache-falling-back-to-network-with-frequent-updates-캐시-이후-네트워크-사용해-캐시-업데이트)
+    - [Network, falling back to cache with frequent updates (네트워크, 실패하는 경우 캐시 사용 및 빈번한 캐시 업데이트)](#network-falling-back-to-cache-with-frequent-updates-네트워크-실패하는-경우-캐시-사용-및-빈번한-캐시-업데이트)
+  - [5.4 어플리케이션 셸 아키텍처](#54-어플리케이션-셸-아키텍처)
+    - [5.4.1 초기 렌더링에 콘텐츠 포함하기](#541-초기-렌더링에-콘텐츠-포함하기)
+- [6. IndexedDB로 로컬에 데이터 저장하기](#6-indexeddb로-로컬에-데이터-저장하기)
+  - [6.1 IndexedDB란?](#61-indexeddb란)
+  - [6.2 IndexedDB 사용하기](#62-indexeddb-사용하기)
+    - [6.2.1 DB 커넥션 열기](#621-db-커넥션-열기)
+    - [6.2.2 DB 버전 번호 관리/객체저장소 변경](#622-db-버전-번호-관리객체저장소-변경)
+    - [6.2.3 IndexedDB 버전 관리](#623-indexeddb-버전-관리)
+    - [6.2.4 객체 저장소에 데이터 추가하기](#624-객체-저장소에-데이터-추가하기)
+    - [6.2.5 Key로 객체 읽기](#625-key로-객체-읽기)
+    - [6.2.6 커서로 객체 읽기](#626-커서로-객체-읽기)
+    - [6.2.7 인덱스 생성하기](#627-인덱스-생성하기)
+    - [6.2.8 인덱스로 데이터 읽기](#628-인덱스로-데이터-읽기)
+    - [6.2.9 커서 범위 제한하기](#629-커서-범위-제한하기)
+
 # 1. 프로그레시브 웹 앱이란?
 
 ## 1.1 개요
@@ -688,10 +750,7 @@ self.addEventListener("fetch",function(event) {
     })
   );
 });+ 
-```
-
-
-​                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+```                                                                                
 
 ## 5.4 어플리케이션 셸 아키텍처
 
@@ -717,3 +776,338 @@ self.addEventListener("fetch",function(event) {
 기본 앱 셸을 계획할 때, 초기 렌더링을 의미 있게 만드는 절대적으로 중요한 구성요소가 무엇인지 생각해봐야 한다. 
 
 # 6. IndexedDB로 로컬에 데이터 저장하기
+브라우저에서 데이터를 지속적으로 처리하기위해서는 네트워크에 의존하지 않고도 데이터를 로컬에 저장하고, 읽고, 수정할 수 있도록 해야한다. 서버사이드 DB처럼, IndexedDB는 데이터를 구조적으로 저장할 수 있도록 해주고 쿼리 및 수정 등의 작업도 가능하게 한다. IndexedDB는 서버사이드 DB와 달리 모든 작업을 브라우저 내에서 처리할 수 있다.
+
+## 6.1 IndexedDB란?
+
+IndexedDB는 브라우저 내에서 제공된 트랜잭션 객체 저장소 DB이다. 이것의 특징은 다음과 같다.
+
+1. 트랜잭션 기반으로 작동한다.
+   - 수행하는 모든 작업은 트랜잭션으로 그룹화되고 성공 또는 실패로 작동 결과가 결정된다.
+2. 객체 저장소 DB이다.
+   - 테이블 기반이 아닌 객체를 저장하는 객체 저장소로 구성된다.
+3. 인덱스된 DB이다.
+   - 인덱스를 별도로 추가하면 기존 관계형 DB의 인덱스처럼 사용할 수 있다.
+4. 브라우저 기반이다.
+   - 저장된 모든 데이터는 사용자의 연결 상태에 관계없이 접근 및 조작이 가능하다.
+
+로컬 DB(IndexedDB)의 변경 사항이 서버에 자동으로 반영되지 않기 때문에 개발자가 별도로 구현해야한다. 주의 사항은 다음과 같다.
+
+1. 여러 개의 DB를 생성할 수 있다.
+2. 각 DB는 여러 개의 객체 저장소를 들고 있다.
+3. 각 객체 저장소에는 한 가지 타입의 데이터가 들어 있다.
+4. 객체 저장소에는 Key-Value 쌍으로 된 레코드가 들어 있다.
+5. 자바스크립트로 표현 가능한 대부분의 정보는 Value가 될 수 있다.
+6. Key는 객체 저장소의 개별 값을 참조하는 데 사용된다.
+7. **동일 출처 정책(same-origin plicy)**을 따른다.
+8. DB는 버전을 갖기 때문에 DB 커넥션을 열어 `upgrade-needed` 이벤트를 통해 변경 사항을 반영해야한다.
+9. 대부분의 작업은 비동기 방식이다.
+
+IndexedDB를 사용하는 작업의 대부분은 다음의 기본 패턴으로 정리할 수 있다.
+
+1. DB를 연다.
+2. 객체 저장소에 읽기 혹은 쓰기를 하기 위해 트랜잭션을 시작한다.
+3. 객체 저장소를 연다.
+4. 객체 저장소에서 필요한 작업(객체 검색, 객체 추가 등)을 수행한다.
+5. 트랜잭션을 완료한다.
+
+## 6.2 IndexedDB 사용하기
+
+### 6.2.1 DB 커넥션 열기
+
+html 파일을 열어 `<script>` 내에서 작성하는 것이 실습하기 편하다.
+
+```javascript
+var request = window.indexedDB.open("my-database", 1);
+request.onerror = function(event) {
+  console.log("Database error: ", event.target.error);
+};
+request.onsuccess = function(event) {
+  var db = event.target.result;
+  console.log("Database: ", db);
+  console.log("Object store names: ", db.objectStoreNames);
+};
+```
+
+`window.indexedDB.open` 호출은 비동기 작업으로 DB 커넥션을 반환하지 않지만 DB 커넥션을 열기 위한 IDBRequest 객체를 반환한다. 이 객체를 통해, 해당 요청에 대한 이벤트(success 혹은 error 이벤트)를 수신할 수 있다. 브라우저에서 이 코드를 실행시키는 순간 브라우저 내에 `my-database`라는 이름의 DB가 생성되고(없다면) 열린다. 이후 success 이벤트가 발생하여 이벤트 콜백에서는 열린 IDBDatabase 객체 및 해당 DB에 포함된 객체 저장소 목록을 콘솔에 기록한다.
+
+### 6.2.2 DB 버전 번호 관리/객체저장소 변경
+
+서비스 워커와 마찬가지로 IndexedDB의 DB도 버전을 가지고 있다. 객체 저장소 추가, 변경, 삭제와 같이 DB 구조를 변경할 때마다 새로운 버전을 생성해야한다.
+
+`indexedDB.open()`의 두 번째 인수로 전달되는 버전 번호를 증가시켜 DB 버전을 만들 수 있다. 브라우저가 기존 버전보다 큰 버전 번호를 감지하면 upgrade needed 이벤트가 발생한다. DB를 수정하려면 이 이벤트를 수신해 사용할 수 있다.
+
+```javascript
+// 버전을 1에서 2로 변경한다.
+var request = window.indexedDB.open("my-database", 2);
+request.onerror = function(event) {
+  console.log("Database error: ", event.target.error);
+};
+request.onsuccess = function(event) {
+  var db = event.target.result;
+  console.log("Database: ", db);
+  console.log("Object store names: ", db.objectStoreNames);
+};
+
+request.onupgradeneeded = function(event) {
+  var db = event.target.result;
+  db.createObjectStore("customers", {
+    keyPath: "passport_number"
+  });
+};
+```
+
+upgrade needed 이벤트에서 DB 객체를 가져오고 `customers`라는 이름의 새 객체 저장소를 생성한다. 또한 `passport_number`를 저장소의 각 객체에 대한 고유 키로 정의하기 위해 `keyPath`를 사용한다.
+
+### 6.2.3 IndexedDB 버전 관리
+
+위의 코드에서 단순히 버전 번호만 바꾸면 객체 저장소의 영향으로 에러가 발생한다. 그렇기 때문에 현재의 상태에 따라 DB를 조건적으로 수정할 방법이 필요하다.
+
+한 가지 방법으로 전통적인 DB 마이그레이션 기법을 활용하는 것이다. '마이그레이션'은 특정 버전의 DB를 그다음 상위 버전으로 올리기 위해 필요한 작업 모음이다. 단계를 거쳐 최신 버전으로 업데이트하게 된다.
+
+```javascript
+var request = window.indexedDB.open("my-database", 3);
+
+request.onupgradeneeded = function(event) {
+  var db = event.target.result;
+  // 첫 방문은 oldVersion == 0
+  var oldVersion = event.oldVersion;
+  if (oldVersion < 2) {
+    db.createObjectStore("customers", {
+      keyPath: "passport_number"
+    });
+  }
+  if (oldVersion < 3) {
+    db.createObjectStore("employees", {
+      keyPath: "employee_id"
+    });
+  }
+};
+```
+
+위와 같이 DB의 이전 버전 번호를 확인하여, 모든 버전의 DB를 가장 최신 버전으로 가져오도록 만든다. 그러나 수십 개의 버전을 유지하기는 어려운 방법이다.
+
+```javascript
+var request = window.indexedDB.open("my-database", 3);
+
+request.onupgradeneeded = function(event) {
+  var db = event.target.result;
+  if (!db.objectStoreNames.contains("customers")) {
+    db.createObjectStore("customers", {
+      keyPath: "passport_number"
+    });
+  }
+};
+```
+
+단순히 높은 버전에서 생성되는 객체 저장소가 존재 여부로 수행하는 방법도 있다.
+
+### 6.2.4 객체 저장소에 데이터 추가하기
+
+```javascript
+var request = window.indexedDB.open("my-database", 1);
+
+request.onsuccess = function(event) {
+  var db = event.target.result;
+  var customerData = [
+    {
+      passport_number: "6651",
+      first_name: "ChulSu",
+      last_name: "Kim"
+    },
+    {
+      passport_number: "6251",
+      first_name: "Chu",
+      last_name: "Sim"
+    }
+  ];
+
+  // readwrite 트랜잭션을 생성하여 작업의 범위를 customers 객체 저장소로 지정
+  var customerTransaction = db.transaction("customers", "readwrite");
+  customerTransaction.onerror = function(event) {
+    console.log("Error: ", event, target.error);
+  };
+
+  // 생성된 트랜잭션의 objectStore() API를 호출해 customers 객체 저장소를 열고, 
+  var customerStore = customerTransaction.objectStore("customers");
+  for (var i = 0; i < customerData.length; i++) {
+    // 객체 저장소의 add() API를 호출해 객체를 추가
+    customerStore.add(customerData[i]);
+  }
+};
+```
+
+트랜잭션 범위(scope)는 트랜잭션이 영향을 줄 수 있는 객체 저장소 이름 혹은 여러 개의 객체 저장소 이름을 포함한 배열이다. 범위를 정의하여, 서로 다른 트랜잭션 사이의 '경쟁 상태'를 방지할 수 있다. 두 개 혹은 그 이상의 readwrite 트랜잭션 범위가 겹치는 경우 각 트랜잭션은 큐에 들어가 순차적으로 실행될 것이다. 범위가 다르다면 병렬로 실행될 수도 있다.
+
+### 6.2.5 Key로 객체 읽기
+
+데이터(객체)를 읽는 것에는 세 가지 방법이 있다.
+
+1. 키를 사용하여 단일 객체를 요청
+2. 커서를 사용하여 저장소의 모든 객체를 순회
+3. 인덱스를 사용하여 더 작은 데이터 그룹으로 검색(커서로 순회함)
+
+먼저 키를 사용하는 방법은 다음과 같다.
+
+```javascript
+var request = window.indexedDB.open("my-database", 2);
+
+request.onsuccess = function(event) {
+  var db = event.target.result;
+  var customerTransaction = db.transaction("customers");
+  var customerStore = customerTransaction.objectStore("customers");
+
+  // 찾고자 하는 고객 객체와 일치하는 Key(여권번호)를 전달, get()은 비동기 작업
+  var request = customerStore.get("7727");
+  // get 요청에 대한 onsuccess 이벤트를 수신하여 작업이 종료될 때까지 기다리고 요청한 객체를 반환
+  request.onsuccess = function(event) {
+    var customer = event.target.result;
+    console.log("First name: ", customer.first_name);
+    console.log("Last name: ", customer.last_name);
+  };
+};
+```
+
+### 6.2.6 커서로 객체 읽기
+
+get()을 사용하여 객체 저장소에서 단일 객체를 검색하는 방법은 정확한 키를 알고 단일 객체를 검색할 때만 작동한다. 여러 객체를 검색하기 위해서는 커서를 사용해야 한다.
+
+SQL과 달리 커서는 객체 저장소에 존재하는 하나의 레코드를 가리킬 뿐 결과를 포함하고 있지 않다. 즉, 단순히 객체 저장소에 존재하는 실제 객체에 대한 포인트 목록을 가리킨다. 이렇게 하면 모든 객체를 들고있을 메모리가 없어도 용량이 큰 객체 저장소를 순회할 수 있다.
+
+```javascript
+var request = window.indexedDB.open("my-database", 3);
+
+request.onupgradeneeded = function(event) {      
+  var db = event.target.result;
+  var customerTransaction = db.tranaction("customers");
+  var customerStore = customerTransaction.objectStore("customers");
+
+  // 커서 오픈
+  var customerCursor = customerStore.openCursor();
+
+  // 커서가 앞으로 이동할 때마다 이벤트가 트리거 됨
+  customerCursor.onsucess = function(event) {
+    var cursor = event.target.result;
+    if (!cursor) {
+      return;
+    }
+    console.log(cursor.value.first_name);
+    cursor.continue();
+  };
+};
+```
+
+커서가 다음 객체를 가리키도록 continue() 메소드를 호출한다. 커서가 앞으로 이동할 때마다 onsuccess 이벤트가 발생해 이벤트 리스너가 다시 실행되고 다음 고객의 이름을 로그로 남긴다.
+
+심지어 마지막 데이터를 전달하거나 객체 저장소가 비어있더라도 커서가 앞으로 이동할 때마다 onsuccess 이벤트가 발생한다는 것을 기억해야 한다. 이때 커서(`event.target.result`)는 `null`을 가리킨다.
+
+### 6.2.7 인덱스 생성하기
+
+커서로 객체를 읽는 방법은 특정 조건에 맞는 객체를 검색하려고 할 때, 모든 객체 저장소를 살펴보아야 한다면 아주 비효율적이고 불편할 것이다.
+
+여기에 인덱스를 사용하면 객체 저장소를 '쿼리(query)' 할 수 있고 쿼리와 매칭되는 레코드만 순회하여 살펴보는 커서를 열 수 있다.
+
+```javascript
+var request = window.indexedDB.open("my-database", 4);
+
+request.onupgradeneeded = function(event) {
+  var db = event.target.result;
+  if (!db.objectStoreNames.contains("customers")) {
+    db.createObjectStore("customers", {
+      // inline key
+      keyPath: "passport_number"
+    });
+  }
+  if (!db.objectStoreNames.contains("exchange_rates")) {
+    
+    // exchange_rates 저장소 생성
+    var exchangeStore = db.createObjectStore("exchange_rates", {
+      // 고유 인덱스(out-of-line key) 자동 생성
+      autoIncrement: true
+    });
+
+    // 인덱스가 사용해야하는 키 경로와 선택적 옵션 배열을 받음
+    exchangeStore.createIndex("from_idx", "exchange_from", {
+      // 키가 고유하지 않음을 명시
+      unique: false
+    });
+    exchangeStore.createIndex("to_idx", "exchange_to", {
+      unique: false
+    });
+
+    // db.createObjectStore() 호출에서 반환된 트랜잭션이 성공적으로 수행될 때 데이터 추가
+    exchangeStore.transaction.oncomplete = function(event) {
+      var exchangeRates = [
+        {
+          exchange_from: "CAD",
+          exchange_to: "USD",
+          rate: 0.77
+        },
+        {
+          exchange_from: "JPY",
+          exchange_to: "USD",
+          rate: 0.009
+        },
+        {
+          exchange_from: "USD",
+          exchange_to: "CAD",
+          rate: 1.29
+        },
+        {
+          exchange_from: "CAD",
+          exchange_to: "JPY",
+          rate: 81.6
+        }
+      ];
+
+      var exchangeStore = db
+        .transaction("exchange_rates", "readwrite")
+        .objectStore("exchange_rates");
+      for (var i = 0; i < exchangeRates.length; i++) {
+        exchangeStore.add(exchangeRates[i]);
+      }
+    };
+  }
+};
+```
+
+### 6.2.8 인덱스로 데이터 읽기
+
+인덱스를 사용하면 특정 기준과 일치하는 결과만 순회하는 커서를 열 수 있다. CAD에서 다른 모든 통화에 대한 환율을 기록하는 코드는 다음과 같다.
+
+```javascript
+var request = window.indexedDB.open("my-database", 4);
+
+request.onsuccess = function(event) {
+  var db = event.target.result;
+  var exchangeTransaction = db.transaction("exchange_rates");
+  var exchangeStore = exchangeTransaction.objectStore("exchange_rates");
+  // 인덱스를 가져옴
+  var exchangeIndex = exchangeStore.index("from_idx");
+  // 찾고자 하는 값을 전달하여 커서를 호출
+  var exchangeCursor = exchangeIndex.openCursor("CAD");
+  exchangeCursor.onsuccess = function(event) {
+    var cursor = event.target.result;
+    if (!cursor) {
+      return;
+    }
+    var rate = cursor.value;
+    console.log(rate.exchange_from + " to " + rate.exchange_to + ": "+ rate.rate);
+    cursor.continue();
+  };
+};
+```
+
+### 6.2.9 커서 범위 제한하기
+
+기본적으로 커서는 객체 저장소의 모든 객체 혹은 인덱스로부터 반환된 모든 객체를 순회한다. 필요한 경우 `IDBKeyRange` 객체를 전달하여 커서가 순회 할 범위를 제한할 수 있다.
+
+```javascript
+exchangeIndex.openCursor(IDBKeyRange.only("CAD"));
+```
+
+IDBKeyRange는 only()는 물론 lowerBound(), upperBound(), bound()도 지원한다. 이는 결과를 특정 범위로 제한할 수 있도록 한다.
+
+only()와 같이, lowerBound() 그리고 upperBound()는 값을 첫 번째 인수로 받는다. 이 값은 범위의 하한 또는 상한값이 된다. 두 번째 인수는 결과가 범위 한계와 동일한 객체를 제외(true)할지 포함(false)할지 결정하기 위해 Boolean 값을 받는다.
+
+bound()는 첫 번째 인수에 하한값, 두 번째 인수에 상한값, 그리고 각각의 포함 여부를 결정하는 Boolean값을 세 번째, 네 번째 인수에 입력한다.
