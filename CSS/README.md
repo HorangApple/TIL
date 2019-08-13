@@ -1,5 +1,20 @@
-## CSS 코딩 팁
-### 1. 코드 중복 최소화
+# CSS
+
+- [CSS](#css)
+  - [1. 코드 중복 최소화](#1-코드-중복-최소화)
+  - [2. 선택자](#2-선택자)
+    - [Type, className, Sibling](#type-classname-sibling)
+    - [Pseudo](#pseudo)
+    - [Attribute](#attribute)
+  - [3. 조화](#3-조화)
+    - [1) 상속](#1-상속)
+    - [2) Cascading](#2-cascading)
+  - [4. 레이아웃](#4-레이아웃)
+    - [1) box-sizing](#1-box-sizing)
+    - [2) 마진겹침 현상](#2-마진겹침-현상)
+    - [3) position](#3-position)
+
+## 1. 코드 중복 최소화
 
 **편집이 필요한 부분을 최소화**하는 것이 중요하다. 
 
@@ -152,3 +167,179 @@ LESS, Sass, Stylus과 같은 CSS 전처리기(Preprocessor)는 적절히 사용�
 - 작은 것까지 모두 추상화한다면 빈틈이 생기기 마련이고 전처리기 자체에 버그가 존재할 수 있다.
 
 순수한 CSS로 모든 프로젝트를 시작하였으나 코드를 DRY하게 유지하는 것이 힘들다면 그때 전처리기를 사용하는 것을 권한다. 
+
+## 2. 선택자
+
+http://flukeout.github.io/
+
+### Type, className, Sibling
+
+**A**
+
+해당 html 태그 선택
+
+**#id**
+
+해당 id를 갖고 있는 태그 선택
+
+**A B**
+
+해당 A 이하에 있는 B 태그 선택
+
+**#id A**
+
+해당 id를 갖고 있는 태그 이하에 있는 A 태그 선택
+
+**.className**
+
+해당 class를 갖고 있는 태그 선택
+
+**A.className**
+
+해당 class를 갖고 있는 A 태그 선택
+
+**A, B**
+
+A 태그와 B 태그 선택
+
+**\* **
+
+모든 태그 선택
+
+**A * **
+
+A 태그 이하의 모든 태그 선택
+
+**A + B**
+
+A 뒤에 있는 하나의 B 태그 선택
+
+**A ~ B**
+
+A 뒤에 있는 모든 B 태그 선택
+
+**A > B**
+
+A의 직계 자손인 B 태그 선택
+
+### Pseudo
+
+**A B:first-child**
+
+A 태그 이하의 B의 첫 번째를 선택
+
+**A:only-child**
+
+자식으로 하나만 있는 A 태그 선택
+
+**A:last-child**
+
+맨 마지막에 있는 A 태그 선택
+
+**A:nth-child(X)**
+
+X번 째 A 태그 선택, 이 때 A 태그 이외의 태그도 갯수 X에 영향을 미침
+
+**A:nth-last-child(X)**
+
+뒤에서 X번 째 A 태그 선택, 이 때 A 태그 이외의 태그도 갯수 X에 영향을 미침
+
+**A:first-of-type**
+
+자식, 손자 관련 없이 A 태그의 첫 번째 선택
+
+**A:nth-of-type(X)**
+
+X번 째 A 태그 선택, 이 때 A 태그 이외의 태그는 갯수 X에 영향을 미치지 않음, `odd`, `even`, `Xn+Y`(등차수열) 사용 가능
+
+**A:only-of-type**
+
+한 번밖에 사용되지 않은 A를 선택
+
+**A:last-of-type**
+
+A 태그의 마지막을 선택
+
+**A:empty**
+
+자식이 없는 A 태그 선택
+
+**A:not(X)**
+
+X를 제외한 A 태그 선택
+
+### Attribute
+
+**[attribute]**
+
+해당 속성을 가진 태그 선택
+
+**A[attribute]**
+
+해당 속성을 가진 A 태그 선택
+
+**[attribute="value"]**
+
+해당 속성 값을 가진 태그 선택
+
+**[attribute^="value"]**
+
+해당 속성 값이 "value"로 시작하는 태그 선택
+
+**[attribute$="value"]**
+
+해당 속성 값이 "value"로 끝나는 태그 선택
+
+**[attribute*="value"]**
+
+해당 속성 값이 "value"를 포함하는 태그 선택
+
+## 3. 조화
+
+### 1) 상속
+
+상위 엘리먼트에 `color`를 정하면 하위 엘리먼트에도 적용이 되듯이 상속이 일어난다. 그러나 모든 CSS 속성이 상속이 되는 것은 아니기에 [링크](https://www.w3.org/TR/CSS21/propidx.html)의 표에서 확인해보자.
+
+### 2) Cascading
+
+CSS는 Cascading Style Sheet의 약자로 폭포를 의미하는 Cascading이 있는 만큼 CSS 작성 순서도 영향이 미친다. CSS는 같은 엘리먼트를 꾸미는데 가장 마지막에 선언된 것을 최종으로 반영하거나 `!important`가 붙여있는 속성이 반영된다.
+
+## 4. 레이아웃
+
+### 1) box-sizing
+
+박스의 크기를 화면에 표시하는 방식을 변경하는 속성이다. `border-box`로 지정하면 테두리를 포함한 크기를 지정할 수 있어 예측하기가 더 쉽다.
+
+### 2) 마진겹침 현상
+
+상하 마진값이 어떤 상황에서 사라지는 현상을 의미하며 주로 수직(위, 아래)의 마진에서 발생한다. 겹침이 발생하면 마진값이 가장 큰 값을 기준으로 적용된다.
+
+태그가 시각적인 요소(내용, 테두리 등)가 없다면 마진겹침 현상이 발생한다. 이 때 margin-top과 margin-bottom 중 가장 큰 값을 기준으로 한다.
+
+자세한 내용은 [링크](https://www.w3.org/TR/CSS22/box.html#collapsing-margins)를 참고한다.
+
+### 3) position
+
+**static**
+
+left, top, bottom, right와 같은 offset 값을 무시하고 원래 있어야할 곳에 위치한다.
+
+**relative**
+
+자기가 있어야하는 위치에서 상대적으로 이동할 때 사용한다.
+
+**absolute**
+
+부모 엘리먼트의 위치(left, top)를 기준으로 해서 움직인다. 이때 부모로부터 받는 상속은 받지 않게 된다.
+
+**fixed**
+
+부모 엘리먼트의 위치(left, top)를 기준으로 해서 화면상 그 위치에 고정된다. 이때 부모로부터 받는 상속은 받지 않게 된다.
+
+**flex**
+
+엘리먼트들의 크기나 위치를 쉽게 잡아주는 도구이다. 정렬 방향을 나타내는 `flex-direction`를 `column`으로 바꾸면 가로 방향으로 나열할 수 있다.
+
+`flex-basis`는 `flex-direction`의 방향에 따른 크기를 지정해준다. `flex-grow`는 공간을 차지하는 비율을 정할 수 있다. `flex-shrink`는 화면이 작아질 때 공간이 줄어드는 정도를 정할 수 있다.
+
+다른 속성들은 [링크](https://codepen.io/enxaneta/pen/adLPwv)를 참고한다.
