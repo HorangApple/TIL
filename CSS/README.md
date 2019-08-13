@@ -304,6 +304,8 @@ X를 제외한 A 태그 선택
 
 CSS는 Cascading Style Sheet의 약자로 폭포를 의미하는 Cascading이 있는 만큼 CSS 작성 순서도 영향이 미친다. CSS는 같은 엘리먼트를 꾸미는데 가장 마지막에 선언된 것을 최종으로 반영하거나 `!important`가 붙여있는 속성이 반영된다.
 
+CSS가 적용되는 우선순위가 있는데 **`!important` > style attribute (inline-style) > id selector > class selector > tag selector** 순으로 높다.
+
 ## 4. 레이아웃
 
 ### 1) box-sizing
@@ -342,4 +344,105 @@ left, top, bottom, right와 같은 offset 값을 무시하고 원래 있어야�
 
 `flex-basis`는 `flex-direction`의 방향에 따른 크기를 지정해준다. `flex-grow`는 공간을 차지하는 비율을 정할 수 있다. `flex-shrink`는 화면이 작아질 때 공간이 줄어드는 정도를 정할 수 있다.
 
-다른 속성들은 [링크](https://codepen.io/enxaneta/pen/adLPwv)를 참고한다.
+다른 속성들은 [링크](https://codepen.io/enxaneta/pen/adLPwv)를 참고하자.
+
+### 4) float
+
+편집 디자인에서 이미지를 삽화로 삽입할 때나 레이아웃을 잡을 때 사용하는 기능이다. `float`는 보통 이미지에 적용하여 `left` 또는 `right`로 글자가 흐르게 끔 만들 수 있다. 만약 `float`에 영향을 미치지 않게 하고 싶다면 해당 엘리먼트에 `clear`를 설정하고 `float`와 같은 값을 정의하면 된다. 
+
+### 5) 다단
+
+화면을 분할해서 좀 더 읽기 쉽도록 만든 레이아웃이다. `column-count`를 통해 단의 갯수를 정해 이에 맞게 폭이 가변되고, `column-width`를 이용하여 단의 폭을 정하여 단의 갯수가 가변되도록 만들 수 있다. 만약 두 속성을 같이 사용하게 된다면 `column-count` 이하의 단의 갯수에 `column-width` 이상의 폭을 가진 레이아웃을 구현하게 된다.
+
+각 단의 사이의 폭은 `column-gap`을 통해 정할 수 있으며 `column-rule-style`로 단 사이에 선을 그릴 수 있다. 선과 관련하여 `column-rule-width`, `column-rule-color`로 선 굵기와 색을 정할 수 있다.
+
+어떤 내용이 다단의 영향을 받지 않게 만들고 싶다면 `column-span`을 통해 만들 수 있다.
+
+
+## 4. 그래픽
+
+### 1) background
+- background-color : red
+- background-image : url("bg.png")
+- background-repeat : repeat, no-repeat, repeat-x, repeat-y
+- background-attachment : scroll, fixed
+- background-position : left top  or x% y% or x y
+- background-size : 100px 100px or cover or contain
+
+### 2) filter
+`filter`를 통해 사진, 동영상, 텍스트 등에 다양한 효과를 줄 수 있다. 사용할 수 있는 값은 `blur()`, `grayscale()` 등 있다.
+
+### 3) blend
+블랜드는 이미지와 이미지를 혼합해서 새로운 이미지를 만들어내는 기법이다. 
+
+- `background-blend-mode`: `background-color`와 `background-image`를 섞어서 새로운 효과를 만들 수 있다.
+
+- `mix-blend-mode`: 꾸미고자 하는 컨텐트에 `mix-blend-mode` 속성을 입력하면 그 컨텐트의 배경이 되는 `background-image`에 맞춰 효과를 보여준다.
+
+### 4) transform
+
+https://codepen.io/vineethtr/pen/XKKEgM
+
+`display`가 `inline`이면 작동되지 않는다.
+
+```css
+.trans{
+  /* Keyword values */
+  transform: none;
+  
+  /* Function values */
+  transform: matrix(1.0, 2.0, 3.0, 4.0, 5.0, 6.0);
+  transform: translate(12px, 50%);
+  transform: translateX(2em);
+  transform: translateY(3in);
+  transform: scale(2, 0.5);
+  transform: scaleX(2);
+  transform: scaleY(0.5);
+  transform: rotate(0.5turn);
+  transform: skew(30deg, 20deg);
+  transform: skewX(30deg);
+  transform: skewY(1.07rad);
+  transform: matrix3d(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0);
+  transform: translate3d(12px, 50%, 3em);
+  transform: translateZ(2px);
+  transform: scale3d(2.5, 1.2, 0.3);
+  transform: scaleZ(0.3);
+  transform: rotate3d(1, 2.0, 3.0, 10deg);
+  transform: rotateX(10deg);
+  transform: rotateY(10deg);
+  transform: rotateZ(10deg);
+  transform: perspective(17px);
+  
+  /* Multiple function values */
+  transform: translateX(10px) rotate(10deg) translateY(5px);
+  
+  /* Global values */
+  transform: inherit;
+  transform: initial;
+  transform: unset;
+}
+```
+
+이 외에도 `transform-origin`을 사용하여 어느 축을 기준으로 회전할 지도 정할 수 있다.
+
+### 5) transition
+
+- transition-duration: transition 시간을 정함
+- transition-property: 어느 속성에 transition 효과를 적용할 지 정함
+- transition-delay: transition 후 지연할 시간을 정함
+- transition-timing-function: transition의 효과(속도)를 정함 [참고](https://matthewlein.com/tools/ceaser)
+- transition
+
+## 5. 유지보수
+
+### 1) link와 import
+
+아래의 두 가지 방법으로 CSS 파일을 불러온다.
+
+1. `<link rel="stylesheet" href="style.css">`
+
+2. `<style>@import url("style.css")</style>`
+
+### 2) 코드 경량화 (minify)
+
+서버와 클라이언트에게 소모되는 자원을 줄이기 위해 경량화시킨다. [참고](http://adam.id.au/clean-css-online/)와 같이 줄바꿈, 띄어쓰기를 없애준다.
