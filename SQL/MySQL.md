@@ -64,10 +64,24 @@ SELECT id,title,created,author FROM topic WHERE author='ane' ORDER BY id DESC LI
 ```sql
 UPDATE table_name
 SET column1 = value1, column2 = value2, ...
-[WHERE condition];
+WHERE condition;
 ```
 
 **예시**
 ```sql
 UPDATE topic SET description='Oracle is ...', title='Oracle' WHERE id=2;
 ```
+
+## 4) DELETE
+
+```sql
+DELETE FROM table_name WHERE condition;
+```
+
+**예시**
+```sql
+DELETE FROM topic WHERE id = 5;
+```
+
+# 5. 관계형 데이터베이스 (RDB)
+일반적인 데이터베이스를 운용하다보면 중복되는 데이터가 존재할 수 있다. 중복을 줄이고 보다 효율적인 데이터베이스를 만들기위해 테이블을 분산 저장하여 관계를 갖는 관계형 데이터베이스가 등장하였다.
