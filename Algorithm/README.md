@@ -241,10 +241,9 @@
               return BinarySearch2(arr,start,middle-1,key)
           else:
               return BinarySearch2(arr,middle+1,end,key)
-  	return false
   ```
-
   
+
 
 ### 08. 인덱스
 
