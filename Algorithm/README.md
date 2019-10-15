@@ -99,18 +99,20 @@
 
   ```python
   def CountingSort(arr,k): # arr:입력 배열, k:정수의 최대값
-      c=[0]*(k+1) # c:카운트 배열
-      b=[0]*k # b:정렬된 배열
-      for i in range(0,len(b)):
+      length = len(arr)
+      c=[0]*(k+1) # c:카운트 배열, 0도 넣기위해 +1
+      b=[0]*length # b:정렬된 배열
+      
+      for i in range(0,length):
           c[arr[i]]+=1
-      for i in range(1,len(c)):
+      for i in range(1,k+1):
           c[i]+= c[i-1]
-      for i in range(len(b)-1,-1,-1):
-          b[c[arr[i]]-1]=A[i]
+      for i in range(length):
+          b[c[arr[i]]-1]=arr[i]
           c[arr[i]]-=1
-      return b
+    return b
   ```
-
+  
   
 
 ### 05. 비트연산자
