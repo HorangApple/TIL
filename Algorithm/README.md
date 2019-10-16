@@ -356,8 +356,8 @@
               j=-1
           i+=1
           j+=1
-      if j==m:
-          return i-m # 일지하는 문자열의 시작위치 리턴
+      if j==n:
+          return i-n # 일지하는 문자열의 시작위치 리턴
       else:
           return -1
   ```
@@ -412,6 +412,40 @@
 
   <img src="images/image 002.png"/>
 
+- 코드
+
+  ```python
+  def getPi(search):
+      pi = [0]*len(search)
+      
+      j = 0
+      for i in range(1,len(search)):
+          while j > 0 and search[i] != search[j]:
+              j = pi[j-1]
+              
+          if search[i] == search[j]:
+              j+=1
+              pi[i] = j
+              
+      return pi
+  
+  def kmp(arr, search):
+      pi = getPi(search)
+      
+      j = 0
+      for i in range(len(arr)):
+          while j>0 and arr[i] != search[j]:
+              j = pi[j-1]
+              
+          if arr[i] == search[j]:
+              if j == len(search) - 1:
+                  return i-len(search)+1
+              else:
+                  j+=1
+      
+      return -1
+  ```
+  
 - 시간복잡도
 
   - O(n)
