@@ -147,6 +147,8 @@ class MySpider(CrawlSpider):
 
 `response.css`는 CSS 선택기를 사용하여 추출한다.
 
+## 4. items.py
+
 데이터 저장을 위해 크롤링한 결과를 객체로 정리할 필요가 있다. 예제의 `from example.items import Article`가 그것인데 프로젝트 생성시 기본적으로 생성하는 `items.py`에서 클래스를 정의해야한다.
 
 *example/items.py*
@@ -175,3 +177,90 @@ $scrapy runspider articles.py -o articles.json -t json
 $scrapy runspider articles.py -o articles.xml -t xml
 ```
 
+## 5. 파이프라인
+
+Scrapy의 파이프라인을 사용하면 이전 요청의 데이터 처리가 완료되는 것을 기다리는 것이 아니라 응답을 기다리는 동안 데이터를 처리할 수 있게 한다.
+
+파이프라인을 이용하기위해 아래와 같이 `settings.py`에 있는 `ITEM_PIPELINES` 항목의 주석 처리를 제거한다.
+
+*example/settings.py*
+
+```python
+...
+ITEM_PIPELINES = {
+   'example.pipelines.ExamplePipeline': 100, # 숫자는 우선순위를 의미하며 일반적으로 0~1000을 사용한다.
+}
+...
+```
+
+`example/pipelines.py`에서 추가한 매서드를 `settings.py`에 등록시켜 사용할 수 있다.
+
+다음은 `article.py`를 원시 데이터를 추출해서 파이프 라인에 전달하되, 데이터 처리는 최소한으로 줄이도록 리팩터링을 한다. 여기서는 객체 `Article`의 `lastUpdated`에 대한 처리를 제거하였다.
+
+*example/spiders/article.py*
+```python
+from scrapy.linkextractors import LinkExtractor
+from scrapy.spiders import CrawlSpider, Rule
+from example.items import Article
+
+class ArticleSpider(CrawlSpider):
+  name = 'articles' # 이름 변경
+  allowed_domains = ['wikipedia.org']
+  start_urls = ['https://en.wikipedia.org/wiki/Benevolent_dictator_for_life']
+  rules = [
+    Rule(LinkExtractor(allow='en.wikipedia.org/wiki/((?!:).)*$'),
+        callback='parse_items', follow=True)
+  ]
+
+  def parse_items(self, response):
+    article = Article()
+    article['url'] = response.url
+    article['title'] = response.css('h1::text').extract_first()
+    article['text'] = response.xpath('//div[@id="mw-content-text"]//text()').extract()
+    article['lastUpdated'] =  response.css('li#footer-info-lastmod::text').extract_first() # 변경
+    return article
+```
+
+이후 *pipelines.py*를 수정하여 데이터 후처리를 할 수 있도록 만든다. 여기서는 `article.py`에서 처리했었던 객체 `Article`의 `lastUpdated`를 파이프라인에 옮겨 작업할 수 있도록 한다.
+
+*example/pipelines.py*
+```python
+from datetime import datetime
+from example.items import Article
+from string import whitespace
+
+
+class ExamplePipeline(object):
+    def process_item(self, item, spider):
+        # 항목별로 처리할 수 있도록 if와 isinstance 사용
+        if isinstance(item,Article):
+            dateStr = item['lastUpdated']
+            dateStr = dateStr.replace('This page was last edited on', '')
+            dateStr = dateStr.strip()
+            dateStr = datetime.strptime(dateStr, '%d %B %Y, at %H:%M')
+            dateStr = dateStr.strftime('%Y-%m-%d %H:%M:%S')
+            item['lastUpdated'] = dateStr
+
+            texts = item['text'][0:50]
+            texts = [line for line in texts if line not in whitespace]
+            item['text'] = ''.join(texts)
+
+            return item
+```
+
+`process_item`은 모든 파이프라인 클래스에 필수 메서드이다. Scrapy는 이 메서드를 이용하여 spider가 수집한 Items를 비동기적으로 전달한다. 여기서 반환하는 파싱된 `Article` 객체는 로그에 기록되거나, JSON이나 CSV로 저장할 수 있다.
+
+
+## 6. Scrapy 로깅
+
+콘솔에서 출력되는 로깅은 `settings.py`에서 `LOG_LEVEL`를 입력하여 조정할 수 있는데 크게 `CRITICAL`, `ERROR`, `WARNING`, `DEBUG`, `INFO`를 사용할 수 있다. `ERROR`는 `CRITICAL`과 `ERROR` 로그만 표시되고, `INFO`로 설정하면 모든 로그가 출력된다.
+
+```python
+LOG_LEVEL = 'ERROR'
+```
+
+그 외에 다음 명령을 통해 별도의 파일로 저장할 수 있다.
+
+```bash
+$scrapy crawl articles -s LOG_FILE=wiki.log
+```
