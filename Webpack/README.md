@@ -61,12 +61,12 @@ module.exports = {
 ```javascript
 var config = {
   // 1. 간단한 entry 설정
-  entry: './path/to/my/entry/file.js'
+  entry: './path/to/my/entry/file.js',
   // 2. 앱 로직용, 외부 라이브러리용
   entry: {
     app: './src/app.js',
     vendors: './src/vendors.js'
-  }
+  },
   // 3. 페이지당 불러오는 JS 설정
   entry: {
     pageOne: './src/pageOne/index.js'
@@ -74,4 +74,78 @@ var config = {
     pageThree: './src/pageThree/index.js'
   }
 }
+```
+
+### 2) Output
+- entry 에서 설정하고 묶은 파일의 결과값을 설정
+
+```javascript
+var path = require('path');
+module.exports = {
+  entry: {
+    // ...
+  },
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js'
+    
+  }
+};
+```
+
+- output의 Name Options는 다음과 같다.
+
+```javascript
+output: {
+  filename: '[name].js', // entry 이름에 따른 파일명 생성
+  filename: '[hash].js', // 특정 webpack build에 따른 파일명 생성
+  filename: '[chunkhash].js', // 특정 webpack chunk에 따른 파일명 생성 (추천)
+}
+```
+
+#### 참고) [path](https://nodejs.org/api/path.html)
+**path.join([...paths])**
+- 해당 API 가 동작되는 OS 의 파일 구분자를 이용하여 파일 위치를 조합한다.
+
+**path.resolve([...paths])**
+- join()의 경우 그냥 문자열을 합치지만, resolve 는 오른쪽에서 왼쪽으로 파일 위치를 구성해가며 유효한 위치를 찾는다.
+
+- 만약 결과 값이 유효하지 않으면 현재 디렉토리가 사용된다. 반환되는 위치 값은 항상 절대경로이다.
+
+### 3) Loader
+- 웹팩은 JS 파일만 처리가 가능하도록 되어 있기 때문에 다른 형태의 웹 자원들(img, css 등)을 js 로 변환하여 로딩
+
+- 상세한 설정은 [공식 문서](https://webpack.js.org/concepts/loaders/)를 확인해보자.
+
+```javascript
+module.exports = {
+  entry: {
+    // ...
+  },
+  output: {
+    // ...
+  },
+  module: {
+    rules: [
+      // 모듈 로딩 순서는 배열의 요소 오른쪽에서 왼쪽으로 진행된다.
+      { test: /\.css$/, use: ['style-loader', 'css-loader'] }
+    ]
+  }
+};
+```
+
+### 4) Plugins
+- 플러그인은 파일별 커스텀 기능을 사용하기 위해서 사용한다.
+- [플러그인의 종류](https://webpack.js.org/plugins/)
+
+```javascript
+module.exports = {
+  entry: {},
+  output: {},
+  module: {},
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin()
+    // ...
+  ]
+};
 ```
