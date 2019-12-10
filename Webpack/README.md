@@ -149,3 +149,73 @@ module.exports = {
   ]
 };
 ```
+
+**ProvidePlugins**
+- 모든 모듈에서 사용할 수 있도록 해당 모듈을 변수로 변환한다.
+
+```javascript
+// jquery를 $로 전역변수화 (라이브러리의 전역변수화)
+new webpack.ProvidePlugin({
+  $: "jquery"
+})
+```
+
+**DefinePlugin**
+- Webpack 번들링을 시작하는 시점에 사용 가능한 상수들을 정의한다.
+- 일반적으로 개발계 & 테스트계에 따라 다른 설정을 적용할 때 유용하다.
+
+```javascript
+new webpack.DefinePlugin({
+  PRODUCTION: JSON.stringify(true),
+  VERSION: JSON.stringify("5fa3b9"),
+  BROWSER_SUPPORTS_HTML5: true,
+  TWO: "1+1",
+  "typeof window": JSON.stringify("object")
+})
+```
+
+**ManifestPlugin**
+- 번들링시 생성되는 코드 (라이브러리)에 대한 정보를 json 파일로 저장하여 관리
+
+```javascript
+new ManifestPlugin({
+  fileName: 'manifest.json',
+  basePath: './dist/'
+})
+```
+
+### 5) Webpack Resolve
+- Webpack 의 모듈 번들링 관점에서 봤을 때, 모듈 간의 의존성을 고려하여 모듈을 로딩해야 한다.
+- 따라서, 모듈을 **어떤 위치에서 어떻게 로딩할지**에 관해 정의를 하는 것이 바로 Module Resolution
+
+**절대경로를 이용한 로딩**
+- 파일의 경로를 모두 입력해준다.
+
+**상대경로를 이용한 로딩**
+- 해당 모듈이 로딩되는 시점의 위치에 기반하여, 상대 경로를 절대 경로로 인식하여 로딩한다.
+
+### 6) Resolve Option
+config 파일에 `resolve` 를 추가하여 모듈 로딩에 관련된 옵션 사용
+
+**alias**
+- 특정 모듈을 로딩할 때 별칭으로 더 쉽게 로딩이 가능하다.
+
+```javascript
+alias: {
+  Utilities: path.resolve(__dirname, 'src/path/utilities/')
+}
+
+// alias 미사용시
+import Utility from '../../src/path/utilities/utility';
+
+// alias 사용시
+import Utility from 'Utilities/utility';
+```
+
+**modules**
+- `require()`, `import ''` 등의 모듈 로딩시에 어느 폴더를 기준할 것인지 정하는 옵션
+
+```javascript
+modules: ["node_modules"] // default
+modules: [path.resolve(__dirname, "src"), "node_modules"] // src/node_modules
+```
