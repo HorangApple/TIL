@@ -184,7 +184,7 @@ new ManifestPlugin({
 })
 ```
 
-### 5) Webpack Resolve
+## 7. Webpack Resolve
 - Webpack 의 모듈 번들링 관점에서 봤을 때, 모듈 간의 의존성을 고려하여 모듈을 로딩해야 한다.
 - 따라서, 모듈을 **어떤 위치에서 어떻게 로딩할지**에 관해 정의를 하는 것이 바로 Module Resolution
 
@@ -194,7 +194,7 @@ new ManifestPlugin({
 **상대경로를 이용한 로딩**
 - 해당 모듈이 로딩되는 시점의 위치에 기반하여, 상대 경로를 절대 경로로 인식하여 로딩한다.
 
-### 6) Resolve Option
+### 1) Resolve Option
 config 파일에 `resolve` 를 추가하여 모듈 로딩에 관련된 옵션 사용
 
 **alias**
@@ -218,4 +218,48 @@ import Utility from 'Utilities/utility';
 ```javascript
 modules: ["node_modules"] // default
 modules: [path.resolve(__dirname, "src"), "node_modules"] // src/node_modules
+```
+
+## 8. Webpack 빌드를 위한 서버 구성
+
+- 페이지 자동고침을 제공하는 Webpack 개발용 node.js 서버
+- `webpack-dev-server` : Webpack 자체에서 제공하는 개발 서버이고 빠른 리로딩 기능 제공 (개인 프로젝트에서 사용)
+- `webpack-dev-middleware` : 서버가 이미 구성된 경우에는 webpack 을 미들웨어로 구성하여 서비스와 연결
+
+**설치 및 실행**
+- 설치
+```bash
+npm install --save-dev webpack-dev-server
+```
+
+- 실행
+```bash
+webpack-dev-server --open
+```
+
+- 또는 package.json 에 명령어 등록
+```json
+"scripts": { "start": "webpack-dev-server"}
+```
+
+추가 옵션 [참고](https://webpack.js.org/configuration/dev-server/)
+
+**Options**
+- `publicPath` : Webpack 으로 번들한 파일들이 위치하는 곳. default 값은 `/`
+```json
+// 항상 `/` 를 앞뒤에 붙여야 한다.
+publicPath: "/assets/"
+```
+
+- `contentBase` : 서버가 로딩할 static 파일 경로를 지정. default 값은 `working directory`
+```json
+// 절대 경로를 사용할 것
+contentBase: path.join(__dirname, "public")
+// 비활성화
+contentBase: false
+```
+
+- `compress` : gzip 압축 방식을 이용하여 웹 자원의 사이즈를 줄인다.
+```json
+compress: true
 ```
